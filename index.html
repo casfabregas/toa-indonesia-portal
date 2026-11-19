@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOA Indonesia — Digital Sales & Technical Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#090b0f',
+                        slateDark: '#10131a',
+                        panelDark: '#141821',
+                        amberGlow: '#f59e0b',
+                        amberWarm: '#fbbf24',
+                        toaRed: '#e11d48',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --lantern-y: 36px;
+            --lantern-amber: #f59e0b;
+            --lantern-amber-bright: #fcd34d;
+        }
+
+        body {
+            background-color: #090b0f;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0e14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232836;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+
+        /* Lantern Sidebar Ambient Radial Illumination */
+        .lantern-sidebar {
+            position: relative;
+            background: linear-gradient(180deg, #0d0f15 0%, #0a0c10 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: hidden;
+        }
+
+        /* Dynamic spotlight beam following lantern Y position */
+        .lantern-spotlight {
+            position: absolute;
+            left: -20px;
+            top: var(--lantern-y);
+            width: 340px;
+            height: 340px;
+            transform: translateY(-50%);
+            background: radial-gradient(
+                circle at 52px 50%,
+                rgba(245, 158, 11, 0.24) 0%,
+                rgba(217, 119, 6, 0.11) 28%,
+                rgba(180, 83, 9, 0.03) 55%,
+                transparent 75%
+            );
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Vertical Hanging Cord / Wire */
+        .lantern-rail {
+            position: absolute;
+            left: 34px;
+            top: 0;
+            bottom: 24px;
+            width: 2px;
+            background: linear-gradient(
+                180deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(245, 158, 11, 0.35) 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            );
+            z-index: 2;
+        }
+
+        /* Hanging Lantern Rig (moves vertically + swings) */
+        .lantern-rig {
+            position: absolute;
+            left: 35px;
+            top: var(--lantern-y);
+            transform: translate(-50%, -50%);
+            transform-origin: 50% -18px;
+            z-index: 10;
+            pointer-events: none;
+            will-change: top, transform;
+        }
+
+        /* Subtle flame flicker */
+        @keyframes flameFlicker {
+            0%, 100% { transform: scale(1) opacity(0.95); filter: brightness(1); }
+            25% { transform: scale(1.06, 0.96) opacity(1); filter: brightness(1.15); }
+            50% { transform: scale(0.96, 1.05) opacity(0.9); filter: brightness(0.95); }
+            75% { transform: scale(1.03, 0.98) opacity(1); filter: brightness(1.1); }
+        }
+
+        .lantern-flame {
+            transform-origin: center bottom;
+            animation: flameFlicker 2.8s infinite ease-in-out;
+        }
+
+        /* Lantern Navigation Item Styling */
+        .lantern-link {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 18px 15px 68px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+            user-select: none;
+        }
+
+        .lantern-link:hover {
+            background-color: rgba(245, 158, 11, 0.05);
+        }
+
+        .lantern-link[aria-current="page"] {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.02) 100%);
+        }
+
+        .lantern-label {
+            transition: color 0.15s ease, text-shadow 0.15s ease, opacity 0.15s ease;
+        }
+
+        .lantern-icon {
+            transition: color 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+        }
+
+        /* Glowing Ember Dot on Active Item */
+        .lantern-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 9999px;
+            background-color: #fbbf24;
+            box-shadow: 0 0 10px 2px rgba(245, 158, 11, 0.85), 0 0 20px 4px rgba(245, 158, 11, 0.45);
+            opacity: 0;
+            transform: scale(0.4);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .lantern-link[aria-current="page"] .lantern-dot {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Card glass effect */
+        .glass-card {
+            background: linear-gradient(145deg, rgba(22, 27, 37, 0.9) 0%, rgba(15, 18, 25, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+            transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.35);
+            box-shadow: 0 14px 36px -10px rgba(245, 158, 11, 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* Fade in view animation */
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .view-animate {
+            animation: fadeSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Mobile Lantern Drawer Backdrop */
+        .drawer-backdrop {
+            background: rgba(5, 7, 10, 0.78);
+            backdrop-filter: blur(6px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col lg:flex-row antialiased selection:bg-amber-500/30 selection:text-amber-200">
+
+    <!-- MOBILE HEADER BAR -->
+    <header class="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3.5 bg-[#0c0e14]/95 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <button id="mobileMenuBtn" aria-label="Buka Menu Lentera" class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 active:scale-95 transition">
+                <i data-lucide="flame" class="w-5 h-5"></i>
+            </button>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-extrabold tracking-wider text-white text-base">TOA</span>
+                    <span class="text-[10px] font-semibold uppercase tracking-widest px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30">Indonesia</span>
+                </div>
+                <p id="mobileCurrentTitle" class="text-xs text-slate-400">TOA Linktree</p>
+            </div>
+        </div>
+        <a href="https://linktr.ee/TOAindonesia?fbclid=PAAabTBao3ZDqEJo0jyEyEX8f0g3S-tjuSSpVCjU8DPEHKuoBWI6bjztXhj3U" target="_blank" rel="noopener noreferrer" class="text-xs font-medium px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 flex items-center gap-1.5">
+            <span>Linktree</span>
+            <i data-lucide="external-link" class="w-3.5 h-3.5 text-amber-400"></i>
+        </a>
+    </header>
+
+    <!-- MOBILE BACKDROP -->
+    <div id="mobileBackdrop" class="fixed inset-0 z-40 drawer-backdrop hidden lg:hidden transition-opacity"></div>
+
+    <!-- SIDEBAR WITH HANGING LANTERN NAVIGATION -->
+    <aside id="lanternSidebar" class="lantern-sidebar fixed lg:sticky top-0 left-0 z-50 h-screen w-[290px] sm:w-[310px] shrink-0 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-out">
+        
+        <!-- Top Brand Header -->
+        <div class="relative z-10 px-6 pt-6 pb-4 border-b border-white/[0.06] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-800 flex items-center justify-center shadow-lg shadow-red-900/30 border border-red-400/20">
+                    <span class="font-black text-white text-sm tracking-tighter">TOA</span>
+                </div>
+                <div>
+                    <h1 class="font-bold text-white text-base tracking-tight leading-none">TOA INDONESIA</h1>
+                    <p class="text-[11px] text-amber-400/80 font-medium mt-1 tracking-wide">PT TOA Galva Prima Karya</p>
+                </div>
+            </div>
+            <button id="closeMobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Hanging Lantern Interactive Stage -->
+        <nav id="lanternNav" aria-label="Navigasi Utama TOA Indonesia" class="relative flex-1 py-6 px-3 overflow-y-auto overflow-x-hidden">
+            
+            <!-- Dynamic Radial Spotlight Following Lantern -->
+            <div id="lanternSpotlight" class="lantern-spotlight"></div>
+
+            <!-- Vertical Hanging Wire/Rail -->
+            <div class="lantern-rail"></div>
+
+            <!-- SVG Hanging Lantern (Moves & Swings) -->
+            <div id="lanternRig" class="lantern-rig" aria-hidden="true">
+                <svg width="54" height="84" viewBox="0 0 54 84" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_16px_rgba(245,158,11,0.65)]">
+                    <!-- Top Ring & Hook -->
+                    <circle cx="27" cy="6" r="3.5" stroke="#94a3b8" stroke-width="1.8" fill="#0f172a"/>
+                    <path d="M27 9.5V15" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                    
+                    <!-- Lantern Cap / Chimney -->
+                    <path d="M21 15H33L36 20H18L21 15Z" fill="#1e293b" stroke="#475569" stroke-width="1.2"/>
+                    <path d="M13 24C13 21.2 19.2 19.5 27 19.5C34.8 19.5 41 21.2 41 24H13Z" fill="#0f172a" stroke="#64748b" stroke-width="1.3"/>
+                    
+                    <!-- Warm Inner Glass Glow -->
+                    <defs>
+                        <radialGradient id="glassGlow" cx="50%" cy="55%" r="50%">
+                            <stop offset="0%" stop-color="#fef3c7" stop-opacity="1"/>
+                            <stop offset="45%" stop-color="#f59e0b" stop-opacity="0.9"/>
+                            <stop offset="100%" stop-color="#92400e" stop-opacity="0.45"/>
+                        </radialGradient>
+                        <linearGradient id="metalFrame" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#1e293b"/>
+                            <stop offset="50%" stop-color="#475569"/>
+                            <stop offset="100%" stop-color="#0f172a"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Glass Chamber -->
+                    <path d="M16 24H38L35.5 58H18.5L16 24Z" fill="url(#glassGlow)" stroke="#f59e0b" stroke-width="0.8" stroke-opacity="0.6"/>
+                    
+                    <!-- Flame Core -->
+                    <g class="lantern-flame">
+                        <path d="M27 33C27 33 32 40.5 32 45.5C32 48.5 29.8 51 27 51C24.2 51 22 48.5 22 45.5C22 40.5 27 33 27 33Z" fill="#fbbf24"/>
+                        <path d="M27 38C27 38 29.8 42.5 29.8 45.8C29.8 47.6 28.5 49 27 49C25.5 49 24.2 47.6 24.2 45.8C24.2 42.5 27 38 27 38Z" fill="#fffbeb"/>
+                    </g>
+
+                    <!-- Protective Cage Bars -->
+                    <line x1="16" y1="24" x2="18.5" y2="58" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="38" y1="24" x2="35.5" y2="58" stroke="#1e293b" stroke-width="2"/>
+                    <line x1="22.5" y1="24" x2="23.5" y2="58" stroke="#1e293b" stroke-width="1.3"/>
+                    <line x1="31.5" y1="24" x2="30.5" y2="58" stroke="#1e293b" stroke-width="1.3"/>
+                    <line x1="17.2" y1="41" x2="36.8" y2="41" stroke="#1e293b" stroke-width="1.2"/>
+
+                    <!-- Lantern Base -->
+                    <path d="M15 58H39L36.5 63.5H17.5L15 58Z" fill="url(#metalFrame)" stroke="#475569" stroke-width="1.2"/>
+                    <path d="M21 63.5H33L30 67H24L21 63.5Z" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- 6 Main Navigation Items -->
+            <ul id="lanternList" class="space-y-2.5 relative z-10">
+                <li>
+                    <a href="#linktree" data-route="linktree" class="lantern-link" aria-current="page">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="share-2" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">TOA Linktree</span>
+                                <span class="block text-[11px] text-slate-500">Kanal & Sosmed Resmi</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#youtube" data-route="youtube" class="lantern-link">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="play-circle" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">TOA YouTube</span>
+                                <span class="block text-[11px] text-slate-500">Video Produk & Tutorial</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#dokumen" data-route="dokumen" class="lantern-link">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="folder-search" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">Dokumen TGPK</span>
+                                <span class="block text-[11px] text-slate-500">TKDN, POSTEL, Legal & Specs</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#ppt" data-route="ppt" class="lantern-link">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="presentation" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">Materi PPT</span>
+                                <span class="block text-[11px] text-slate-500">Deck Presentasi & Solusi</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#form" data-route="form" class="lantern-link">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="clipboard-list" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">Menu Form</span>
+                                <span class="block text-[11px] text-slate-500">Sign Shop, Event & Survey</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#project" data-route="project" class="lantern-link">
+                        <div class="flex items-center gap-3.5">
+                            <i data-lucide="camera" class="lantern-icon w-5 h-5"></i>
+                            <div>
+                                <span class="lantern-label block font-semibold text-sm tracking-wide">Project Highlight</span>
+                                <span class="block text-[11px] text-slate-500">Galeri Referensi Proyek</span>
+                            </div>
+                        </div>
+                        <span class="lantern-dot"></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Sidebar Bottom Info -->
+        <div class="relative z-10 p-4 m-3 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+                <span class="flex items-center gap-1.5 font-medium text-amber-400/90">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    Lantern Beam Active
+                </span>
+                <span class="font-mono text-[10px] text-slate-500">v2.6</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+                Arahkan kursor atau pilih menu untuk menyorot modul portal TOA Indonesia.
+            </p>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WORKSPACE -->
+    <main class="flex-1 min-w-0 relative">
+        <!-- Subtle Ambient Top Glow -->
+        <div class="pointer-events-none fixed top-0 right-0 w-[500px] h-[300px] bg-amber-500/[0.04] blur-[120px] rounded-full"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10">
+            
+            <!-- Top Breadcrumb / Status Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-white/[0.07]">
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="text-slate-500">Portal</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-600"></i>
+                    <span id="breadcrumbActive" class="text-amber-400 font-semibold">TOA Linktree</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-400 bg-white/[0.03] px-3 py-1.5 rounded-full border border-white/[0.06]">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                        Database Terhubung
+                    </span>
+                </div>
+            </div>
+
+            <!-- DYNAMIC VIEW CONTAINER -->
+            <div id="viewContainer" class="view-animate">
+                <!-- Content rendered dynamically via JS -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- DOCUMENT PREVIEW MODAL (FOR DOKUMEN TGPK) -->
+    <div id="docPreviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#121620] border border-amber-500/30 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl shadow-amber-950/40 animate-[fadeSlideIn_0.25s_ease]">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-4 bg-[#171c28] border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span id="modalDocCategory" class="text-[11px] font-semibold uppercase tracking-wider text-amber-400">KATEGORI</span>
+                        <h3 id="modalDocTitle" class="text-base font-bold text-white leading-snug">Judul Dokumen</h3>
+                    </div>
+                </div>
+                <button onclick="closeDocModal()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body: Simulated Document Sheet & Metadata -->
+            <div class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+                <!-- Metadata Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+                        <span class="block text-[11px] text-slate-400">Nomor Dokumen / Sertifikat</span>
+                        <span id="modalDocNumber" class="font-mono text-xs font-semibold text-white mt-0.5 block">-</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+                        <span class="block text-[11px] text-slate-400">Tanggal / Masa Berlaku</span>
+                        <span id="modalDocDate" class="text-xs font-semibold text-slate-200 mt-0.5 block">-</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+                        <span class="block text-[11px] text-slate-400">Status Dokumen</span>
+                        <span id="modalDocStatus" class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Berlaku / Aktif
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Simulated Official Document Preview Sheet -->
+                <div class="rounded-xl bg-[#0b0d13] border border-white/10 p-5 relative overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded bg-red-600 text-white font-black text-xs">TOA</span>
+                            <span class="text-xs font-semibold text-slate-300">PT TOA GALVA PRIMA KARYA — PREVIEW LEMBAR DOKUMEN</span>
+                        </div>
+                        <span id="modalDocCode" class="font-mono text-[11px] text-amber-400/80">DOC-TGPK</span>
+                    </div>
+                    
+                    <div id="modalDocSummary" class="text-sm text-slate-300 leading-relaxed space-y-3">
+                        <!-- Dynamic preview description -->
+                    </div>
+
+                    <!-- Technical Spec Table inside preview -->
+                    <div id="modalDocSpecs" class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
+                        <!-- Dynamic key-value pairs -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="px-6 py-4 bg-[#171c28] border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
+                <button onclick="closeDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 transition">
+                    Tutup Pratinjau
+                </button>
+                <a id="modalDriveLink" href="https://drive.google.com/drive/folders/14DIx7Vt9RegywXJ2ncn7grmve4GhfQeV?usp=drive_link" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span>Buka Dokumen di Google Drive</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD DOCUMENT MODAL (LOCALSTORAGE DATABASE MANAGER) -->
+    <div id="addDocModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#121620] border border-amber-500/30 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 bg-[#171c28] border-b border-white/10">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i>
+                    Tambah Referensi Dokumen TGPK
+                </h3>
+                <button onclick="closeAddDocModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="addDocForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Judul Dokumen / Produk</label>
+                    <input type="text" id="newDocTitle" required placeholder="Contoh: Sertifikat TKDN Ceiling Speaker ZS-646R" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kategori TGPK</label>
+                        <select id="newDocCategory" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                            <option value="Legalitas">Legalitas</option>
+                            <option value="TKDN">TKDN</option>
+                            <option value="POSTEL">POSTEL</option>
+                            <option value="IK Test">IK Test</option>
+                            <option value="Release & Discontinue">Release & Discontinue</option>
+                            <option value="New Product Specs">New Product Specs</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nomor Dokumen / Sertifikat</label>
+                        <input type="text" id="newDocNumber" required placeholder="Contoh: 1245/SJ-IND.8/TKDN/2026" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tanggal / Masa Berlaku</label>
+                        <input type="text" id="newDocDate" required placeholder="Contoh: Berlaku s/d Des 2028" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tautan Google Drive (Opsional)</label>
+                        <input type="url" id="newDocUrl" placeholder="Default: Folder TGPK Drive" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Ringkasan & Spesifikasi Singkat</label>
+                    <textarea id="newDocSummary" rows="3" required placeholder="Deskripsi singkat isi dokumen untuk pratinjau..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" onclick="closeAddDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-white/5 hover:bg-white/10">Batal</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300">Simpan Dokumen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#181d29] border border-amber-500/40 text-white shadow-xl shadow-black/50">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-400"></i>
+            <span id="toastMessage" class="text-xs font-medium">Tautan berhasil disalin!</span>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. OFFICIAL LINKS & DATABASE CONFIGURATION
+        // ==========================================
+        const LINKS = {
+            linktree: "https://linktr.ee/TOAindonesia?fbclid=PAAabTBao3ZDqEJo0jyEyEX8f0g3S-tjuSSpVCjU8DPEHKuoBWI6bjztXhj3U",
+            youtube: "https://www.youtube.com/c/TOAIndonesia/videos",
+            tgpkDrive: "https://drive.google.com/drive/folders/14DIx7Vt9RegywXJ2ncn7grmve4GhfQeV?usp=drive_link",
+            pptDrive: "https://drive.google.com/drive/folders/1cOW3zs5gqibuHWmh43I8noq3oXnZkd8Y?usp=sharing",
+            formSignShop: "https://forms.gle/2FhpDFcC5XhyGTvo7",
+            formEvent: "https://forms.gle/HPPhxcYyJDcvTbMV8",
+            formSurveyEvent: "https://forms.gle/3tKACcJo1hrPu2786",
+            projectHighlightDrive: "https://drive.google.com/drive/folders/15Ux5cMMVcALqy8re8a8n3kyw1nWqfWP0?usp=drive_link"
+        };
+
+        // Default Database for Dokumen TGPK (All 6 categories covered)
+        const DEFAULT_TGPK_DOCS = [
+            {
+                id: "doc-1",
+                title: "Sertifikat TKDN Horn Speaker ZH-5025BM & ZH-5025B",
+                category: "TKDN",
+                number: "4821/SJ-IND.8/TKDN/2025",
+                date: "Berlaku s/d Oktober 2028",
+                status: "Terverifikasi Kemenperin",
+                summary: "Sertifikat Tanda Sah Capaian Tingkat Komponen Dalam Negeri (TKDN) untuk lini produk Reflex Horn Speaker TOA 25 Watt dengan nilai capaian TKDN memenuhi standar pengadaan e-Katalog pemerintah.",
+                specs: { "Nilai TKDN": "43.85%", "Model": "ZH-5025BM / ZH-5025B", "Pabrikan": "PT TOA Galva Industries", "Standar": "Permenperin No. 16/2011" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-2",
+                title: "Sertifikat POSTEL / SDPPI Wireless Microphone System WM-5225 & WT-5800",
+                category: "POSTEL",
+                number: "98412/SDPPI/2025",
+                date: "Berlaku s/d Maret 2028",
+                status: "Tersertifikasi Komdigi",
+                summary: "Sertifikat Alat dan Perangkat Telekomunikasi Direktorat Jenderal Sumber Daya dan Perangkat Pos dan Informatika (SDPPI) untuk sistem mikrofon nirkabel UHF TOA.",
+                specs: { "Frekuensi": "UHF 690 - 865 MHz", "Model": "WM-5225 / WT-5800", "Regulasi": "Standar Teknis SRD", "Status": "Aktif & Valid" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-3",
+                title: "Dokumen Legalitas Perusahaan PT TOA Galva Prima Karya (NIB, NPWP, Akta & SK)",
+                category: "Legalitas",
+                number: "NIB-8120102938475",
+                date: "Pembaruan Tahun 2026",
+                status: "Dokumen Resmi Aktif",
+                summary: "Bundel lengkap dokumen legalitas perusahaan meliputi Nomor Induk Berusaha (NIB), Surat Pengukuhan Pengusaha Kena Pajak (SPPKP), Akta Pendirian & Perubahan terakhir, serta Surat Penunjukan Agen Tunggal.",
+                specs: { "Entitas": "PT TOA Galva Prima Karya", "Status": "Sole Distributor TOA", "KBLI": "46521 / 46599", "Kelengkapan": "NIB, NPWP, SPPKP, Kemenkumham" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-4",
+                title: "Laporan Hasil Uji IK Test (Impact Protection) Box & Column Speaker TZ-206B",
+                category: "IK Test",
+                number: "LAB-IK/TOA-2025/089",
+                date: "Diterbitkan: Januari 2026",
+                status: "Lulus Uji IK08 / IP65",
+                summary: "Laporan pengujian ketahanan benturan mekanik (IK Rating) dan proteksi cuaca untuk instalasi speaker outdoor dan semi-outdoor pada fasilitas publik dan transportasi.",
+                specs: { "Rating Uji": "IK08 (5 Joules Impact)", "Proteksi Cuaca": "IP65 Weatherproof", "Unit Uji": "TZ-206B / ZS-F2000BMWP", "Standar": "IEC 62262" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-5",
+                title: "Buletin Product Release & Discontinue Line-Up 2026",
+                category: "Release & Discontinue",
+                number: "BUL-TGPK/RD-2026/Q1",
+                date: "Efektif: Q1 - Q4 2026",
+                status: "Panduan Sales & Teknis",
+                summary: "Daftar resmi pembaruan siklus hidup produk TOA Indonesia tahun 2026, mencakup model yang dihentikan produksinya (Discontinue) beserta rekomendasi produk pengganti (Successor Model).",
+                specs: { "Periode": "Tahun Fiskal 2026", "Cakupan": "PA System, Pro Sound, Intercom", "Lampiran": "Tabel Cross-Reference Model", "Target": "Dealer, Konsultan & Sales" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-6",
+                title: "Datasheet New Product Specs: VX-3000 Series Voice Evacuation & IP Audio System",
+                category: "New Product Specs",
+                number: "SPEC-VX3000-EN/ID-26",
+                date: "Rilis Terbaru 2026",
+                status: "Produk Baru",
+                summary: "Lembar spesifikasi teknis lengkap sistem tata suara darurat terintegrasi (EN 54-16 certified) dengan matriks audio jaringan IP, efisiensi daya tinggi, dan arsitektur modular.",
+                specs: { "Sertifikasi": "EN 54-16 Voice Alarm", "Konektivitas": "IP Network / Dante Option", "Aplikasi": "Bandara, Gedung Tinggi, Mall", "Format": "PDF Datasheet & Wiring" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-7",
+                title: "Sertifikat TKDN Mixer Amplifier ZA-2240 & ZA-2120",
+                category: "TKDN",
+                number: "5109/SJ-IND.8/TKDN/2025",
+                date: "Berlaku s/d November 2028",
+                status: "Terverifikasi Kemenperin",
+                summary: "Sertifikat TKDN resmi untuk seri Mixer Amplifier 240W dan 120W yang banyak digunakan pada proyek sekolah, rumah ibadah, perkantoran, dan instansi pemerintahan.",
+                specs: { "Nilai TKDN": "41.20%", "Output Daya": "240W / 120W", "Model": "ZA-2240 / ZA-2120", "Katalog": "Tayang e-Katalog LKPP" },
+                url: LINKS.tgpkDrive
+            },
+            {
+                id: "doc-8",
+                title: "Sertifikat POSTEL IP Audio Interface & SIP Paging Gateway IP-A1SC15",
+                category: "POSTEL",
+                number: "102944/SDPPI/2026",
+                date: "Berlaku s/d Februari 2029",
+                status: "Tersertifikasi Komdigi",
+                summary: "Sertifikat kelayakan perangkat jaringan berbasis IP (PoE) untuk solusi IP Horn Speaker dan IP Paging TOA dalam ekosistem keamanan dan komunikasi gedung modern.",
+                specs: { "Protokol": "SIP / ONVIF / Multicast", "Daya": "PoE / PoE+ (IEEE 802.3af/at)", "Model": "IP-A1SC15 / IP-A1PG", "Status": "Aktif & Valid" },
+                url: LINKS.tgpkDrive
+            }
+        ];
+
+        // Load documents from localStorage or fallback to default
+        let tgpkDocuments = JSON.parse(localStorage.getItem('toa_tgpk_docs_v1')) || DEFAULT_TGPK_DOCS;
+
+        function saveTgpkDocs() {
+            localStorage.setItem('toa_tgpk_docs_v1', JSON.stringify(tgpkDocuments));
+        }
+
+        // State
+        let currentRoute = 'linktree';
+        let docSearchQuery = '';
+        let docSelectedCategory = 'Semua';
+
+        // ==========================================
+        // 2. HANGING LANTERN PHYSICS & ILLUMINATION
+        // ==========================================
+        const lanternNav = document.getElementById('lanternNav');
+        const lanternRig = document.getElementById('lanternRig');
+        const lanternSpotlight = document.getElementById('lanternSpotlight');
+        const lanternLinks = Array.from(document.querySelectorAll('.lantern-link'));
+
+        let currentLanternY = 42;
+        let targetLanternY = 42;
+        let velocityY = 0;
+        let swingAngle = 0;
+        let swingVelocity = 0;
+
+        function getLinkCenterY(linkEl) {
+            const navRect = lanternNav.getBoundingClientRect();
+            const linkRect = linkEl.getBoundingClientRect();
+            return (linkRect.top - navRect.top) + (linkRect.height / 2) + lanternNav.scrollTop;
+        }
+
+        // Update brightness of each menu label & icon based on proximity to lantern flame
+        function illuminateMenuItems(flameY) {
+            const reach = 155; // Illumination radius in px
+            lanternLinks.forEach(link => {
+                const itemY = getLinkCenterY(link);
+                const distance = Math.abs(itemY - flameY);
+                const isCurrent = link.getAttribute('aria-current') === 'page';
+                
+                // Proximity factor: 1 at flame center, falling off smoothly
+                const proximity = Math.max(0, Math.min(1, 1 - Math.pow(distance / reach, 1.35)));
+                
+                const label = link.querySelector('.lantern-label');
+                const icon = link.querySelector('.lantern-icon');
+
+                if (isCurrent) {
+                    label.style.color = '#fef3c7';
+                    label.style.textShadow = '0 0 16px rgba(245, 158, 11, 0.75)';
+                    label.style.opacity = '1';
+                    icon.style.color = '#fbbf24';
+                    icon.style.filter = 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.8))';
+                    icon.style.opacity = '1';
+                } else {
+                    // Warm gradient interpolation based on distance from lantern
+                    const opacity = 0.42 + (proximity * 0.52);
+                    const r = Math.round(148 + (251 - 148) * proximity);
+                    const g = Math.round(163 + (191 - 163) * proximity);
+                    const b = Math.round(184 + (36 - 184) * proximity);
+                    
+                    label.style.color = `rgb(${r}, ${g}, ${b})`;
+                    label.style.textShadow = proximity > 0.2 ? `0 0 ${Math.round(proximity * 14)}px rgba(245, 158, 11, ${proximity * 0.5})` : 'none';
+                    label.style.opacity = opacity.toFixed(2);
+
+                    icon.style.color = proximity > 0.35 ? '#f59e0b' : '#64748b';
+                    icon.style.filter = proximity > 0.35 ? `drop-shadow(0 0 6px rgba(245, 158, 11, ${proximity * 0.5}))` : 'none';
+                    icon.style.opacity = opacity.toFixed(2);
+                }
+            });
+        }
+
+        // Physics Loop (Spring vertical motion + pendulum swing inertia)
+        function animateLantern() {
+            // Spring physics for vertical movement
+            const stiffness = 0.11;
+            const damping = 0.74;
+            const forceY = (targetLanternY - currentLanternY) * stiffness;
+            velocityY = (velocityY + forceY) * damping;
+            currentLanternY += velocityY;
+
+            // Pendulum swing induced by vertical acceleration
+            const swingForce = (-velocityY * 0.22) - (swingAngle * 0.08);
+            swingVelocity = (swingVelocity + swingForce) * 0.88;
+            swingAngle += swingVelocity;
+            // Clamp angle
+            swingAngle = Math.max(-14, Math.min(14, swingAngle));
+
+            // Apply transforms
+            lanternRig.style.top = `${currentLanternY}px`;
+            lanternRig.style.transform = `translate(-50%, -50%) rotate(${swingAngle.toFixed(2)}deg)`;
+            lanternSpotlight.style.top = `${currentLanternY}px`;
+
+            illuminateMenuItems(currentLanternY);
+            requestAnimationFrame(animateLantern);
+        }
+
+        // Hover preview behavior (lantern peeks toward hovered item, returns to active on mouseleave)
+        lanternLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                targetLanternY = getLinkCenterY(link);
+            });
+
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const route = link.getAttribute('data-route');
+                navigateTo(route);
+                closeMobileDrawer();
+            });
+        });
+
+        lanternNav.addEventListener('mouseleave', () => {
+            const activeLink = document.querySelector('.lantern-link[aria-current="page"]');
+            if (activeLink) {
+                targetLanternY = getLinkCenterY(activeLink);
+            }
+        });
+
+        // ==========================================
+        // 3. MOBILE DRAWER CONTROLS
+        // ==========================================
+        const lanternSidebar = document.getElementById('lanternSidebar');
+        const mobileBackdrop = document.getElementById('mobileBackdrop');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMobileMenuBtn = document.getElementById('closeMobileMenuBtn');
+
+        function openMobileDrawer() {
+            lanternSidebar.classList.remove('-translate-x-full');
+            mobileBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                const activeLink = document.querySelector('.lantern-link[aria-current="page"]');
+                if (activeLink) targetLanternY = getLinkCenterY(activeLink);
+            }, 50);
+        }
+
+        function closeMobileDrawer() {
+            lanternSidebar.classList.add('-translate-x-full');
+            mobileBackdrop.classList.add('hidden');
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileDrawer);
+        closeMobileMenuBtn.addEventListener('click', closeMobileDrawer);
+        mobileBackdrop.addEventListener('click', closeMobileDrawer);
+
+        // ==========================================
+        // 4. UTILITY FUNCTIONS (COPY & TOAST)
+        // ==========================================
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMessage');
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2800);
+        }
+
+        function copyTextToClipboard(text, label = "Tautan") {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast(`${label} berhasil disalin ke clipboard!`);
+            } catch (err) {
+                showToast(`Gagal menyalin ${label}.`);
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // ==========================================
+        // 5. ROUTE VIEWS RENDERING
+        // ==========================================
+        const viewContainer = document.getElementById('viewContainer');
+        const breadcrumbActive = document.getElementById('breadcrumbActive');
+        const mobileCurrentTitle = document.getElementById('mobileCurrentTitle');
+
+        const ROUTE_TITLES = {
+            linktree: "TOA Linktree",
+            youtube: "TOA Indonesia YouTube",
+            dokumen: "Dokumen TGPK (Database & Preview)",
+            ppt: "Materi Presentasi (PPT)",
+            form: "Menu Form Terpadu",
+            project: "Foto Project Highlight"
+        };
+
+        function navigateTo(route) {
+            currentRoute = route;
+            
+            // Update active attribute on sidebar
+            lanternLinks.forEach(link => {
+                if (link.getAttribute('data-route') === route) {
+                    link.setAttribute('aria-current', 'page');
+                    targetLanternY = getLinkCenterY(link);
+                } else {
+                    link.removeAttribute('aria-current');
+                }
+            });
+
+            // Update Breadcrumb & Mobile Title
+            breadcrumbActive.textContent = ROUTE_TITLES[route] || "Portal";
+            mobileCurrentTitle.textContent = ROUTE_TITLES[route] || "Portal";
+
+            // Re-trigger view animation
+            viewContainer.classList.remove('view-animate');
+            void viewContainer.offsetWidth;
+            viewContainer.classList.add('view-animate');
+
+            // Render respective page
+            switch (route) {
+                case 'linktree':
+                    renderLinktreeView();
+                    break;
+                case 'youtube':
+                    renderYoutubeView();
+                    break;
+                case 'dokumen':
+                    renderDokumenView();
+                    break;
+                case 'ppt':
+                    renderPptView();
+                    break;
+                case 'form':
+                    renderFormView();
+                    break;
+                case 'project':
+                    renderProjectView();
+                    break;
+                default:
+                    renderLinktreeView();
+            }
+
+            lucide.createIcons();
+        }
+
+        // --- VIEW 1: TOA LINKTREE ---
+        function renderLinktreeView() {
+            viewContainer.innerHTML = `
+                <div class="space-y-8">
+                    <!-- Hero Banner -->
+                    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#161b26] via-[#11151e] to-[#0c0e14] border border-amber-500/20 p-6 sm:p-10">
+                        <div class="absolute -right-16 -top-16 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10 max-w-2xl">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-4">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Official Digital Hub
+                            </span>
+                            <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                                Portal Resmi <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">TOA Indonesia</span>
+                            </h2>
+                            <p class="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
+                                Akses terpusat menuju ekosistem digital resmi PT TOA Galva Prima Karya — mulai dari kanal informasi publik, katalog produk, kontak layanan pelanggan, hingga media sosial resmi.
+                            </p>
+                            <div class="mt-6 flex flex-wrap items-center gap-3">
+                                <a href="${LINKS.linktree}" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center gap-2 transition">
+                                    <span>Buka TOA Linktree Resmi</span>
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                </a>
+                                <button onclick="copyTextToClipboard('${LINKS.linktree}', 'Link TOA Linktree')" class="px-4 py-3 rounded-xl font-semibold text-sm text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 transition">
+                                    <i data-lucide="copy" class="w-4 h-4 text-amber-400"></i>
+                                    <span>Salin Tautan</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Access Cards Linked to TOA Linktree -->
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i data-lucide="compass" class="w-4 h-4 text-amber-400"></i>
+                                Pintasan Ekosistem TOA Indonesia
+                            </h3>
+                            <span class="text-xs text-slate-400">Terhubung ke Linktree</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            ${[
+                                { title: "Website & Katalog Resmi", desc: "Informasi produk Public Address, Pro Sound, dan Security Intercom TOA.", icon: "globe", badge: "Official Web" },
+                                { title: "Instagram & Media Sosial", desc: "Update event, instalasi proyek terbaru, dan edukasi audio harian.", icon: "instagram", badge: "@toaindonesia" },
+                                { title: "Layanan Konsultasi & Teknis", desc: "Hubungi tim sales engineer dan dukungan purna jual resmi TOA.", icon: "headphones", badge: "Customer Care" },
+                                { title: "Katalog e-Katalog LKPP", desc: "Akses informasi produk bersertifikat TKDN untuk pengadaan pemerintah.", icon: "award", badge: "TKDN Ready" },
+                                { title: "Jaringan Dealer & Service Center", desc: "Temukan distributor dan pusat layanan resmi TOA di seluruh Indonesia.", icon: "map-pin", badge: "Nationwide" },
+                                { title: "Berita & Siaran Pers", desc: "Pengumuman produk baru, seminar akustik, dan pameran audio.", icon: "newspaper", badge: "Update" }
+                            ].map(item => `
+                                <a href="${LINKS.linktree}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-5 flex flex-col justify-between group">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition">
+                                                <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                                            </div>
+                                            <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">${item.badge}</span>
+                                        </div>
+                                        <h4 class="font-bold text-white text-base group-hover:text-amber-300 transition">${item.title}</h4>
+                                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${item.desc}</p>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
+                                        <span>Akses via Linktree</span>
+                                        <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+                                    </div>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 2: TOA YOUTUBE ---
+        function renderYoutubeView() {
+            const videoTopics = [
+                { title: "Product Showcase & Review", desc: "Pengenalan fitur unggulan speaker, amplifier, dan sistem konferensi terbaru TOA.", tag: "Product Demo", duration: "Playlist Produk" },
+                { title: "Tutorial Instalasi & Wiring", desc: "Panduan teknis pemasangan impedansi tinggi (100V line), matriks audio, dan kalibrasi.", tag: "Technical Guide", duration: "Edukasi Teknis" },
+                { title: "Case Study & Referensi Proyek", desc: "Dokumentasi penerapan solusi tata suara TOA di masjid raya, bandara, dan stadion.", tag: "Project Highlight", duration: "Studi Kasus" },
+                { title: "Webinar & Acoustic Seminar", desc: "Rekaman sesi pelatihan akustik ruangan dan desain sistem evakuasi suara (EVAC).", tag: "TOA Academy", duration: "Sesi Pelatihan" }
+            ];
+
+            viewContainer.innerHTML = `
+                <div class="space-y-8">
+                    <!-- YouTube Channel Header Card -->
+                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-red-500/20 relative overflow-hidden">
+                        <div class="absolute right-0 top-0 w-80 h-80 bg-red-600/10 blur-3xl rounded-full pointer-events-none"></div>
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                            <div class="flex items-start gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-white shadow-lg shadow-red-600/30 shrink-0">
+                                    <i data-lucide="youtube" class="w-7 h-7"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h2 class="text-xl sm:text-2xl font-extrabold text-white">TOA Indonesia Official YouTube</h2>
+                                        <i data-lucide="badge-check" class="w-5 h-5 text-amber-400"></i>
+                                    </div>
+                                    <p class="text-slate-300 text-sm mt-1.5 max-w-2xl leading-relaxed">
+                                        Kanal video resmi TOA Indonesia. Tonton demonstrasi perangkat audio profesional, tutorial instalasi sistem tata suara, dan dokumentasi proyek nasional.
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="${LINKS.youtube}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 shadow-lg shadow-red-600/25 flex items-center justify-center gap-2 transition">
+                                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                <span>Kunjungi Kanal YouTube</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Video Categories Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        ${videoTopics.map(vid => `
+                            <a href="${LINKS.youtube}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl overflow-hidden group flex flex-col">
+                                <!-- Stylized Video Thumbnail Header -->
+                                <div class="h-40 bg-gradient-to-br from-[#1b202c] to-[#0e1118] relative flex items-center justify-center border-b border-white/[0.06] overflow-hidden">
+                                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.12),transparent_70%)] group-hover:scale-110 transition duration-500"></div>
+                                    <div class="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 group-hover:bg-red-600 group-hover:border-red-500 group-hover:text-white group-hover:scale-110 transition duration-300 shadow-xl">
+                                        <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
+                                    </div>
+                                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-[11px] font-semibold text-amber-300 border border-white/10">
+                                        ${vid.tag}
+                                    </span>
+                                    <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/75 font-mono text-[10px] text-slate-300">
+                                        ${vid.duration}
+                                    </span>
+                                </div>
+                                <div class="p-5 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition">${vid.title}</h3>
+                                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${vid.desc}</p>
+                                    </div>
+                                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-slate-300 group-hover:text-amber-400 transition">
+                                        <span>Tonton di YouTube TOA Indonesia</span>
+                                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 3: DOKUMEN TGPK (SEARCH, CATEGORY FILTER & PREVIEW MODAL) ---
+        function renderDokumenView() {
+            const categories = ["Semua", "Legalitas", "TKDN", "POSTEL", "IK Test", "Release & Discontinue", "New Product Specs"];
+
+            viewContainer.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Header & Direct Drive Button -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#131722] border border-amber-500/20 rounded-2xl p-6">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">DATABASE TGPK</span>
+                                <span class="text-xs text-slate-400">PT TOA Galva Prima Karya</span>
+                            </div>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-1.5">Pusat Dokumen & Sertifikasi TGPK</h2>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                Cari dokumen Legalitas, TKDN, POSTEL, IK Test, Release & Discontinue, serta New Product Specs. Klik item untuk pratinjau detail.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                            <button onclick="openAddDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-1.5 transition">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>Tambah Data</span>
+                            </button>
+                            <a href="${LINKS.tgpkDrive}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
+                                <i data-lucide="folder-open" class="w-4 h-4"></i>
+                                <span>Buka Folder Google Drive</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Search & Category Filter Controls -->
+                    <div class="space-y-4">
+                        <!-- Real-Time Search Input -->
+                        <div class="relative">
+                            <i data-lucide="search" class="w-5 h-5 text-amber-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            <input 
+                                type="text" 
+                                id="tgpkSearchInput" 
+                                value="${docSearchQuery}"
+                                oninput="handleDocSearch(this.value)"
+                                placeholder="Cari nama produk, nomor sertifikat TKDN/POSTEL, model speaker/amplifier, atau kategori..." 
+                                class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-[#121620] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/15 transition"
+                            >
+                            ${docSearchQuery ? `
+                                <button onclick="clearDocSearch()" class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-slate-400 hover:text-white">
+                                    <i data-lucide="x-circle" class="w-4 h-4"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <!-- Category Pills -->
+                        <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                            ${categories.map(cat => {
+                                const isActive = docSelectedCategory === cat;
+                                return `
+                                    <button 
+                                        onclick="selectDocCategory('${cat}')"
+                                        class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
+                                            isActive 
+                                            ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20' 
+                                            : 'bg-[#121620] text-slate-300 border-white/10 hover:border-amber-500/40 hover:text-white'
+                                        }"
+                                    >
+                                        ${cat}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Filtered Documents List Container -->
+                    <div id="tgpkDocsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Rendered via renderFilteredDocs() -->
+                    </div>
+                </div>
+            `;
+
+            renderFilteredDocs();
+        }
+
+        function handleDocSearch(val) {
+            docSearchQuery = val;
+            renderFilteredDocs();
+        }
+
+        function clearDocSearch() {
+            docSearchQuery = '';
+            const input = document.getElementById('tgpkSearchInput');
+            if (input) input.value = '';
+            renderFilteredDocs();
+        }
+
+        function selectDocCategory(cat) {
+            docSelectedCategory = cat;
+            renderDokumenView();
+            lucide.createIcons();
+        }
+
+        function renderFilteredDocs() {
+            const grid = document.getElementById('tgpkDocsGrid');
+            if (!grid) return;
+
+            const query = docSearchQuery.toLowerCase().trim();
+            const filtered = tgpkDocuments.filter(doc => {
+                const matchCat = docSelectedCategory === 'Semua' || doc.category === docSelectedCategory;
+                const matchQuery = !query || 
+                    doc.title.toLowerCase().includes(query) ||
+                    doc.number.toLowerCase().includes(query) ||
+                    doc.category.toLowerCase().includes(query) ||
+                    doc.summary.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 px-6 text-center rounded-2xl bg-[#121620] border border-white/10">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="search-x" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white">Dokumen tidak ditemukan</h4>
+                        <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                            Tidak ada dokumen yang cocok dengan kata kunci "${docSearchQuery}" pada kategori ${docSelectedCategory}. Silakan coba kata kunci lain atau buka folder Google Drive langsung.
+                        </p>
+                        <div class="mt-4 flex justify-center gap-3">
+                            <button onclick="docSearchQuery=''; docSelectedCategory='Semua'; renderDokumenView(); lucide.createIcons();" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/10 text-white hover:bg-white/15">
+                                Reset Pencarian
+                            </button>
+                            <a href="${LINKS.tgpkDrive}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950">
+                                Cari di Google Drive
+                            </a>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = filtered.map(doc => `
+                <div onclick="openDocModal('${doc.id}')" class="glass-card rounded-2xl p-5 cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                                ${doc.category}
+                            </span>
+                            <span class="font-mono text-[11px] text-slate-400 truncate max-w-[180px]">${doc.number}</span>
+                        </div>
+                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition leading-snug">
+                            ${doc.title}
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                            ${doc.summary}
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                        <span class="text-[11px] text-emerald-400 font-medium flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                            ${doc.date}
+                        </span>
+                        <span class="text-xs font-semibold text-amber-400 flex items-center gap-1 group-hover:translate-x-0.5 transition">
+                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                            <span>Preview</span>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Document Preview Modal Handlers
+        function openDocModal(docId) {
+            const doc = tgpkDocuments.find(d => d.id === docId);
+            if (!doc) return;
+
+            document.getElementById('modalDocCategory').textContent = doc.category;
+            document.getElementById('modalDocTitle').textContent = doc.title;
+            document.getElementById('modalDocNumber').textContent = doc.number;
+            document.getElementById('modalDocDate').textContent = doc.date;
+            document.getElementById('modalDocStatus').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${doc.status}`;
+            document.getElementById('modalDocCode').textContent = doc.number;
+            document.getElementById('modalDocSummary').innerHTML = `<p>${doc.summary}</p>`;
+            document.getElementById('modalDriveLink').href = doc.url || LINKS.tgpkDrive;
+
+            const specsContainer = document.getElementById('modalDocSpecs');
+            if (doc.specs && Object.keys(doc.specs).length > 0) {
+                specsContainer.innerHTML = Object.entries(doc.specs).map(([k, v]) => `
+                    <div class="p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
+                        <span class="block text-[10px] text-slate-500 uppercase tracking-wider">${k}</span>
+                        <span class="font-semibold text-slate-200 mt-0.5 block">${v}</span>
+                    </div>
+                `).join('');
+            } else {
+                specsContainer.innerHTML = '';
+            }
+
+            const modal = document.getElementById('docPreviewModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeDocModal() {
+            const modal = document.getElementById('docPreviewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Add New Document Modal Handlers
+        function openAddDocModal() {
+            const modal = document.getElementById('addDocModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeAddDocModal() {
+            const modal = document.getElementById('addDocModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        document.getElementById('addDocForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newDoc = {
+                id: 'doc-' + Date.now(),
+                title: document.getElementById('newDocTitle').value.trim(),
+                category: document.getElementById('newDocCategory').value,
+                number: document.getElementById('newDocNumber').value.trim(),
+                date: document.getElementById('newDocDate').value.trim(),
+                status: 'Ditambahkan Pengguna',
+                summary: document.getElementById('newDocSummary').value.trim(),
+                specs: { "Kategori": document.getElementById('newDocCategory').value, "Sumber": "Input Portal TGPK" },
+                url: document.getElementById('newDocUrl').value.trim() || LINKS.tgpkDrive
+            };
+
+            tgpkDocuments.unshift(newDoc);
+            saveTgpkDocs();
+            this.reset();
+            closeAddDocModal();
+            renderFilteredDocs();
+            showToast("Dokumen baru berhasil ditambahkan ke database!");
+        });
+
+        // --- VIEW 4: MATERI PPT ---
+        function renderPptView() {
+            const decks = [
+                { title: "Company Profile & Solusi Sistem Tata Suara TOA", slides: "Deck Utama", desc: "Presentasi pengenalan profil PT TOA Galva Prima Karya, sejarah inovasi akustik, dan portofolio solusi terintegrasi." },
+                { title: "Solusi Voice Evacuation System (VX-3000 & SX-2000)", slides: "Teknis & Gedung Tinggi", desc: "Materi presentasi sistem tata suara darurat standar EN 54 untuk gedung bertingkat, bandara, dan pusat perbelanjaan." },
+                { title: "Sistem Tata Suara Masjid & Rumah Ibadah", slides: "Solusi Akustik", desc: "Panduan pemilihan array speaker, pengaturan gema ruangan, dan konfigurasi mikrofon imam untuk kejernihan suara maksimal." },
+                { title: "IP Audio & Smart Campus / Factory Paging", slides: "Integrasi Jaringan", desc: "Presentasi solusi paging berbasis jaringan IP (PoE), penjadwalan bel otomatis, dan integrasi sistem keamanan." }
+            ];
+
+            viewContainer.innerHTML = `
+                <div class="space-y-8">
+                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="max-w-2xl">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
+                                <i data-lucide="presentation" class="w-3.5 h-3.5"></i> Presentation Repository
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Materi Presentasi (PPT) TOA</h2>
+                            <p class="text-slate-300 text-sm mt-2 leading-relaxed">
+                                Akses kumpulan materi presentasi produk, solusi sistem audio, dan deck penawaran proyek untuk kebutuhan presentasi kepada klien maupun konsultan.
+                            </p>
+                        </div>
+                        <a href="${LINKS.pptDrive}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+                            <span>Buka Folder Google Drive PPT</span>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        ${decks.map((deck, idx) => `
+                            <a href="${LINKS.pptDrive}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
+                                <div>
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="w-11 h-11 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-xs">
+                                            PPTX
+                                        </div>
+                                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
+                                            ${deck.slides}
+                                        </span>
+                                    </div>
+                                    <h3 class="font-bold text-white text-lg group-hover:text-amber-300 transition">${deck.title}</h3>
+                                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">${deck.desc}</p>
+                                </div>
+                                <div class="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
+                                    <span>Unduh / Lihat di Google Drive</span>
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 5: MENU FORM (3 FORMS COMBINED INTO 1 UNIFIED MENU) ---
+        function renderFormView() {
+            const forms = [
+                {
+                    id: "sign-shop",
+                    title: "Form Sign Shop",
+                    badge: "Branding & Toko",
+                    desc: "Formulir pengajuan pemasangan, pembaruan, atau pendataan Sign Shop / papan nama toko resmi dealer dan mitra penjualan TOA Indonesia.",
+                    url: LINKS.formSignShop,
+                    icon: "store",
+                    accent: "from-amber-400 to-orange-500"
+                },
+                {
+                    id: "event",
+                    title: "Form Event",
+                    badge: "Pengajuan Kegiatan",
+                    desc: "Formulir registrasi dan pengajuan dukungan kegiatan pameran, seminar produk, demo akustik, maupun event promosi bersama TOA Indonesia.",
+                    url: LINKS.formEvent,
+                    icon: "calendar-check",
+                    accent: "from-emerald-400 to-teal-500"
+                },
+                {
+                    id: "survey-event",
+                    title: "Form Survey Event",
+                    badge: "Evaluasi & Feedback",
+                    desc: "Formulir survei kepuasan peserta, evaluasi pelaksanaan acara, serta masukan untuk peningkatan kualitas event dan pelatihan TOA.",
+                    url: LINKS.formSurveyEvent,
+                    icon: "clipboard-check",
+                    accent: "from-sky-400 to-indigo-500"
+                }
+            ];
+
+            viewContainer.innerHTML = `
+                <div class="space-y-8">
+                    <div class="bg-[#131722] border border-amber-500/20 rounded-3xl p-6 sm:p-8">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> Pusat Formulir Terpadu
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Menu Form Operasional & Event</h2>
+                        <p class="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
+                            Seluruh formulir pengajuan Sign Shop, pendaftaran Event, dan Survey Event terintegrasi dalam satu halaman untuk memudahkan pengisian maupun pembagian tautan kepada mitra.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        ${forms.map(f => `
+                            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+                                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${f.accent}"></div>
+                                <div>
+                                    <div class="flex items-center justify-between mb-5 mt-1">
+                                        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-amber-400">
+                                            <i data-lucide="${f.icon}" class="w-6 h-6"></i>
+                                        </div>
+                                        <span class="text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
+                                            ${f.badge}
+                                        </span>
+                                    </div>
+                                    <h3 class="text-xl font-extrabold text-white">${f.title}</h3>
+                                    <p class="text-xs sm:text-sm text-slate-400 mt-2.5 leading-relaxed">
+                                        ${f.desc}
+                                    </p>
+                                </div>
+
+                                <div class="mt-6 pt-5 border-t border-white/[0.07] space-y-2.5">
+                                    <a href="${f.url}" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl font-bold text-xs text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/15 transition">
+                                        <span>Isi ${f.title}</span>
+                                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    </a>
+                                    <button onclick="copyTextToClipboard('${f.url}', 'Tautan ${f.title}')" class="w-full py-2.5 px-4 rounded-xl font-semibold text-xs text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
+                                        <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-400"></i>
+                                        <span>Salin Link Form</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- VIEW 6: FOTO PROJECT HIGHLIGHT ---
+        function renderProjectView() {
+            const projects = [
+                {
+                    title: "Masjid Raya & Rumah Ibadah",
+                    location: "Instalasi Nasional",
+                    system: "Line Array Speaker, Digital Mixer & Wireless Mic",
+                    desc: "Dokumentasi foto instalasi sistem tata suara pada ruang utama shalat, menara adzan, dan area selasar masjid.",
+                    icon: "landmark"
+                },
+                {
+                    title: "Bandara, Stasiun & Terminal Transportasi",
+                    location: "Fasilitas Publik & Transportasi",
+                    system: "VX-3000 Voice Evacuation & IP Paging System",
+                    desc: "Foto penerapan sistem pengumuman publik dan evakuasi darurat terintegrasi di terminal penumpang.",
+                    icon: "plane"
+                },
+                {
+                    title: "Stadion & Arena Olahraga",
+                    location: "Venue Olahraga & Konser",
+                    system: "High-Power Horn & Weatherproof Stadium Array",
+                    desc: "Galeri instalasi speaker berdaya tinggi tahan cuaca untuk area tribun dan lapangan olahraga.",
+                    icon: "trophy"
+                },
+                {
+                    title: "Gedung Perkantoran & Pusat Perbelanjaan",
+                    location: "Komersial & High-Rise Building",
+                    system: "Ceiling Speaker, BGM & Emergency Paging",
+                    desc: "Dokumentasi pemasangan speaker plafon estetis untuk background music dan sistem keselamatan gedung.",
+                    icon: "building-2"
+                },
+                {
+                    title: "Rumah Sakit, Kampus & Fasilitas Pendidikan",
+                    location: "Kesehatan & Pendidikan",
+                    system: "Nurse Call, IP Intercom & Classroom Audio",
+                    desc: "Foto referensi sistem komunikasi internal, bel terpusat, dan ruang auditorium kampus.",
+                    icon: "graduation-cap"
+                },
+                {
+                    title: "Kawasan Industri & Pabrik",
+                    location: "Manufaktur & Logistik",
+                    system: "Industrial Horn & Zone Paging System",
+                    desc: "Dokumentasi instalasi sistem panggilan zona produksi dan peringatan keselamatan area industri.",
+                    icon: "factory"
+                }
+            ];
+
+            viewContainer.innerHTML = `
+                <div class="space-y-8">
+                    <!-- Header Banner -->
+                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div class="max-w-2xl">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
+                                <i data-lucide="camera" class="w-3.5 h-3.5"></i> Galeri Referensi Instalasi
+                            </span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Foto Project Highlight TOA</h2>
+                            <p class="text-slate-300 text-sm mt-2 leading-relaxed">
+                                Kumpulan dokumentasi foto proyek unggulan instalasi sistem tata suara TOA di berbagai sektor di Indonesia. Pilih kategori proyek di bawah untuk membuka album foto di Google Drive.
+                            </p>
+                        </div>
+                        <a href="${LINKS.projectHighlightDrive}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="images" class="w-4 h-4"></i>
+                            <span>Buka Semua Foto di Drive</span>
+                        </a>
+                    </div>
+
+                    <!-- Project Highlight List Grid (All Linked to Project Highlight Drive) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        ${projects.map((proj, idx) => `
+                            <a href="${LINKS.projectHighlightDrive}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
+                                <div>
+                                    <!-- Visual Header Card -->
+                                    <div class="h-36 bg-gradient-to-br from-[#191f2c] via-[#131722] to-[#0c0f16] p-5 flex flex-col justify-between border-b border-white/[0.06] relative overflow-hidden">
+                                        <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-amber-500/10 blur-xl group-hover:bg-amber-500/20 transition"></div>
+                                        <div class="flex items-center justify-between relative z-10">
+                                            <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                                <i data-lucide="${proj.icon}" class="w-5 h-5"></i>
+                                            </div>
+                                            <span class="font-mono text-[11px] text-slate-400 bg-black/40 px-2.5 py-1 rounded-lg border border-white/5">
+                                                ALBUM #0${idx + 1}
+                                            </span>
+                                        </div>
+                                        <div class="relative z-10">
+                                            <span class="text-[11px] font-medium text-amber-300/90">${proj.location}</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Content -->
+                                    <div class="p-5">
+                                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition">${proj.title}</h3>
+                                        <p class="text-[11px] font-mono text-slate-400 mt-1">${proj.system}</p>
+                                        <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">${proj.desc}</p>
+                                    </div>
+                                </div>
+
+                                <div class="px-5 py-3.5 bg-white/[0.02] border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
+                                    <span>Lihat Foto Proyek</span>
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 6. INITIALIZATION ON WINDOW LOAD
+        // ==========================================
+        window.onload = function() {
+            lucide.createIcons();
+            navigateTo('linktree');
+            
+            // Position lantern immediately on first active link without initial jump
+            const initialActive = document.querySelector('.lantern-link[aria-current="page"]');
+            if (initialActive) {
+                currentLanternY = getLinkCenterY(initialActive);
+                targetLanternY = currentLanternY;
+            }
+            
+            // Start smooth lantern physics loop
+            animateLantern();
+
+            // Recalculate lantern position on window resize
+            window.addEventListener('resize', () => {
+                const activeLink = document.querySelector('.lantern-link[aria-current="page"]');
+                if (activeLink) {
+                    targetLanternY = getLinkCenterY(activeLink);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
