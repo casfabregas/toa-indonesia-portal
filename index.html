@@ -447,33 +447,33 @@
 
     <!-- DOCUMENT PREVIEW MODAL (FOR DOKUMEN TGPK) -->
     <div id="docPreviewModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-        <div class="bg-[#121620] border border-amber-500/30 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl shadow-amber-950/40 animate-[fadeSlideIn_0.25s_ease]">
+        <div class="bg-[#121620] border border-amber-500/30 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl shadow-amber-950/40 animate-[fadeSlideIn_0.25s_ease]">
             <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 bg-[#171c28] border-b border-white/10">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
                         <i data-lucide="file-text" class="w-5 h-5"></i>
                     </div>
-                    <div>
+                    <div class="min-w-0">
                         <span id="modalDocCategory" class="text-[11px] font-semibold uppercase tracking-wider text-amber-400">KATEGORI</span>
-                        <h3 id="modalDocTitle" class="text-base font-bold text-white leading-snug">Judul Dokumen</h3>
+                        <h3 id="modalDocTitle" class="text-base font-bold text-white leading-snug truncate">Judul Dokumen</h3>
                     </div>
                 </div>
-                <button onclick="closeDocModal()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition">
+                <button onclick="closeDocModal()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition shrink-0">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Modal Body: Simulated Document Sheet & Metadata -->
-            <div class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+            <!-- Modal Body: Live Google Drive Embed Preview + Metadata -->
+            <div class="p-5 sm:p-6 max-h-[82vh] overflow-y-auto space-y-4">
                 <!-- Metadata Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div id="modalMetaGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
-                        <span class="block text-[11px] text-slate-400">Nomor Dokumen / Sertifikat</span>
+                        <span class="block text-[11px] text-slate-400">Nomor / Kode Referensi</span>
                         <span id="modalDocNumber" class="font-mono text-xs font-semibold text-white mt-0.5 block">-</span>
                     </div>
                     <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
-                        <span class="block text-[11px] text-slate-400">Tanggal / Masa Berlaku</span>
+                        <span class="block text-[11px] text-slate-400">Masa Berlaku / Keterangan</span>
                         <span id="modalDocDate" class="text-xs font-semibold text-slate-200 mt-0.5 block">-</span>
                     </div>
                     <div class="p-3 rounded-xl bg-white/[0.03] border border-white/[0.07]">
@@ -484,22 +484,33 @@
                     </div>
                 </div>
 
-                <!-- Simulated Official Document Preview Sheet -->
-                <div class="rounded-xl bg-[#0b0d13] border border-white/10 p-5 relative overflow-hidden">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                <!-- Live Google Drive Iframe Preview Container -->
+                <div id="modalIframeWrapper" class="hidden rounded-xl overflow-hidden border border-amber-500/30 bg-[#090b0f] relative">
+                    <div class="px-4 py-2 bg-[#171c28] border-b border-white/10 flex items-center justify-between text-xs">
+                        <span class="text-amber-400 font-semibold flex items-center gap-1.5">
+                            <i data-lucide="eye" class="w-3.5 h-3.5"></i> Live Document & Media Preview
+                        </span>
+                        <span class="text-slate-400 text-[11px]">Scroll atau zoom langsung di dalam frame</span>
+                    </div>
+                    <iframe id="modalPreviewIframe" src="" class="w-full h-[52vh] min-h-[360px] bg-[#0b0d13]" allow="autoplay" allowfullscreen></iframe>
+                </div>
+
+                <!-- Simulated Official Document Summary Sheet -->
+                <div id="modalSummarySheet" class="rounded-xl bg-[#0b0d13] border border-white/10 p-5 relative overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
                         <div class="flex items-center gap-2">
                             <span class="px-2 py-0.5 rounded bg-red-600 text-white font-black text-xs">TOA</span>
-                            <span class="text-xs font-semibold text-slate-300">PT TOA GALVA PRIMA KARYA — PREVIEW LEMBAR DOKUMEN</span>
+                            <span class="text-xs font-semibold text-slate-300">RINGKASAN & SPESIFIKASI DOKUMEN</span>
                         </div>
                         <span id="modalDocCode" class="font-mono text-[11px] text-amber-400/80">DOC-TGPK</span>
                     </div>
                     
-                    <div id="modalDocSummary" class="text-sm text-slate-300 leading-relaxed space-y-3">
+                    <div id="modalDocSummary" class="text-sm text-slate-300 leading-relaxed space-y-2">
                         <!-- Dynamic preview description -->
                     </div>
 
                     <!-- Technical Spec Table inside preview -->
-                    <div id="modalDocSpecs" class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-2 text-xs">
+                    <div id="modalDocSpecs" class="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                         <!-- Dynamic key-value pairs -->
                     </div>
                 </div>
@@ -512,19 +523,19 @@
                 </button>
                 <a id="modalDriveLink" href="https://drive.google.com/drive/folders/14DIx7Vt9RegywXJ2ncn7grmve4GhfQeV?usp=drive_link" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
                     <i data-lucide="external-link" class="w-4 h-4"></i>
-                    <span>Buka Dokumen di Google Drive</span>
+                    <span>Buka Halaman Penuh di Google Drive</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- ADD DOCUMENT MODAL (LOCALSTORAGE DATABASE MANAGER) -->
+    <!-- ADD DOCUMENT / SYNC DRIVE PDF MODAL -->
     <div id="addDocModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
         <div class="bg-[#121620] border border-amber-500/30 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl">
             <div class="flex items-center justify-between px-6 py-4 bg-[#171c28] border-b border-white/10">
                 <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i data-lucide="plus-circle" class="w-5 h-5 text-amber-400"></i>
-                    Tambah Referensi Dokumen TGPK
+                    <i data-lucide="file-plus-2" class="w-5 h-5 text-amber-400"></i>
+                    Tambah / Pintas File PDF Google Drive
                 </h3>
                 <button onclick="closeAddDocModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -532,43 +543,45 @@
             </div>
             <form id="addDocForm" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Judul Dokumen / Produk</label>
-                    <input type="text" id="newDocTitle" required placeholder="Contoh: Sertifikat TKDN Ceiling Speaker ZS-646R" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nama File PDF / Sertifikat</label>
+                    <input type="text" id="newDocTitle" required placeholder="Contoh: Sertifikat TKDN ZH-5025BM.pdf" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kategori TGPK</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Folder TGPK</label>
                         <select id="newDocCategory" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
-                            <option value="Legalitas">Legalitas</option>
+                            <option value="LEGALITAS TGPK">LEGALITAS TGPK</option>
                             <option value="TKDN">TKDN</option>
-                            <option value="POSTEL">POSTEL</option>
-                            <option value="IK Test">IK Test</option>
-                            <option value="Release & Discontinue">Release & Discontinue</option>
-                            <option value="New Product Specs">New Product Specs</option>
+                            <option value="Ijin Postel">Ijin Postel</option>
+                            <option value="IK Test Z-CCTV ( Z-NC series )">IK Test Z-CCTV ( Z-NC series )</option>
+                            <option value="Sertifikat Pengujian Lab">Sertifikat Pengujian Lab</option>
+                            <option value="Release and Discontinue Product">Release and Discontinue Product</option>
+                            <option value="New Product Spec Sheet">New Product Spec Sheet</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nomor Dokumen / Sertifikat</label>
-                        <input type="text" id="newDocNumber" required placeholder="Contoh: 1245/SJ-IND.8/TKDN/2026" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tanggal / Masa Berlaku</label>
-                        <input type="text" id="newDocDate" required placeholder="Contoh: Berlaku s/d Des 2028" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tautan Google Drive (Opsional)</label>
-                        <input type="url" id="newDocUrl" placeholder="Default: Folder TGPK Drive" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nomor Sertifikat / Kode</label>
+                        <input type="text" id="newDocNumber" required placeholder="Contoh: 7620/SJ-IND.8/TKDN/2026" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Ringkasan & Spesifikasi Singkat</label>
-                    <textarea id="newDocSummary" rows="3" required placeholder="Deskripsi singkat isi dokumen untuk pratinjau..." class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Link File PDF Google Drive (Agar Bisa Live Preview)</label>
+                    <input type="url" id="newDocUrl" required placeholder="https://drive.google.com/file/d/FILE_ID/view?usp=drivesdk" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <p class="text-[11px] text-slate-400 mt-1">Tempel link file PDF dari Google Drive untuk mengaktifkan fitur Live Preview otomatis.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Masa Berlaku / Tanggal</label>
+                        <input type="text" id="newDocDate" required placeholder="Contoh: Berlaku s/d Juli 2031" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Keterangan Singkat</label>
+                        <input type="text" id="newDocSummary" required placeholder="Contoh: Nilai TKDN 32,39%" class="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-sm text-white focus:outline-none focus:border-amber-500">
+                    </div>
                 </div>
                 <div class="flex justify-end gap-3 pt-2">
                     <button type="button" onclick="closeAddDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-white/5 hover:bg-white/10">Batal</button>
-                    <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300">Simpan Dokumen</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300">Simpan & Aktifkan Preview</button>
                 </div>
             </form>
         </div>
@@ -584,122 +597,202 @@
 
     <script>
         // ==========================================
-        // 1. OFFICIAL LINKS & DATABASE CONFIGURATION
+        // 1. OFFICIAL LINKS & REAL GOOGLE DRIVE STRUCTURE
         // ==========================================
         const LINKS = {
             linktree: "https://linktr.ee/TOAindonesia?fbclid=PAAabTBao3ZDqEJo0jyEyEX8f0g3S-tjuSSpVCjU8DPEHKuoBWI6bjztXhj3U",
             youtube: "https://www.youtube.com/c/TOAIndonesia/videos",
+            tgpkRootId: "14DIx7Vt9RegywXJ2ncn7grmve4GhfQeV",
             tgpkDrive: "https://drive.google.com/drive/folders/14DIx7Vt9RegywXJ2ncn7grmve4GhfQeV?usp=drive_link",
+            pptRootId: "1cOW3zs5gqibuHWmh43I8noq3oXnZkd8Y",
             pptDrive: "https://drive.google.com/drive/folders/1cOW3zs5gqibuHWmh43I8noq3oXnZkd8Y?usp=sharing",
             formSignShop: "https://forms.gle/2FhpDFcC5XhyGTvo7",
             formEvent: "https://forms.gle/HPPhxcYyJDcvTbMV8",
             formSurveyEvent: "https://forms.gle/3tKACcJo1hrPu2786",
+            projectRootId: "15Ux5cMMVcALqy8re8a8n3kyw1nWqfWP0",
             projectHighlightDrive: "https://drive.google.com/drive/folders/15Ux5cMMVcALqy8re8a8n3kyw1nWqfWP0?usp=drive_link"
         };
 
-        // Default Database for Dokumen TGPK (All 6 categories covered)
-        const DEFAULT_TGPK_DOCS = [
+        // Helper to extract Google Drive File ID from any Drive URL
+        function extractDriveFileId(url) {
+            if (!url) return null;
+            const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
+        // 7 Real Sub-Folders inside Dokumen TGPK
+        const TGPK_FOLDERS = [
             {
-                id: "doc-1",
-                title: "Sertifikat TKDN Horn Speaker ZH-5025BM & ZH-5025B",
-                category: "TKDN",
-                number: "4821/SJ-IND.8/TKDN/2025",
-                date: "Berlaku s/d Oktober 2028",
-                status: "Terverifikasi Kemenperin",
-                summary: "Sertifikat Tanda Sah Capaian Tingkat Komponen Dalam Negeri (TKDN) untuk lini produk Reflex Horn Speaker TOA 25 Watt dengan nilai capaian TKDN memenuhi standar pengadaan e-Katalog pemerintah.",
-                specs: { "Nilai TKDN": "43.85%", "Model": "ZH-5025BM / ZH-5025B", "Pabrikan": "PT TOA Galva Industries", "Standar": "Permenperin No. 16/2011" },
-                url: LINKS.tgpkDrive
+                id: "1j-uxpiceZ4IyGzvaAJL-W7HG3vPnaNEf",
+                name: "LEGALITAS TGPK",
+                url: "https://drive.google.com/drive/folders/1j-uxpiceZ4IyGzvaAJL-W7HG3vPnaNEf",
+                desc: "Dokumen Legalitas PT TOA Galva Prima Karya (NIB, Akta, NPWP, SPPKP, Surat Keagenan)",
+                icon: "shield-check"
             },
             {
-                id: "doc-2",
-                title: "Sertifikat POSTEL / SDPPI Wireless Microphone System WM-5225 & WT-5800",
-                category: "POSTEL",
-                number: "98412/SDPPI/2025",
-                date: "Berlaku s/d Maret 2028",
-                status: "Tersertifikasi Komdigi",
-                summary: "Sertifikat Alat dan Perangkat Telekomunikasi Direktorat Jenderal Sumber Daya dan Perangkat Pos dan Informatika (SDPPI) untuk sistem mikrofon nirkabel UHF TOA.",
-                specs: { "Frekuensi": "UHF 690 - 865 MHz", "Model": "WM-5225 / WT-5800", "Regulasi": "Standar Teknis SRD", "Status": "Aktif & Valid" },
-                url: LINKS.tgpkDrive
+                id: "1Rh8dFInx121Acab3tWZSJbM5G3JkPHMy",
+                name: "TKDN",
+                url: "https://drive.google.com/drive/folders/1Rh8dFInx121Acab3tWZSJbM5G3JkPHMy",
+                desc: "Kumpulan Sertifikat Tanda Sah Capaian Tingkat Komponen Dalam Negeri (Kemenperin)",
+                icon: "award"
             },
             {
-                id: "doc-3",
-                title: "Dokumen Legalitas Perusahaan PT TOA Galva Prima Karya (NIB, NPWP, Akta & SK)",
-                category: "Legalitas",
-                number: "NIB-8120102938475",
-                date: "Pembaruan Tahun 2026",
-                status: "Dokumen Resmi Aktif",
-                summary: "Bundel lengkap dokumen legalitas perusahaan meliputi Nomor Induk Berusaha (NIB), Surat Pengukuhan Pengusaha Kena Pajak (SPPKP), Akta Pendirian & Perubahan terakhir, serta Surat Penunjukan Agen Tunggal.",
-                specs: { "Entitas": "PT TOA Galva Prima Karya", "Status": "Sole Distributor TOA", "KBLI": "46521 / 46599", "Kelengkapan": "NIB, NPWP, SPPKP, Kemenkumham" },
-                url: LINKS.tgpkDrive
+                id: "1-FK-kcrPPnxkEv7ppP-DCyC0SkaOa6wy",
+                name: "Ijin Postel",
+                url: "https://drive.google.com/drive/folders/1-FK-kcrPPnxkEv7ppP-DCyC0SkaOa6wy",
+                desc: "Sertifikat Alat & Perangkat Telekomunikasi SDPPI / Komdigi (Wireless Mic, IP Audio, dll)",
+                icon: "radio"
             },
             {
-                id: "doc-4",
-                title: "Laporan Hasil Uji IK Test (Impact Protection) Box & Column Speaker TZ-206B",
-                category: "IK Test",
-                number: "LAB-IK/TOA-2025/089",
-                date: "Diterbitkan: Januari 2026",
-                status: "Lulus Uji IK08 / IP65",
-                summary: "Laporan pengujian ketahanan benturan mekanik (IK Rating) dan proteksi cuaca untuk instalasi speaker outdoor dan semi-outdoor pada fasilitas publik dan transportasi.",
-                specs: { "Rating Uji": "IK08 (5 Joules Impact)", "Proteksi Cuaca": "IP65 Weatherproof", "Unit Uji": "TZ-206B / ZS-F2000BMWP", "Standar": "IEC 62262" },
-                url: LINKS.tgpkDrive
+                id: "1yPpbC0f1uvIkVdiudjeYApcdG4jGgDhO",
+                name: "IK Test Z-CCTV ( Z-NC series )",
+                url: "https://drive.google.com/drive/folders/1yPpbC0f1uvIkVdiudjeYApcdG4jGgDhO",
+                desc: "Laporan Uji Ketahanan Benturan (IK Rating) untuk seri kamera keamanan Z-CCTV / Z-NC",
+                icon: "cctv"
             },
             {
-                id: "doc-5",
-                title: "Buletin Product Release & Discontinue Line-Up 2026",
-                category: "Release & Discontinue",
-                number: "BUL-TGPK/RD-2026/Q1",
-                date: "Efektif: Q1 - Q4 2026",
-                status: "Panduan Sales & Teknis",
-                summary: "Daftar resmi pembaruan siklus hidup produk TOA Indonesia tahun 2026, mencakup model yang dihentikan produksinya (Discontinue) beserta rekomendasi produk pengganti (Successor Model).",
-                specs: { "Periode": "Tahun Fiskal 2026", "Cakupan": "PA System, Pro Sound, Intercom", "Lampiran": "Tabel Cross-Reference Model", "Target": "Dealer, Konsultan & Sales" },
-                url: LINKS.tgpkDrive
+                id: "17s_2QFdLnB_Pv7t24GiQne1T5Iqj8QmE",
+                name: "Sertifikat Pengujian Lab",
+                url: "https://drive.google.com/drive/folders/17s_2QFdLnB_Pv7t24GiQne1T5Iqj8QmE",
+                desc: "Hasil pengujian laboratorium akustik, kelistrikan, dan standar keselamatan perangkat TOA",
+                icon: "flask-conical"
             },
             {
-                id: "doc-6",
-                title: "Datasheet New Product Specs: VX-3000 Series Voice Evacuation & IP Audio System",
-                category: "New Product Specs",
-                number: "SPEC-VX3000-EN/ID-26",
-                date: "Rilis Terbaru 2026",
-                status: "Produk Baru",
-                summary: "Lembar spesifikasi teknis lengkap sistem tata suara darurat terintegrasi (EN 54-16 certified) dengan matriks audio jaringan IP, efisiensi daya tinggi, dan arsitektur modular.",
-                specs: { "Sertifikasi": "EN 54-16 Voice Alarm", "Konektivitas": "IP Network / Dante Option", "Aplikasi": "Bandara, Gedung Tinggi, Mall", "Format": "PDF Datasheet & Wiring" },
-                url: LINKS.tgpkDrive
+                id: "1LXNqvTSB5temKDd82vVS0zZqB4TRgeAg",
+                name: "Release and Discontinue Product",
+                url: "https://drive.google.com/drive/folders/1LXNqvTSB5temKDd82vVS0zZqB4TRgeAg",
+                desc: "Informasi resmi produk baru rilis dan daftar produk discontinue beserta model pengganti",
+                icon: "refresh-cw"
             },
             {
-                id: "doc-7",
-                title: "Sertifikat TKDN Mixer Amplifier ZA-2240 & ZA-2120",
-                category: "TKDN",
-                number: "5109/SJ-IND.8/TKDN/2025",
-                date: "Berlaku s/d November 2028",
-                status: "Terverifikasi Kemenperin",
-                summary: "Sertifikat TKDN resmi untuk seri Mixer Amplifier 240W dan 120W yang banyak digunakan pada proyek sekolah, rumah ibadah, perkantoran, dan instansi pemerintahan.",
-                specs: { "Nilai TKDN": "41.20%", "Output Daya": "240W / 120W", "Model": "ZA-2240 / ZA-2120", "Katalog": "Tayang e-Katalog LKPP" },
-                url: LINKS.tgpkDrive
-            },
-            {
-                id: "doc-8",
-                title: "Sertifikat POSTEL IP Audio Interface & SIP Paging Gateway IP-A1SC15",
-                category: "POSTEL",
-                number: "102944/SDPPI/2026",
-                date: "Berlaku s/d Februari 2029",
-                status: "Tersertifikasi Komdigi",
-                summary: "Sertifikat kelayakan perangkat jaringan berbasis IP (PoE) untuk solusi IP Horn Speaker dan IP Paging TOA dalam ekosistem keamanan dan komunikasi gedung modern.",
-                specs: { "Protokol": "SIP / ONVIF / Multicast", "Daya": "PoE / PoE+ (IEEE 802.3af/at)", "Model": "IP-A1SC15 / IP-A1PG", "Status": "Aktif & Valid" },
-                url: LINKS.tgpkDrive
+                id: "1A82A3ojxsUhOjC2P0pJmKwbL8PlWsphW",
+                name: "New Product Spec Sheet",
+                url: "https://drive.google.com/drive/folders/1A82A3ojxsUhOjC2P0pJmKwbL8PlWsphW",
+                desc: "Datasheet spesifikasi teknis produk terbaru TOA Indonesia untuk tender & konsultan",
+                icon: "file-spreadsheet"
             }
         ];
 
+        // Verified PDF Files & Searchable Database for Dokumen TGPK
+        const DEFAULT_TGPK_DOCS = [
+            {
+                id: "tkdn-z-ts922-as",
+                fileId: "1jFWAGR82EmakhLUKJczj05h2xBi-lorQ",
+                title: "Sertifikat TKDN Z-TS922-AS (32,39%).pdf",
+                category: "TKDN",
+                folderId: "1Rh8dFInx121Acab3tWZSJbM5G3JkPHMy",
+                number: "7620/SJ-IND.8/TKDN/LVI/07/2026",
+                date: "Berlaku: 20 Juli 2026 – 20 Juli 2031",
+                status: "Terverifikasi Kemenperin (Total 46,64%)",
+                summary: "Sertifikat Tanda Sah Capaian Tingkat Komponen Dalam Negeri (TKDN) untuk PT Toa Galva Industries atas produk Conference System (Chairman / Delegate Unit) Tipe Z-TS922-AS dengan nilai TKDN 32,39% dan Bobot Manfaat Perusahaan (BMP) 14,25% (Total 46,64%).",
+                specs: {
+                    "Perusahaan": "PT Toa Galva Industries",
+                    "Produk / Tipe": "Conference System / Z-TS922-AS",
+                    "Nilai TKDN": "32,39%",
+                    "Nilai BMP & Total": "BMP 14,25% | Total 46,64%"
+                },
+                url: "https://drive.google.com/file/d/1jFWAGR82EmakhLUKJczj05h2xBi-lorQ/view?usp=drivesdk"
+            }
+        ];
+
+        // 6 Real Files inside Materi PPT Google Drive Folder
+        const PPT_FILES = [
+            {
+                id: "ppt-1",
+                fileId: "1hYIdpoxwS59hMEsyKhOfbxtZ5odqEWvT",
+                title: "COMPRO TGPK_22102026.pptx",
+                type: "PPTX Presentation",
+                tag: "Company Profile 2026",
+                desc: "Materi Company Profile resmi PT TOA Galva Prima Karya (TGPK) edisi terbaru Oktober 2026.",
+                url: "https://drive.google.com/file/d/1hYIdpoxwS59hMEsyKhOfbxtZ5odqEWvT/view?usp=drivesdk"
+            },
+            {
+                id: "ppt-2",
+                fileId: "1cexxttS4py7ZJmZpqj-iKCBnwZGSF1UE",
+                title: "Company Profile Toa Experience.mp4",
+                type: "MP4 Video",
+                tag: "Video Profil",
+                desc: "Video presentasi visual pengalaman dan inovasi sistem tata suara TOA Indonesia.",
+                url: "https://drive.google.com/file/d/1cexxttS4py7ZJmZpqj-iKCBnwZGSF1UE/view?usp=drivesdk"
+            },
+            {
+                id: "ppt-3",
+                fileId: "1rnbMx0eKDKea1GDrJ0aeEmf6nva_DYln",
+                title: "TOA Presentation- Government062025.pptx",
+                type: "PPTX Presentation",
+                tag: "Government Solution",
+                desc: "Deck presentasi solusi sistem audio dan produk bersertifikat TKDN untuk instansi pemerintah.",
+                url: "https://drive.google.com/file/d/1rnbMx0eKDKea1GDrJ0aeEmf6nva_DYln/view?usp=drivesdk"
+            },
+            {
+                id: "ppt-4",
+                fileId: "1hao-wlzLPBXIQouOXP0iIFdHgbGC-2Ky",
+                title: "PPT GOVERNMENT_2023-07.pptx",
+                type: "PPTX Presentation",
+                tag: "Government Archive",
+                desc: "Materi presentasi referensi proyek pengadaan instansi pemerintahan dan fasilitas publik.",
+                url: "https://drive.google.com/file/d/1hao-wlzLPBXIQouOXP0iIFdHgbGC-2Ky/view?usp=drivesdk"
+            },
+            {
+                id: "ppt-5",
+                fileId: "1ieg6B7Nv1ZeCILga_BRvPgXlHMthnn76",
+                title: "PPT PRO SOUND CLASS_2024-06.pptx",
+                type: "PPTX Presentation",
+                tag: "Pro Sound Training",
+                desc: "Materi edukasi teknis sistem tata suara profesional (Pro Sound Class) untuk konsultan & teknisi.",
+                url: "https://drive.google.com/file/d/1ieg6B7Nv1ZeCILga_BRvPgXlHMthnn76/view?usp=drivesdk"
+            },
+            {
+                id: "ppt-6",
+                fileId: "1baX4mYrRIFbePMTbHXt4Sd1-Iym69Zq-",
+                title: "PPT PENATAAN SYSTEM AUDIO MASJID.pptx",
+                type: "PPTX Presentation",
+                tag: "Akustik Masjid",
+                desc: "Panduan perancangan dan penataan sistem audio masjid & rumah ibadah agar suara jernih tanpa gema.",
+                url: "https://drive.google.com/file/d/1baX4mYrRIFbePMTbHXt4Sd1-Iym69Zq-/view?usp=drivesdk"
+            }
+        ];
+
+        // 23 Real Items (1 Compilation Video + 22 Project Sub-Folders) inside Foto Project Highlight
+        const PROJECT_HIGHLIGHT_ITEMS = [
+            { id: "1NTY9EVYknH45uV6D0QYVrdEh8SqbPCh7", name: "2025 11 - Kompilasi Project Highlight.mp4", kind: "video", category: "Video Kompilasi", url: "https://drive.google.com/file/d/1NTY9EVYknH45uV6D0QYVrdEh8SqbPCh7/view?usp=drivesdk" },
+            { id: "14i9tUoNyAYamTk3rGcq3_3eh6OyCQkxV", name: "_Video", kind: "folder", category: "Arsip Video Proyek", url: "https://drive.google.com/drive/folders/14i9tUoNyAYamTk3rGcq3_3eh6OyCQkxV" },
+            { id: "1Omxfk4bZYWS_IdrHLoqyyUHFpjiZc710", name: "Demakijo’s | Coffee & Eatery", kind: "folder", category: "F&B / Cafe", url: "https://drive.google.com/drive/folders/1Omxfk4bZYWS_IdrHLoqyyUHFpjiZc710" },
+            { id: "1FT6vHxbyYmpSQ53EGy66eKbNUAdAGvOs", name: "Masjid & Convention Hall UNISA", kind: "folder", category: "Masjid & Kampus", url: "https://drive.google.com/drive/folders/1FT6vHxbyYmpSQ53EGy66eKbNUAdAGvOs" },
+            { id: "1SZF0quPQnIiedmQf1hoLVSRFiZ-he8Xj", name: "GSG Polines", kind: "folder", category: "Gedung Serbaguna", url: "https://drive.google.com/drive/folders/1SZF0quPQnIiedmQf1hoLVSRFiZ-he8Xj" },
+            { id: "18M07UNI0SYSpd41Oiae8Di4BfYU_5yPn", name: "Ruang Sidang Setda Jateng", kind: "folder", category: "Pemerintahan / Conference", url: "https://drive.google.com/drive/folders/18M07UNI0SYSpd41Oiae8Di4BfYU_5yPn" },
+            { id: "1c-lKWEYPMZR9TNdntG5CgQVzFuC9_2Vk", name: "GKI Permata Buana", kind: "folder", category: "Rumah Ibadah", url: "https://drive.google.com/drive/folders/1c-lKWEYPMZR9TNdntG5CgQVzFuC9_2Vk" },
+            { id: "19n_fCZuU1_qsLZHwRhbNpdfGnAt7L32u", name: "Jakarta Premium Outlet", kind: "folder", category: "Retail & Mall", url: "https://drive.google.com/drive/folders/19n_fCZuU1_qsLZHwRhbNpdfGnAt7L32u" },
+            { id: "1uNwCw3rAzCsYzukbOdYTqFH_N4rjPVte", name: "MAJT", kind: "folder", category: "Masjid Agung Jawa Tengah", url: "https://drive.google.com/drive/folders/1uNwCw3rAzCsYzukbOdYTqFH_N4rjPVte" },
+            { id: "1X9oK2HjoHi96MGVaJHYVxYFfsCYiaS6w", name: "Clubhouse EONNA", kind: "folder", category: "Hospitality & Clubhouse", url: "https://drive.google.com/drive/folders/1X9oK2HjoHi96MGVaJHYVxYFfsCYiaS6w" },
+            { id: "1_w5Fag5Q-LidseH7x0bdxvj_pBEJJxhB", name: "Fore Experience", kind: "folder", category: "F&B / Retail", url: "https://drive.google.com/drive/folders/1_w5Fag5Q-LidseH7x0bdxvj_pBEJJxhB" },
+            { id: "1giGxaXhYcVt_d1uPBr81esJaMNEXMfvG", name: "Gedung Kesenian Miss Tjitjih", kind: "folder", category: "Auditorium & Teater", url: "https://drive.google.com/drive/folders/1giGxaXhYcVt_d1uPBr81esJaMNEXMfvG" },
+            { id: "1O8h6_CADpmWsm5VX7ccAqwVNwpTKZyIV", name: "ZS-F1000, F1300 & F2000", kind: "folder", category: "Box Speaker Showcase", url: "https://drive.google.com/drive/folders/1O8h6_CADpmWsm5VX7ccAqwVNwpTKZyIV" },
+            { id: "16FOU61NXzZvbDIOX0bDjascD4ZfAl_TP", name: "Saint Mary of Perpetual Help Cathedral", kind: "folder", category: "Katedral / Rumah Ibadah", url: "https://drive.google.com/drive/folders/16FOU61NXzZvbDIOX0bDjascD4ZfAl_TP" },
+            { id: "1pELqGfQuzaKPklf9MgFzoBb1Wdg5mi2F", name: "TMII", kind: "folder", category: "Taman Mini Indonesia Indah", url: "https://drive.google.com/drive/folders/1pELqGfQuzaKPklf9MgFzoBb1Wdg5mi2F" },
+            { id: "1QRC5ykIO6VgwvN2I5MuMgkLrm2zUU39I", name: "DPRD Malang", kind: "folder", category: "Gedung Parlemen / Sidang", url: "https://drive.google.com/drive/folders/1QRC5ykIO6VgwvN2I5MuMgkLrm2zUU39I" },
+            { id: "1zhuu-rEU4Fu19ZA4H5X-N_aFmkfuEimn", name: "Stadion Jatidiri", kind: "folder", category: "Stadion Olahraga", url: "https://drive.google.com/drive/folders/1zhuu-rEU4Fu19ZA4H5X-N_aFmkfuEimn" },
+            { id: "1ZyJ_z3veLF97Ruq0yA7vN6MjnFXy7oou", name: "Masjid Istiqlal", kind: "folder", category: "Masjid Nasional", url: "https://drive.google.com/drive/folders/1ZyJ_z3veLF97Ruq0yA7vN6MjnFXy7oou" },
+            { id: "1DWlOZSkZn8UJNkVbqJr7xfChbwaVKUH8", name: "Hotel Gaia", kind: "folder", category: "Hotel & Resort", url: "https://drive.google.com/drive/folders/1DWlOZSkZn8UJNkVbqJr7xfChbwaVKUH8" },
+            { id: "1iKsMeig11QtJmiCtNiutEkYI-w8cykjY", name: "Stadion Manahan", kind: "folder", category: "Stadion Olahraga", url: "https://drive.google.com/drive/folders/1iKsMeig11QtJmiCtNiutEkYI-w8cykjY" },
+            { id: "10-pkUaMLzMkq5nsMAi8cIo7s5aODUFie", name: "Stadion Kanjuruhan", kind: "folder", category: "Stadion Olahraga", url: "https://drive.google.com/drive/folders/10-pkUaMLzMkq5nsMAi8cIo7s5aODUFie" },
+            { id: "17SIzCBZXElMfT2siyfUYrL-6eDyNTAMY", name: "MBZ", kind: "folder", category: "Infrastruktur / Jalan Layang", url: "https://drive.google.com/drive/folders/17SIzCBZXElMfT2siyfUYrL-6eDyNTAMY" },
+            { id: "1mDZNnYGrJHsqE9Ppx3G0hYkbIi71LWIS", name: "McD", kind: "folder", category: "F&B / Restoran", url: "https://drive.google.com/drive/folders/1mDZNnYGrJHsqE9Ppx3G0hYkbIi71LWIS" }
+        ];
+
         // Load documents from localStorage or fallback to default
-        let tgpkDocuments = JSON.parse(localStorage.getItem('toa_tgpk_docs_v1')) || DEFAULT_TGPK_DOCS;
+        let tgpkDocuments = JSON.parse(localStorage.getItem('toa_tgpk_docs_v2')) || DEFAULT_TGPK_DOCS;
 
         function saveTgpkDocs() {
-            localStorage.setItem('toa_tgpk_docs_v1', JSON.stringify(tgpkDocuments));
+            localStorage.setItem('toa_tgpk_docs_v2', JSON.stringify(tgpkDocuments));
         }
 
-        // State
+        // Navigation & Folder Browser States
         let currentRoute = 'linktree';
         let docSearchQuery = '';
-        let docSelectedCategory = 'Semua';
+        let activeTgpkFolder = null; // null = Root Folder (shows 7 folders + live root view), or folder object
+        let activeProjectFolder = null; // null = Root Folder (shows 23 items), or sub-folder object
+        let projectSearchQuery = '';
 
         // ==========================================
         // 2. HANGING LANTERN PHYSICS & ILLUMINATION
@@ -893,366 +986,326 @@
             mobileCurrentTitle.textContent = ROUTE_TITLES[route] || "Portal";
 
             // Re-trigger view animation
-            viewContainer.classList.remove('view-animate');
-            void viewContainer.offsetWidth;
-            viewContainer.classList.add('view-animate');
-
-            // Render respective page
-            switch (route) {
-                case 'linktree':
-                    renderLinktreeView();
-                    break;
-                case 'youtube':
-                    renderYoutubeView();
-                    break;
-                case 'dokumen':
-                    renderDokumenView();
-                    break;
-                case 'ppt':
-                    renderPptView();
-                    break;
-                case 'form':
-                    renderFormView();
-                    break;
-                case 'project':
-                    renderProjectView();
-                    break;
-                default:
-                    renderLinktreeView();
-            }
-
-            lucide.createIcons();
-        }
-
-        // --- VIEW 1: TOA LINKTREE ---
-        function renderLinktreeView() {
-            viewContainer.innerHTML = `
-                <div class="space-y-8">
-                    <!-- Hero Banner -->
-                    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#161b26] via-[#11151e] to-[#0c0e14] border border-amber-500/20 p-6 sm:p-10">
-                        <div class="absolute -right-16 -top-16 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                        <div class="relative z-10 max-w-2xl">
-                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-4">
-                                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Official Digital Hub
-                            </span>
-                            <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                                Portal Resmi <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-500">TOA Indonesia</span>
-                            </h2>
-                            <p class="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
-                                Akses terpusat menuju ekosistem digital resmi PT TOA Galva Prima Karya — mulai dari kanal informasi publik, katalog produk, kontak layanan pelanggan, hingga media sosial resmi.
-                            </p>
-                            <div class="mt-6 flex flex-wrap items-center gap-3">
-                                <a href="${LINKS.linktree}" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center gap-2 transition">
-                                    <span>Buka TOA Linktree Resmi</span>
-                                    <i data-lucide="external-link" class="w-4 h-4"></i>
-                                </a>
-                                <button onclick="copyTextToClipboard('${LINKS.linktree}', 'Link TOA Linktree')" class="px-4 py-3 rounded-xl font-semibold text-sm text-slate-200 bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 transition">
-                                    <i data-lucide="copy" class="w-4 h-4 text-amber-400"></i>
-                                    <span>Salin Tautan</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Access Cards Linked to TOA Linktree -->
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-base font-bold text-white flex items-center gap-2">
-                                <i data-lucide="compass" class="w-4 h-4 text-amber-400"></i>
-                                Pintasan Ekosistem TOA Indonesia
-                            </h3>
-                            <span class="text-xs text-slate-400">Terhubung ke Linktree</span>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            ${[
-                                { title: "Website & Katalog Resmi", desc: "Informasi produk Public Address, Pro Sound, dan Security Intercom TOA.", icon: "globe", badge: "Official Web" },
-                                { title: "Instagram & Media Sosial", desc: "Update event, instalasi proyek terbaru, dan edukasi audio harian.", icon: "instagram", badge: "@toaindonesia" },
-                                { title: "Layanan Konsultasi & Teknis", desc: "Hubungi tim sales engineer dan dukungan purna jual resmi TOA.", icon: "headphones", badge: "Customer Care" },
-                                { title: "Katalog e-Katalog LKPP", desc: "Akses informasi produk bersertifikat TKDN untuk pengadaan pemerintah.", icon: "award", badge: "TKDN Ready" },
-                                { title: "Jaringan Dealer & Service Center", desc: "Temukan distributor dan pusat layanan resmi TOA di seluruh Indonesia.", icon: "map-pin", badge: "Nationwide" },
-                                { title: "Berita & Siaran Pers", desc: "Pengumuman produk baru, seminar akustik, dan pameran audio.", icon: "newspaper", badge: "Update" }
-                            ].map(item => `
-                                <a href="${LINKS.linktree}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-5 flex flex-col justify-between group">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-3">
-                                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition">
-                                                <i data-lucide="${item.icon}" class="w-5 h-5"></i>
-                                            </div>
-                                            <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">${item.badge}</span>
-                                        </div>
-                                        <h4 class="font-bold text-white text-base group-hover:text-amber-300 transition">${item.title}</h4>
-                                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${item.desc}</p>
-                                    </div>
-                                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
-                                        <span>Akses via Linktree</span>
-                                        <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
-                                    </div>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- VIEW 2: TOA YOUTUBE ---
-        function renderYoutubeView() {
-            const videoTopics = [
-                { title: "Product Showcase & Review", desc: "Pengenalan fitur unggulan speaker, amplifier, dan sistem konferensi terbaru TOA.", tag: "Product Demo", duration: "Playlist Produk" },
-                { title: "Tutorial Instalasi & Wiring", desc: "Panduan teknis pemasangan impedansi tinggi (100V line), matriks audio, dan kalibrasi.", tag: "Technical Guide", duration: "Edukasi Teknis" },
-                { title: "Case Study & Referensi Proyek", desc: "Dokumentasi penerapan solusi tata suara TOA di masjid raya, bandara, dan stadion.", tag: "Project Highlight", duration: "Studi Kasus" },
-                { title: "Webinar & Acoustic Seminar", desc: "Rekaman sesi pelatihan akustik ruangan dan desain sistem evakuasi suara (EVAC).", tag: "TOA Academy", duration: "Sesi Pelatihan" }
-            ];
-
-            viewContainer.innerHTML = `
-                <div class="space-y-8">
-                    <!-- YouTube Channel Header Card -->
-                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-red-500/20 relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-80 h-80 bg-red-600/10 blur-3xl rounded-full pointer-events-none"></div>
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                            <div class="flex items-start gap-4">
-                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-white shadow-lg shadow-red-600/30 shrink-0">
-                                    <i data-lucide="youtube" class="w-7 h-7"></i>
-                                </div>
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <h2 class="text-xl sm:text-2xl font-extrabold text-white">TOA Indonesia Official YouTube</h2>
-                                        <i data-lucide="badge-check" class="w-5 h-5 text-amber-400"></i>
-                                    </div>
-                                    <p class="text-slate-300 text-sm mt-1.5 max-w-2xl leading-relaxed">
-                                        Kanal video resmi TOA Indonesia. Tonton demonstrasi perangkat audio profesional, tutorial instalasi sistem tata suara, dan dokumentasi proyek nasional.
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="${LINKS.youtube}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 shadow-lg shadow-red-600/25 flex items-center justify-center gap-2 transition">
-                                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
-                                <span>Kunjungi Kanal YouTube</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Video Categories Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        ${videoTopics.map(vid => `
-                            <a href="${LINKS.youtube}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl overflow-hidden group flex flex-col">
-                                <!-- Stylized Video Thumbnail Header -->
-                                <div class="h-40 bg-gradient-to-br from-[#1b202c] to-[#0e1118] relative flex items-center justify-center border-b border-white/[0.06] overflow-hidden">
-                                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.12),transparent_70%)] group-hover:scale-110 transition duration-500"></div>
-                                    <div class="w-14 h-14 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 group-hover:bg-red-600 group-hover:border-red-500 group-hover:text-white group-hover:scale-110 transition duration-300 shadow-xl">
-                                        <i data-lucide="play" class="w-6 h-6 fill-current ml-0.5"></i>
-                                    </div>
-                                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-[11px] font-semibold text-amber-300 border border-white/10">
-                                        ${vid.tag}
-                                    </span>
-                                    <span class="absolute bottom-3 right-3 px-2 py-0.5 rounded bg-black/75 font-mono text-[10px] text-slate-300">
-                                        ${vid.duration}
-                                    </span>
-                                </div>
-                                <div class="p-5 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition">${vid.title}</h3>
-                                        <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">${vid.desc}</p>
-                                    </div>
-                                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-slate-300 group-hover:text-amber-400 transition">
-                                        <span>Tonton di YouTube TOA Indonesia</span>
-                                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                                    </div>
-                                </div>
-                            </a>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- VIEW 3: DOKUMEN TGPK (SEARCH, CATEGORY FILTER & PREVIEW MODAL) ---
+        // --- VIEW 3: DOKUMEN TGPK (INTERACTIVE FOLDER BROWSER + LIVE DRIVE EMBED + PDF PREVIEW) ---
         function renderDokumenView() {
-            const categories = ["Semua", "Legalitas", "TKDN", "POSTEL", "IK Test", "Release & Discontinue", "New Product Specs"];
+            const currentFolderId = activeTgpkFolder ? activeTgpkFolder.id : LINKS.tgpkRootId;
+            const currentFolderUrl = activeTgpkFolder ? activeTgpkFolder.url : LINKS.tgpkDrive;
+            const currentFolderName = activeTgpkFolder ? activeTgpkFolder.name : "Dokumen TGPK (Folder Utama)";
 
             viewContainer.innerHTML = `
                 <div class="space-y-6">
-                    <!-- Header & Direct Drive Button -->
-                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#131722] border border-amber-500/20 rounded-2xl p-6">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">DATABASE TGPK</span>
-                                <span class="text-xs text-slate-400">PT TOA Galva Prima Karya</span>
+                    <!-- Header & Folder Breadcrumb Bar -->
+                    <div class="bg-[#131722] border border-amber-500/25 rounded-2xl p-5 sm:p-6 space-y-4">
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 text-xs">
+                                    <button onclick="openTgpkFolder(null)" class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 font-bold flex items-center gap-1.5 transition">
+                                        <i data-lucide="folder" class="w-3.5 h-3.5"></i>
+                                        <span>Dokumen TGPK</span>
+                                    </button>
+                                    ${activeTgpkFolder ? `
+                                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
+                                        <span class="px-2.5 py-1 rounded-lg bg-white/10 text-white font-semibold">${activeTgpkFolder.name}</span>
+                                    ` : ''}
+                                </div>
+                                <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-2">${currentFolderName}</h2>
+                                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                    ${activeTgpkFolder 
+                                        ? activeTgpkFolder.desc 
+                                        : 'Pilih folder di bawah untuk melihat seluruh isi file PDF di dalamnya, atau gunakan kolom pencarian & Quick PDF Preview.'}
+                                </p>
                             </div>
-                            <h2 class="text-xl sm:text-2xl font-extrabold text-white mt-1.5">Pusat Dokumen & Sertifikasi TGPK</h2>
-                            <p class="text-xs sm:text-sm text-slate-400 mt-1">
-                                Cari dokumen Legalitas, TKDN, POSTEL, IK Test, Release & Discontinue, serta New Product Specs. Klik item untuk pratinjau detail.
-                            </p>
+
+                            <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                                ${activeTgpkFolder ? `
+                                    <button onclick="openTgpkFolder(null)" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/10 flex items-center gap-1.5 transition">
+                                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                        <span>Kembali ke Folder Utama</span>
+                                    </button>
+                                ` : ''}
+                                <button onclick="openAddDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-1.5 transition">
+                                    <i data-lucide="file-plus-2" class="w-4 h-4"></i>
+                                    <span>Tambah Pintasan PDF</span>
+                                </button>
+                                <a href="${currentFolderUrl}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    <span>Buka di Google Drive</span>
+                                </a>
+                            </div>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
-                            <button onclick="openAddDocModal()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-1.5 transition">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                                <span>Tambah Data</span>
-                            </button>
-                            <a href="${LINKS.tgpkDrive}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
-                                <i data-lucide="folder-open" class="w-4 h-4"></i>
-                                <span>Buka Folder Google Drive</span>
+
+                        <!-- Real-Time Search & Quick Drive PDF Link Previewer -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-2 border-t border-white/[0.06]">
+                            <div class="lg:col-span-7 relative">
+                                <i data-lucide="search" class="w-4 h-4 text-amber-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                <input 
+                                    type="text" 
+                                    id="tgpkSearchInput" 
+                                    value="${docSearchQuery}"
+                                    oninput="handleDocSearch(this.value)"
+                                    placeholder="Cari folder (TKDN, Postel, Legalitas...) atau nama file PDF..." 
+                                    class="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60 transition"
+                                >
+                                ${docSearchQuery ? `
+                                    <button onclick="clearDocSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                                        <i data-lucide="x-circle" class="w-4 h-4"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="lg:col-span-5 flex gap-2">
+                                <input 
+                                    type="text" 
+                                    id="quickDrivePdfUrl" 
+                                    placeholder="Tempel link file PDF Drive untuk Preview cepat..." 
+                                    class="flex-1 px-3.5 py-2.5 rounded-xl bg-[#0b0d13] border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60"
+                                >
+                                <button onclick="previewCustomDriveLink()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-amber-500 hover:text-slate-950 text-amber-300 border border-amber-500/30 whitespace-nowrap transition flex items-center gap-1.5">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                    <span>Preview PDF</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1. FOLDER DIRECTORY VIEW (Shown when in Root Folder) -->
+                    ${!activeTgpkFolder ? `
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i data-lucide="folders" class="w-4 h-4 text-amber-400"></i>
+                                    Daftar Folder Dokumen TGPK (7 Folder Utama)
+                                </h3>
+                                <span class="text-xs text-slate-400">Klik folder untuk masuk ke daftar isi file PDF</span>
+                            </div>
+
+                            <div id="tgpkFolderGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                                <!-- Rendered via renderTgpkFoldersAndDocs() -->
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- 2. FEATURED / INDEXED PDF FILES WITH INSTANT PREVIEW -->
+                    <div id="tgpkIndexedDocsSection" class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400"></i>
+                                ${activeTgpkFolder ? `File PDF Terindeks di Folder "${activeTgpkFolder.name}"` : 'Dokumen PDF Terindeks & Siap Preview'}
+                            </h3>
+                            <span class="text-xs text-slate-400">Klik item untuk Live Preview PDF</span>
+                        </div>
+                        <div id="tgpkDocsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                            <!-- Rendered via renderTgpkFoldersAndDocs() -->
+                        </div>
+                    </div>
+
+                    <!-- 3. LIVE GOOGLE DRIVE EMBEDDED FOLDER VIEWER (SHOWS 100% OF ALL PDF FILES IN DRIVE) -->
+                    <div class="rounded-2xl overflow-hidden border border-amber-500/30 bg-[#121620] shadow-xl">
+                        <div class="px-5 py-3.5 bg-[#171c28] border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <div>
+                                    <h3 class="text-xs sm:text-sm font-bold text-white">
+                                        Live Isi Folder Google Drive: <span class="text-amber-400">${currentFolderName}</span>
+                                    </h3>
+                                    <p class="text-[11px] text-slate-400">Menampilkan seluruh file PDF & sub-folder asli langsung dari Google Drive secara real-time</p>
+                                </div>
+                            </div>
+                            <a href="${currentFolderUrl}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1">
+                                <span>Buka Tab Baru</span>
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                             </a>
                         </div>
-                    </div>
-
-                    <!-- Search & Category Filter Controls -->
-                    <div class="space-y-4">
-                        <!-- Real-Time Search Input -->
-                        <div class="relative">
-                            <i data-lucide="search" class="w-5 h-5 text-amber-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                            <input 
-                                type="text" 
-                                id="tgpkSearchInput" 
-                                value="${docSearchQuery}"
-                                oninput="handleDocSearch(this.value)"
-                                placeholder="Cari nama produk, nomor sertifikat TKDN/POSTEL, model speaker/amplifier, atau kategori..." 
-                                class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-[#121620] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/15 transition"
-                            >
-                            ${docSearchQuery ? `
-                                <button onclick="clearDocSearch()" class="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-slate-400 hover:text-white">
-                                    <i data-lucide="x-circle" class="w-4 h-4"></i>
-                                </button>
-                            ` : ''}
+                        <div class="bg-slate-100">
+                            <iframe 
+                                src="https://drive.google.com/embeddedfolderview?id=${currentFolderId}#list" 
+                                class="w-full h-[460px] border-0"
+                                title="Google Drive Folder Browser - ${currentFolderName}"
+                                loading="lazy"
+                            ></iframe>
                         </div>
-
-                        <!-- Category Pills -->
-                        <div class="flex items-center gap-2 overflow-x-auto pb-1">
-                            ${categories.map(cat => {
-                                const isActive = docSelectedCategory === cat;
-                                return `
-                                    <button 
-                                        onclick="selectDocCategory('${cat}')"
-                                        class="px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition border ${
-                                            isActive 
-                                            ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20' 
-                                            : 'bg-[#121620] text-slate-300 border-white/10 hover:border-amber-500/40 hover:text-white'
-                                        }"
-                                    >
-                                        ${cat}
-                                    </button>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Filtered Documents List Container -->
-                    <div id="tgpkDocsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Rendered via renderFilteredDocs() -->
                     </div>
                 </div>
             `;
 
-            renderFilteredDocs();
+            renderTgpkFoldersAndDocs();
+        }
+
+        function openTgpkFolder(folderId) {
+            if (!folderId) {
+                activeTgpkFolder = null;
+            } else {
+                activeTgpkFolder = TGPK_FOLDERS.find(f => f.id === folderId) || null;
+            }
+            renderDokumenView();
+            lucide.createIcons();
         }
 
         function handleDocSearch(val) {
             docSearchQuery = val;
-            renderFilteredDocs();
+            renderTgpkFoldersAndDocs();
         }
 
         function clearDocSearch() {
             docSearchQuery = '';
             const input = document.getElementById('tgpkSearchInput');
             if (input) input.value = '';
-            renderFilteredDocs();
+            renderTgpkFoldersAndDocs();
         }
 
-        function selectDocCategory(cat) {
-            docSelectedCategory = cat;
-            renderDokumenView();
-            lucide.createIcons();
-        }
-
-        function renderFilteredDocs() {
-            const grid = document.getElementById('tgpkDocsGrid');
-            if (!grid) return;
-
+        function renderTgpkFoldersAndDocs() {
             const query = docSearchQuery.toLowerCase().trim();
-            const filtered = tgpkDocuments.filter(doc => {
-                const matchCat = docSelectedCategory === 'Semua' || doc.category === docSelectedCategory;
+
+            // Render folders if in root
+            const folderGrid = document.getElementById('tgpkFolderGrid');
+            if (folderGrid) {
+                const filteredFolders = TGPK_FOLDERS.filter(f => 
+                    !query || f.name.toLowerCase().includes(query) || f.desc.toLowerCase().includes(query)
+                );
+
+                folderGrid.innerHTML = filteredFolders.map(folder => `
+                    <div onclick="openTgpkFolder('${folder.id}')" class="glass-card rounded-2xl p-4 cursor-pointer flex items-start justify-between gap-3 group">
+                        <div class="flex items-start gap-3.5 min-w-0">
+                            <div class="w-11 h-11 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950 transition shrink-0">
+                                <i data-lucide="${folder.icon || 'folder'}" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-white text-sm group-hover:text-amber-300 transition truncate">${folder.name}</h4>
+                                <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">${folder.desc}</p>
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 mt-2">
+                                    <span>Buka Folder & Lihat Isi PDF</span>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <a href="${folder.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Buka langsung di Google Drive" class="p-2 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-white/5 shrink-0">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                `).join('');
+            }
+
+            // Render indexed PDF files
+            const docsGrid = document.getElementById('tgpkDocsGrid');
+            const indexedSection = document.getElementById('tgpkIndexedDocsSection');
+            if (!docsGrid) return;
+
+            const filteredDocs = tgpkDocuments.filter(doc => {
+                const matchFolder = !activeTgpkFolder || doc.folderId === activeTgpkFolder.id || doc.category.toLowerCase() === activeTgpkFolder.name.toLowerCase();
                 const matchQuery = !query || 
                     doc.title.toLowerCase().includes(query) ||
                     doc.number.toLowerCase().includes(query) ||
                     doc.category.toLowerCase().includes(query) ||
                     doc.summary.toLowerCase().includes(query);
-                return matchCat && matchQuery;
+                return matchFolder && matchQuery;
             });
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-12 px-6 text-center rounded-2xl bg-[#121620] border border-white/10">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="search-x" class="w-6 h-6"></i>
-                        </div>
-                        <h4 class="text-base font-bold text-white">Dokumen tidak ditemukan</h4>
-                        <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
-                            Tidak ada dokumen yang cocok dengan kata kunci "${docSearchQuery}" pada kategori ${docSelectedCategory}. Silakan coba kata kunci lain atau buka folder Google Drive langsung.
-                        </p>
-                        <div class="mt-4 flex justify-center gap-3">
-                            <button onclick="docSearchQuery=''; docSelectedCategory='Semua'; renderDokumenView(); lucide.createIcons();" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/10 text-white hover:bg-white/15">
-                                Reset Pencarian
+            if (filteredDocs.length === 0) {
+                if (activeTgpkFolder && !query) {
+                    // Hide empty indexed section cleanly since the Live Embedded Drive Folder below shows all PDFs
+                    indexedSection.classList.add('hidden');
+                } else {
+                    indexedSection.classList.remove('hidden');
+                    docsGrid.innerHTML = `
+                        <div class="col-span-full p-5 rounded-2xl bg-[#121620] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="info" class="w-5 h-5 text-amber-400 shrink-0"></i>
+                                <p class="text-xs text-slate-300">
+                                    Silakan lihat daftar lengkap file PDF pada panel <strong>Live Isi Folder Google Drive</strong> di bawah ini, atau tambahkan pintasan file PDF baru.
+                                </p>
+                            </div>
+                            <button onclick="openAddDocModal()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950 shrink-0">
+                                + Tambah Pintasan PDF
                             </button>
-                            <a href="${LINKS.tgpkDrive}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-400 text-slate-950">
-                                Cari di Google Drive
-                            </a>
                         </div>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
+                    `;
+                }
+            } else {
+                indexedSection.classList.remove('hidden');
+                docsGrid.innerHTML = filteredDocs.map(doc => `
+                    <div onclick="openDocModal('${doc.id}')" class="glass-card rounded-2xl p-4 cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2.5">
+                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-red-500/15 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+                                    <i data-lucide="file-text" class="w-3 h-3"></i> PDF • ${doc.category}
+                                </span>
+                                <span class="font-mono text-[11px] text-slate-400 truncate max-w-[190px]">${doc.number}</span>
+                            </div>
+                            <h3 class="font-bold text-white text-sm sm:text-base group-hover:text-amber-300 transition leading-snug">
+                                ${doc.title}
+                            </h3>
+                            <p class="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                                ${doc.summary}
+                            </p>
+                        </div>
 
-            grid.innerHTML = filtered.map(doc => `
-                <div onclick="openDocModal('${doc.id}')" class="glass-card rounded-2xl p-5 cursor-pointer flex flex-col justify-between group">
-                    <div>
-                        <div class="flex items-center justify-between gap-2 mb-3">
-                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                                ${doc.category}
+                        <div class="mt-3.5 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                            <span class="text-[11px] text-emerald-400 font-medium">${doc.date}</span>
+                            <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/25">
+                                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                <span>Live Preview PDF</span>
                             </span>
-                            <span class="font-mono text-[11px] text-slate-400 truncate max-w-[180px]">${doc.number}</span>
                         </div>
-                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition leading-snug">
-                            ${doc.title}
-                        </h3>
-                        <p class="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
-                            ${doc.summary}
-                        </p>
                     </div>
-
-                    <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                        <span class="text-[11px] text-emerald-400 font-medium flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            ${doc.date}
-                        </span>
-                        <span class="text-xs font-semibold text-amber-400 flex items-center gap-1 group-hover:translate-x-0.5 transition">
-                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                            <span>Preview</span>
-                        </span>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
             lucide.createIcons();
         }
 
-        // Document Preview Modal Handlers
+        // Preview any pasted Google Drive File URL
+        function previewCustomDriveLink() {
+            const input = document.getElementById('quickDrivePdfUrl');
+            const url = input ? input.value.trim() : '';
+            const fileId = extractDriveFileId(url);
+            if (!fileId) {
+                showToast("Masukkan tautan file Google Drive yang valid (contoh: https://drive.google.com/file/d/.../view)");
+                return;
+            }
+            openMediaPreviewModal({
+                title: "Pratinjau Dokumen Google Drive",
+                category: "LIVE PDF PREVIEW",
+                number: fileId,
+                date: "Google Drive Direct Embed",
+                status: "Pratinjau Aktif",
+                fileId: fileId,
+                url: url,
+                summary: "Menampilkan halaman pratinjau dokumen langsung dari Google Drive.",
+                specs: {}
+            });
+        }
+
+        // Document / Media Preview Modal Handlers
         function openDocModal(docId) {
             const doc = tgpkDocuments.find(d => d.id === docId);
             if (!doc) return;
+            openMediaPreviewModal(doc);
+        }
 
-            document.getElementById('modalDocCategory').textContent = doc.category;
-            document.getElementById('modalDocTitle').textContent = doc.title;
-            document.getElementById('modalDocNumber').textContent = doc.number;
-            document.getElementById('modalDocDate').textContent = doc.date;
-            document.getElementById('modalDocStatus').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${doc.status}`;
-            document.getElementById('modalDocCode').textContent = doc.number;
-            document.getElementById('modalDocSummary').innerHTML = `<p>${doc.summary}</p>`;
-            document.getElementById('modalDriveLink').href = doc.url || LINKS.tgpkDrive;
+        function openMediaPreviewModal(item) {
+            document.getElementById('modalDocCategory').textContent = item.category || "DOKUMEN";
+            document.getElementById('modalDocTitle').textContent = item.title;
+            document.getElementById('modalDocNumber').textContent = item.number || "-";
+            document.getElementById('modalDocDate').textContent = item.date || "-";
+            document.getElementById('modalDocStatus').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${item.status || "Tersedia"}`;
+            document.getElementById('modalDocCode').textContent = item.number || "TOA-DRIVE";
+            document.getElementById('modalDocSummary').innerHTML = `<p>${item.summary || ""}</p>`;
+            document.getElementById('modalDriveLink').href = item.url || LINKS.tgpkDrive;
+
+            const fileId = item.fileId || extractDriveFileId(item.url);
+            const iframeWrapper = document.getElementById('modalIframeWrapper');
+            const iframe = document.getElementById('modalPreviewIframe');
+
+            if (fileId) {
+                iframe.src = `https://drive.google.com/file/d/${fileId}/preview`;
+                iframeWrapper.classList.remove('hidden');
+            } else {
+                iframe.src = "";
+                iframeWrapper.classList.add('hidden');
+            }
 
             const specsContainer = document.getElementById('modalDocSpecs');
-            if (doc.specs && Object.keys(doc.specs).length > 0) {
-                specsContainer.innerHTML = Object.entries(doc.specs).map(([k, v]) => `
+            if (item.specs && Object.keys(item.specs).length > 0) {
+                specsContainer.innerHTML = Object.entries(item.specs).map(([k, v]) => `
                     <div class="p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05]">
                         <span class="block text-[10px] text-slate-500 uppercase tracking-wider">${k}</span>
                         <span class="font-semibold text-slate-200 mt-0.5 block">${v}</span>
@@ -1270,6 +1323,8 @@
 
         function closeDocModal() {
             const modal = document.getElementById('docPreviewModal');
+            const iframe = document.getElementById('modalPreviewIframe');
+            iframe.src = "";
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }
@@ -1290,45 +1345,60 @@
 
         document.getElementById('addDocForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const catName = document.getElementById('newDocCategory').value;
+            const matchedFolder = TGPK_FOLDERS.find(f => f.name === catName);
+            const rawUrl = document.getElementById('newDocUrl').value.trim();
+
             const newDoc = {
                 id: 'doc-' + Date.now(),
+                fileId: extractDriveFileId(rawUrl),
                 title: document.getElementById('newDocTitle').value.trim(),
-                category: document.getElementById('newDocCategory').value,
+                category: catName,
+                folderId: matchedFolder ? matchedFolder.id : null,
                 number: document.getElementById('newDocNumber').value.trim(),
                 date: document.getElementById('newDocDate').value.trim(),
                 status: 'Ditambahkan Pengguna',
                 summary: document.getElementById('newDocSummary').value.trim(),
-                specs: { "Kategori": document.getElementById('newDocCategory').value, "Sumber": "Input Portal TGPK" },
-                url: document.getElementById('newDocUrl').value.trim() || LINKS.tgpkDrive
+                specs: { "Folder": catName, "Sumber": "Google Drive TGPK" },
+                url: rawUrl || (matchedFolder ? matchedFolder.url : LINKS.tgpkDrive)
             };
 
             tgpkDocuments.unshift(newDoc);
             saveTgpkDocs();
             this.reset();
             closeAddDocModal();
-            renderFilteredDocs();
-            showToast("Dokumen baru berhasil ditambahkan ke database!");
+            renderTgpkFoldersAndDocs();
+            showToast("Pintasan PDF berhasil ditambahkan & siap di-preview!");
         });
 
-        // --- VIEW 4: MATERI PPT ---
-        function renderPptView() {
-            const decks = [
-                { title: "Company Profile & Solusi Sistem Tata Suara TOA", slides: "Deck Utama", desc: "Presentasi pengenalan profil PT TOA Galva Prima Karya, sejarah inovasi akustik, dan portofolio solusi terintegrasi." },
-                { title: "Solusi Voice Evacuation System (VX-3000 & SX-2000)", slides: "Teknis & Gedung Tinggi", desc: "Materi presentasi sistem tata suara darurat standar EN 54 untuk gedung bertingkat, bandara, dan pusat perbelanjaan." },
-                { title: "Sistem Tata Suara Masjid & Rumah Ibadah", slides: "Solusi Akustik", desc: "Panduan pemilihan array speaker, pengaturan gema ruangan, dan konfigurasi mikrofon imam untuk kejernihan suara maksimal." },
-                { title: "IP Audio & Smart Campus / Factory Paging", slides: "Integrasi Jaringan", desc: "Presentasi solusi paging berbasis jaringan IP (PoE), penjadwalan bel otomatis, dan integrasi sistem keamanan." }
-            ];
+        // --- VIEW 4: MATERI PPT (ALL 6 REAL FILES WITH LIVE PREVIEW + EMBEDDED FOLDER) ---
+        function previewPptFile(id) {
+            const file = PPT_FILES.find(f => f.id === id);
+            if (!file) return;
+            openMediaPreviewModal({
+                title: file.title,
+                category: file.tag,
+                number: file.type,
+                date: "Repository Materi PPT TOA",
+                status: "Siap Presentasi",
+                fileId: file.fileId,
+                url: file.url,
+                summary: file.desc,
+                specs: { "Format File": file.type, "Kategori": file.tag }
+            });
+        }
 
+        function renderPptView() {
             viewContainer.innerHTML = `
                 <div class="space-y-8">
                     <div class="glass-card rounded-3xl p-6 sm:p-8 border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div class="max-w-2xl">
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
-                                <i data-lucide="presentation" class="w-3.5 h-3.5"></i> Presentation Repository
+                                <i data-lucide="presentation" class="w-3.5 h-3.5"></i> Google Drive PPT & Video Repository
                             </span>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Materi Presentasi (PPT) TOA</h2>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Materi Presentasi (PPT) & Company Profile</h2>
                             <p class="text-slate-300 text-sm mt-2 leading-relaxed">
-                                Akses kumpulan materi presentasi produk, solusi sistem audio, dan deck penawaran proyek untuk kebutuhan presentasi kepada klien maupun konsultan.
+                                Seluruh file presentasi resmi dan video Company Profile TOA Indonesia. Klik <strong>Live Preview</strong> untuk melihat slide atau video langsung di halaman ini.
                             </p>
                         </div>
                         <a href="${LINKS.pptDrive}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
@@ -1337,27 +1407,50 @@
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        ${decks.map((deck, idx) => `
-                            <a href="${LINKS.pptDrive}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl p-6 flex flex-col justify-between group">
-                                <div>
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="w-11 h-11 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-xs">
-                                            PPTX
+                    <!-- All 6 Real Files Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        ${PPT_FILES.map(file => {
+                            const isVideo = file.type.includes('Video');
+                            return `
+                                <div class="glass-card rounded-2xl p-5 flex flex-col justify-between group">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="w-11 h-11 rounded-xl ${isVideo ? 'bg-rose-500/15 border-rose-500/30 text-rose-400' : 'bg-orange-500/15 border-orange-500/30 text-orange-400'} border flex items-center justify-center font-bold text-xs">
+                                                ${isVideo ? 'MP4' : 'PPTX'}
+                                            </div>
+                                            <span class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
+                                                ${file.tag}
+                                            </span>
                                         </div>
-                                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
-                                            ${deck.slides}
-                                        </span>
+                                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition break-words">${file.title}</h3>
+                                        <p class="text-xs text-slate-400 mt-2 leading-relaxed">${file.desc}</p>
                                     </div>
-                                    <h3 class="font-bold text-white text-lg group-hover:text-amber-300 transition">${deck.title}</h3>
-                                    <p class="text-xs text-slate-400 mt-2 leading-relaxed">${deck.desc}</p>
+                                    <div class="mt-5 pt-4 border-t border-white/[0.06] flex items-center gap-2">
+                                        <button onclick="previewPptFile('${file.id}')" class="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 flex items-center justify-center gap-1.5 transition">
+                                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                            <span>Live Preview</span>
+                                        </button>
+                                        <a href="${file.url}" target="_blank" rel="noopener noreferrer" title="Buka di Google Drive" class="p-2.5 rounded-xl text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition">
+                                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
-                                    <span>Unduh / Lihat di Google Drive</span>
-                                    <i data-lucide="external-link" class="w-4 h-4"></i>
-                                </div>
-                            </a>
-                        `).join('')}
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Live Google Drive Embedded Folder View -->
+                    <div class="rounded-2xl overflow-hidden border border-white/10 bg-[#121620]">
+                        <div class="px-5 py-3.5 bg-[#171c28] border-b border-white/10 flex items-center justify-between">
+                            <span class="text-xs font-bold text-white flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                Sinkronisasi Folder Google Drive Materi PPT
+                            </span>
+                            <a href="${LINKS.pptDrive}" target="_blank" rel="noopener noreferrer" class="text-xs text-amber-400 hover:underline">Buka Drive</a>
+                        </div>
+                        <div class="bg-slate-100">
+                            <iframe src="https://drive.google.com/embeddedfolderview?id=${LINKS.pptRootId}#list" class="w-full h-[340px] border-0" loading="lazy"></iframe>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1377,176 +1470,176 @@
                 },
                 {
                     id: "event",
-                    title: "Form Event",
-                    badge: "Pengajuan Kegiatan",
-                    desc: "Formulir registrasi dan pengajuan dukungan kegiatan pameran, seminar produk, demo akustik, maupun event promosi bersama TOA Indonesia.",
-                    url: LINKS.formEvent,
-                    icon: "calendar-check",
-                    accent: "from-emerald-400 to-teal-500"
-                },
-                {
-                    id: "survey-event",
-                    title: "Form Survey Event",
-                    badge: "Evaluasi & Feedback",
-                    desc: "Formulir survei kepuasan peserta, evaluasi pelaksanaan acara, serta masukan untuk peningkatan kualitas event dan pelatihan TOA.",
-                    url: LINKS.formSurveyEvent,
-                    icon: "clipboard-check",
-                    accent: "from-sky-400 to-indigo-500"
-                }
-            ];
+        // --- VIEW 6: FOTO PROJECT HIGHLIGHT (23 REAL FOLDERS & VIDEO WITH DRILL-DOWN NAVIGATION) ---
+        function openProjectFolder(itemId) {
+            if (!itemId) {
+                activeProjectFolder = null;
+                renderProjectView();
+                lucide.createIcons();
+                return;
+            }
+            const item = PROJECT_HIGHLIGHT_ITEMS.find(p => p.id === itemId);
+            if (!item) return;
 
-            viewContainer.innerHTML = `
-                <div class="space-y-8">
-                    <div class="bg-[#131722] border border-amber-500/20 rounded-3xl p-6 sm:p-8">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
-                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> Pusat Formulir Terpadu
-                        </span>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Menu Form Operasional & Event</h2>
-                        <p class="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
-                            Seluruh formulir pengajuan Sign Shop, pendaftaran Event, dan Survey Event terintegrasi dalam satu halaman untuk memudahkan pengisian maupun pembagian tautan kepada mitra.
-                        </p>
-                    </div>
+            if (item.kind === 'video') {
+                openMediaPreviewModal({
+                    title: item.name,
+                    category: item.category,
+                    number: "MP4 Compilation",
+                    date: "November 2025",
+                    status: "Video Kompilasi Proyek",
+                    fileId: item.id,
+                    url: item.url,
+                    summary: "Video kompilasi highlight instalasi proyek-proyek unggulan TOA Indonesia.",
+                    specs: { "Tipe Media": "Video MP4", "Album": "Project Highlight" }
+                });
+                return;
+            }
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        ${forms.map(f => `
-                            <div class="glass-card rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
-                                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r ${f.accent}"></div>
-                                <div>
-                                    <div class="flex items-center justify-between mb-5 mt-1">
-                                        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-amber-400">
-                                            <i data-lucide="${f.icon}" class="w-6 h-6"></i>
-                                        </div>
-                                        <span class="text-[11px] font-semibold px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10">
-                                            ${f.badge}
-                                        </span>
-                                    </div>
-                                    <h3 class="text-xl font-extrabold text-white">${f.title}</h3>
-                                    <p class="text-xs sm:text-sm text-slate-400 mt-2.5 leading-relaxed">
-                                        ${f.desc}
-                                    </p>
-                                </div>
-
-                                <div class="mt-6 pt-5 border-t border-white/[0.07] space-y-2.5">
-                                    <a href="${f.url}" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl font-bold text-xs text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/15 transition">
-                                        <span>Isi ${f.title}</span>
-                                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                                    </a>
-                                    <button onclick="copyTextToClipboard('${f.url}', 'Tautan ${f.title}')" class="w-full py-2.5 px-4 rounded-xl font-semibold text-xs text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
-                                        <i data-lucide="copy" class="w-3.5 h-3.5 text-amber-400"></i>
-                                        <span>Salin Link Form</span>
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            activeProjectFolder = item;
+            renderProjectView();
+            lucide.createIcons();
         }
 
-        // --- VIEW 6: FOTO PROJECT HIGHLIGHT ---
-        function renderProjectView() {
-            const projects = [
-                {
-                    title: "Masjid Raya & Rumah Ibadah",
-                    location: "Instalasi Nasional",
-                    system: "Line Array Speaker, Digital Mixer & Wireless Mic",
-                    desc: "Dokumentasi foto instalasi sistem tata suara pada ruang utama shalat, menara adzan, dan area selasar masjid.",
-                    icon: "landmark"
-                },
-                {
-                    title: "Bandara, Stasiun & Terminal Transportasi",
-                    location: "Fasilitas Publik & Transportasi",
-                    system: "VX-3000 Voice Evacuation & IP Paging System",
-                    desc: "Foto penerapan sistem pengumuman publik dan evakuasi darurat terintegrasi di terminal penumpang.",
-                    icon: "plane"
-                },
-                {
-                    title: "Stadion & Arena Olahraga",
-                    location: "Venue Olahraga & Konser",
-                    system: "High-Power Horn & Weatherproof Stadium Array",
-                    desc: "Galeri instalasi speaker berdaya tinggi tahan cuaca untuk area tribun dan lapangan olahraga.",
-                    icon: "trophy"
-                },
-                {
-                    title: "Gedung Perkantoran & Pusat Perbelanjaan",
-                    location: "Komersial & High-Rise Building",
-                    system: "Ceiling Speaker, BGM & Emergency Paging",
-                    desc: "Dokumentasi pemasangan speaker plafon estetis untuk background music dan sistem keselamatan gedung.",
-                    icon: "building-2"
-                },
-                {
-                    title: "Rumah Sakit, Kampus & Fasilitas Pendidikan",
-                    location: "Kesehatan & Pendidikan",
-                    system: "Nurse Call, IP Intercom & Classroom Audio",
-                    desc: "Foto referensi sistem komunikasi internal, bel terpusat, dan ruang auditorium kampus.",
-                    icon: "graduation-cap"
-                },
-                {
-                    title: "Kawasan Industri & Pabrik",
-                    location: "Manufaktur & Logistik",
-                    system: "Industrial Horn & Zone Paging System",
-                    desc: "Dokumentasi instalasi sistem panggilan zona produksi dan peringatan keselamatan area industri.",
-                    icon: "factory"
-                }
-            ];
+        function handleProjectSearch(val) {
+            projectSearchQuery = val;
+            renderProjectListItems();
+        }
 
+        function renderProjectListItems() {
+            const grid = document.getElementById('projectItemsGrid');
+            if (!grid) return;
+
+            const query = projectSearchQuery.toLowerCase().trim();
+            const filtered = PROJECT_HIGHLIGHT_ITEMS.filter(item =>
+                !query || item.name.toLowerCase().includes(query) || item.category.toLowerCase().includes(query)
+            );
+
+            grid.innerHTML = filtered.map((proj, idx) => {
+                const isVideo = proj.kind === 'video';
+                return `
+                    <div onclick="openProjectFolder('${proj.id}')" class="glass-card rounded-2xl p-4 cursor-pointer flex items-center justify-between gap-3 group">
+                        <div class="flex items-center gap-3.5 min-w-0">
+                            <div class="w-11 h-11 rounded-xl ${isVideo ? 'bg-rose-500/15 border-rose-500/30 text-rose-400 group-hover:bg-rose-500 group-hover:text-white' : 'bg-amber-500/15 border-amber-500/30 text-amber-400 group-hover:bg-amber-500 group-hover:text-slate-950'} border flex items-center justify-center transition shrink-0">
+                                <i data-lucide="${isVideo ? 'play-circle' : 'folder-open'}" class="w-5 h-5"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] font-mono text-slate-400 uppercase">${isVideo ? 'VIDEO' : 'FOLDER'}</span>
+                                    <span class="text-[10px] text-amber-400/90 font-medium truncate">• ${proj.category}</span>
+                                </div>
+                                <h3 class="font-bold text-white text-sm group-hover:text-amber-300 transition truncate mt-0.5">${proj.name}</h3>
+                                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 mt-1">
+                                    <span>${isVideo ? 'Putar Video Preview' : 'Buka Halaman Isi Foto'}</span>
+                                    <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <a href="${proj.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Buka langsung di Google Drive" class="p-2 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-white/5 shrink-0">
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function renderProjectView() {
+            // If user clicked into a specific Project Folder, show sub-page with Back button + Live Drive Grid/List + Direct Link
+            if (activeProjectFolder) {
+                viewContainer.innerHTML = `
+                    <div class="space-y-6">
+                        <div class="glass-card rounded-3xl p-6 border-amber-500/25 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 text-xs mb-2">
+                                    <button onclick="openProjectFolder(null)" class="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 font-bold flex items-center gap-1.5 transition">
+                                        <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                                        <span>Foto Project Highlight</span>
+                                    </button>
+                                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500"></i>
+                                    <span class="px-2.5 py-1 rounded-lg bg-white/10 text-white font-semibold">${activeProjectFolder.name}</span>
+                                </div>
+                                <h2 class="text-2xl font-extrabold text-white">${activeProjectFolder.name}</h2>
+                                <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                                    Kategori: <span class="text-amber-400 font-semibold">${activeProjectFolder.category}</span> — Menampilkan seluruh foto & dokumentasi dari folder Google Drive.
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                                <button onclick="openProjectFolder(null)" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/10 flex items-center gap-1.5 transition">
+                                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                    <span>Kembali ke Daftar Proyek</span>
+                                </button>
+                                <a href="${activeProjectFolder.url}" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/20 flex items-center gap-2 transition">
+                                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                                    <span>Buka Album di Google Drive</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Embedded Live Google Drive Photo Grid for Selected Project Folder -->
+                        <div class="rounded-2xl overflow-hidden border border-amber-500/30 bg-[#121620] shadow-xl">
+                            <div class="px-5 py-3.5 bg-[#171c28] border-b border-white/10 flex items-center justify-between">
+                                <span class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    Galeri Foto & Media: ${activeProjectFolder.name}
+                                </span>
+                                <a href="${activeProjectFolder.url}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-amber-400 hover:underline">Buka Tab Penuh</a>
+                            </div>
+                            <div class="bg-slate-100">
+                                <iframe 
+                                    src="https://drive.google.com/embeddedfolderview?id=${activeProjectFolder.id}#grid" 
+                                    class="w-full h-[520px] border-0"
+                                    title="Galeri Foto - ${activeProjectFolder.name}"
+                                    loading="lazy"
+                                ></iframe>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Root Project Highlight Folder List View (All 23 Real Items)
             viewContainer.innerHTML = `
-                <div class="space-y-8">
+                <div class="space-y-6">
                     <!-- Header Banner -->
-                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="glass-card rounded-3xl p-6 sm:p-8 border-amber-500/20 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                         <div class="max-w-2xl">
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 mb-3">
-                                <i data-lucide="camera" class="w-3.5 h-3.5"></i> Galeri Referensi Instalasi
+                                <i data-lucide="camera" class="w-3.5 h-3.5"></i> 22 Folder Proyek + Video Kompilasi
                             </span>
-                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Foto Project Highlight TOA</h2>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Foto Project Highlight TOA Indonesia</h2>
                             <p class="text-slate-300 text-sm mt-2 leading-relaxed">
-                                Kumpulan dokumentasi foto proyek unggulan instalasi sistem tata suara TOA di berbagai sektor di Indonesia. Pilih kategori proyek di bawah untuk membuka album foto di Google Drive.
+                                Klik salah satu folder proyek di bawah ini untuk masuk ke halaman galeri foto & dokumentasi masing-masing lokasi, atau buka folder utama di Google Drive.
                             </p>
                         </div>
                         <a href="${LINKS.projectHighlightDrive}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-6 py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
                             <i data-lucide="images" class="w-4 h-4"></i>
-                            <span>Buka Semua Foto di Drive</span>
+                            <span>Buka Folder Utama Drive</span>
                         </a>
                     </div>
 
-                    <!-- Project Highlight List Grid (All Linked to Project Highlight Drive) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        ${projects.map((proj, idx) => `
-                            <a href="${LINKS.projectHighlightDrive}" target="_blank" rel="noopener noreferrer" class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group">
-                                <div>
-                                    <!-- Visual Header Card -->
-                                    <div class="h-36 bg-gradient-to-br from-[#191f2c] via-[#131722] to-[#0c0f16] p-5 flex flex-col justify-between border-b border-white/[0.06] relative overflow-hidden">
-                                        <div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-amber-500/10 blur-xl group-hover:bg-amber-500/20 transition"></div>
-                                        <div class="flex items-center justify-between relative z-10">
-                                            <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                                                <i data-lucide="${proj.icon}" class="w-5 h-5"></i>
-                                            </div>
-                                            <span class="font-mono text-[11px] text-slate-400 bg-black/40 px-2.5 py-1 rounded-lg border border-white/5">
-                                                ALBUM #0${idx + 1}
-                                            </span>
-                                        </div>
-                                        <div class="relative z-10">
-                                            <span class="text-[11px] font-medium text-amber-300/90">${proj.location}</span>
-                                        </div>
-                                    </div>
+                    <!-- Search Filter for Project Folders -->
+                    <div class="relative">
+                        <i data-lucide="search" class="w-4 h-4 text-amber-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        <input 
+                            type="text" 
+                            value="${projectSearchQuery}"
+                            oninput="handleProjectSearch(this.value)"
+                            placeholder="Cari nama proyek (Masjid Istiqlal, Stadion Manahan, TMII, MAJT, Bandara, dll)..." 
+                            class="w-full pl-11 pr-4 py-3 rounded-2xl bg-[#121620] border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/60 transition"
+                        >
+                    </div>
 
-                                    <!-- Content -->
-                                    <div class="p-5">
-                                        <h3 class="font-bold text-white text-base group-hover:text-amber-300 transition">${proj.title}</h3>
-                                        <p class="text-[11px] font-mono text-slate-400 mt-1">${proj.system}</p>
-                                        <p class="text-xs text-slate-400 mt-2.5 leading-relaxed">${proj.desc}</p>
-                                    </div>
-                                </div>
-
-                                <div class="px-5 py-3.5 bg-white/[0.02] border-t border-white/[0.06] flex items-center justify-between text-xs font-semibold text-amber-400">
-                                    <span>Lihat Foto Proyek</span>
-                                    <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
-                                </div>
-                            </a>
-                        `).join('')}
+                    <!-- Folder List Grid -->
+                    <div id="projectItemsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                        <!-- Rendered via renderProjectListItems() -->
                     </div>
                 </div>
             `;
+
+            renderProjectListItems();
         }
 
         // ==========================================
