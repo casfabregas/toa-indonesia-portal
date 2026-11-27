@@ -6,32 +6,52 @@
     <title>Portal Digital TOA Indonesia — PT TOA Galva Prima Karya</title>
     <style>
         /* ==========================================================================
-           1. HIGH-CONTRAST EXECUTIVE DARK SLATE PALETTE & RESET
+           1. BRIGHT MODERN EXECUTIVE PALETTE, TYPOGRAPHY & MOTION TOKENS
            ========================================================================== */
         :root {
-            --bg-void: #080a0f;
-            --bg-main: #0b0f17;
-            --bg-sidebar: #0e131e;
-            --bg-surface: #121826;
-            --bg-hover: #192234;
-            --bg-elevated: #1c2538;
-            --bg-input: #080b12;
+            --bg-canvas: #f4f7fb;
+            --bg-canvas-accent: #eef2f9;
+            --bg-surface: #ffffff;
+            --bg-surface-soft: #f8fafc;
+            --bg-hover: #f1f5f9;
+            --bg-elevated: #ffffff;
+            --bg-input: #f8fafc;
 
             --amber-primary: #f59e0b;
-            --amber-bright: #fbbf24;
+            --amber-deep: #d97706;
             --amber-soft: #fef3c7;
+            --amber-tint: rgba(245, 158, 11, 0.12);
+
             --toa-crimson: #dc2626;
-            --emerald: #10b981;
+            --toa-crimson-soft: #fee2e2;
+            --emerald: #059669;
+            --emerald-soft: #d1fae5;
+            --blue-primary: #2563eb;
+            --blue-soft: #dbeafe;
+            --purple-primary: #7c3aed;
+            --purple-soft: #ede9fe;
 
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
 
-            --border-crisp: #263248;
-            --border-amber: rgba(245, 158, 11, 0.48);
-            --sidebar-width: 280px;
+            --border-crisp: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --border-amber: rgba(245, 158, 11, 0.45);
+
+            --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-sm: 0 4px 14px rgba(15, 23, 42, 0.05);
+            --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.07);
+            --shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.11);
+            --shadow-amber: 0 8px 22px rgba(245, 158, 11, 0.24);
+
+            --sidebar-width: 286px;
+            --radius-sm: 8px;
             --radius-md: 12px;
-            --radius-lg: 16px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
+            --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         * {
@@ -43,11 +63,11 @@
         html, body {
             min-height: 100vh;
             width: 100%;
-            background-color: var(--bg-main);
+            background-color: var(--bg-canvas);
             color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.55;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
@@ -57,20 +77,20 @@
             text-decoration: none;
         }
 
-        button, input, select {
+        button, input, select, textarea {
             font-family: inherit;
             color: inherit;
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--bg-main);
+            background: var(--bg-canvas);
         }
         ::-webkit-scrollbar-thumb {
-            background: #2b3852;
+            background: #cbd5e1;
             border-radius: 99px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -78,23 +98,101 @@
         }
 
         /* ==========================================================================
-           2. LAMP LOGIN (INITIAL #080a0f DARK ROOM + SEAMLESS PULL-CHAIN PHYSICS)
+           2. MODERN ANIMATIONS & MICRO-INTERACTIONS
+           ========================================================================== */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes staggerRowIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.992);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes popModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes floatBlob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(18px, -14px) scale(1.05); }
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.92); opacity: 0.75; }
+            70% { transform: scale(1.65); opacity: 0; }
+            100% { transform: scale(1.65); opacity: 0; }
+        }
+
+        @keyframes spin360 {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmerSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .anim-view-enter {
+            animation: fadeSlideUp 0.36s var(--ease-out-expo) both;
+        }
+
+        .anim-stagger-item {
+            animation: staggerRowIn 0.34s var(--ease-out-expo) both;
+            animation-delay: calc(min(var(--idx, 0), 12) * 28ms);
+        }
+
+        .is-spinning {
+            display: inline-block;
+            animation: spin360 0.85s linear infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ==========================================================================
+           3. LAMP LOGIN GATEWAY (TWILIGHT STUDIO -> BRIGHT DAYLIGHT ILLUMINATION)
            ========================================================================== */
         .lamp-gateway {
             position: fixed;
             inset: 0;
             z-index: 500;
-            background: radial-gradient(circle at 28% 38%, #24190c 0%, #0b0f17 56%, #080a0f 100%);
+            background: radial-gradient(circle at 28% 36%, #fffbeb 0%, #fef3c7 22%, #f1f5f9 62%, #e2e8f0 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 24px;
             overflow-y: auto;
-            transition: background 0.65s ease, opacity 0.45s ease, visibility 0.45s ease;
+            transition: background 0.7s var(--ease-out-expo), opacity 0.45s ease, visibility 0.45s ease;
         }
 
         .lamp-gateway.is-dark {
-            background: #080a0f;
+            background: radial-gradient(circle at 50% 42%, #1e293b 0%, #0f172a 60%, #080d18 100%);
         }
 
         .lamp-gateway.is-authenticated {
@@ -104,17 +202,47 @@
             display: none;
         }
 
-        .lamp-stage-wrapper {
-            width: 100%;
-            max-width: 900px;
-            display: grid;
-            grid-template-columns: 1fr 1.05fr;
-            align-items: center;
-            gap: 40px;
-            position: relative;
+        .gateway-ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            transition: opacity 0.6s ease;
         }
 
-        /* Zero borders, outlines, focus rings, or boxes around the lamp silhouette */
+        .gateway-orb-1 {
+            width: 340px;
+            height: 340px;
+            top: -80px;
+            right: 8%;
+            background: rgba(245, 158, 11, 0.24);
+            animation: floatBlob 9s ease-in-out infinite;
+        }
+
+        .gateway-orb-2 {
+            width: 280px;
+            height: 280px;
+            bottom: -60px;
+            left: 6%;
+            background: rgba(220, 38, 38, 0.12);
+            animation: floatBlob 11s ease-in-out infinite reverse;
+        }
+
+        .lamp-gateway.is-dark .gateway-ambient-orb {
+            opacity: 0.12;
+        }
+
+        .lamp-stage-wrapper {
+            width: 100%;
+            max-width: 940px;
+            display: grid;
+            grid-template-columns: 0.95fr 1.08fr;
+            align-items: center;
+            gap: 44px;
+            position: relative;
+            z-index: 2;
+        }
+
         .lamp-visual-col,
         .lamp-visual-col *,
         .floor-lamp-svg,
@@ -138,21 +266,21 @@
             justify-content: center;
             min-height: 430px;
             transform: translateX(0);
-            transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.65s var(--ease-out-expo);
         }
 
         .lamp-gateway.is-dark .lamp-visual-col {
-            transform: translateX(220px);
+            transform: translateX(230px);
         }
 
         .lamp-halo {
             position: absolute;
-            top: 44px;
+            top: 34px;
             left: 50%;
-            width: 280px;
-            height: 280px;
+            width: 310px;
+            height: 310px;
             transform: translateX(-50%);
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.42) 0%, rgba(245, 158, 11, 0.14) 50%, transparent 74%) !important;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.55) 0%, rgba(245, 158, 11, 0.18) 48%, transparent 72%) !important;
             pointer-events: none;
             transition: opacity 0.45s ease;
         }
@@ -165,16 +293,16 @@
             position: absolute;
             top: 96px;
             left: 50%;
-            width: 680px;
-            height: 450px;
+            width: 660px;
+            height: 440px;
             transform: translateX(-14%) rotate(-12deg);
             transform-origin: 14% 0%;
             background: conic-gradient(
                 from 138deg at 14% 0%,
-                rgba(251, 191, 36, 0.34) 0deg,
-                rgba(245, 158, 11, 0.15) 34deg,
-                rgba(217, 119, 6, 0.03) 64deg,
-                transparent 80deg
+                rgba(251, 191, 36, 0.36) 0deg,
+                rgba(245, 158, 11, 0.14) 36deg,
+                rgba(217, 119, 6, 0.03) 65deg,
+                transparent 82deg
             ) !important;
             filter: blur(18px);
             pointer-events: none;
@@ -198,7 +326,7 @@
 
         .shade-assembly {
             transform-origin: 110px 118px;
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.35s var(--ease-spring);
             cursor: pointer;
         }
 
@@ -207,8 +335,8 @@
         }
 
         .lamp-gateway.is-dark .shade-body {
-            fill: #151a24;
-            stroke: #263042;
+            fill: #1e293b;
+            stroke: #334155;
         }
 
         .bulb-core {
@@ -221,14 +349,13 @@
         }
 
         @keyframes cordPulse {
-            0%, 100% { opacity: 0.4; transform: scale(0.92); }
-            50% { opacity: 1; transform: scale(1.25); }
+            0%, 100% { opacity: 0.45; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.28); }
         }
 
         .pull-cord-group {
             cursor: grab;
         }
-
         .pull-cord-group:active {
             cursor: grabbing;
         }
@@ -240,25 +367,32 @@
 
         .lamp-gateway.is-dark .cord-pulse-ring {
             opacity: 1;
-            animation: cordPulse 2s infinite ease-in-out;
+            animation: cordPulse 1.9s infinite ease-in-out;
         }
 
         .lamp-hint-caption {
             position: relative;
             z-index: 6;
-            margin-top: 8px;
+            margin-top: 10px;
+            padding: 6px 14px;
+            border-radius: 99px;
             font-size: 12.5px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            color: var(--amber-bright);
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            color: var(--amber-deep);
+            background: rgba(255, 255, 255, 0.72) !important;
+            backdrop-filter: blur(8px);
             cursor: pointer;
-            opacity: 0.85;
-            transition: opacity 0.25s ease, color 0.25s ease;
+            transition: transform 0.2s ease, color 0.25s ease;
+        }
+
+        .lamp-gateway.is-dark .lamp-hint-caption {
+            color: #fbbf24;
+            background: rgba(15, 23, 42, 0.65) !important;
         }
 
         .lamp-hint-caption:hover {
-            opacity: 1;
-            color: var(--amber-soft);
+            transform: translateY(-1px);
         }
 
         /* Official TOA Logo Pill */
@@ -267,9 +401,10 @@
             align-items: center;
             justify-content: center;
             background: #ffffff;
+            border: 1px solid var(--border-crisp);
             border-radius: 10px;
-            padding: 6px 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            padding: 6px 11px;
+            box-shadow: var(--shadow-xs);
             flex-shrink: 0;
         }
 
@@ -301,22 +436,23 @@
             letter-spacing: -0.5px;
         }
 
-        /* Login Panel Card (Hidden while lamp is dark) */
+        /* Bright Glassmorphic Login Panel Card */
         .login-panel-card {
             position: relative;
             z-index: 6;
-            background: linear-gradient(165deg, #151d2e 0%, #101624 100%);
-            border: 1px solid var(--border-amber);
-            border-top: 2px solid var(--amber-bright);
-            border-radius: 22px;
-            padding: 34px 32px 28px;
-            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.88), 0 0 42px rgba(245, 158, 11, 0.14);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-top: 3px solid var(--amber-primary);
+            border-radius: var(--radius-xl);
+            padding: 36px 34px 28px;
+            box-shadow: 0 28px 65px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(245, 158, 11, 0.18);
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
             transform: translateX(0) scale(1);
-            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.14s,
-                        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.14s,
+            transition: opacity 0.5s var(--ease-out-expo) 0.12s,
+                        transform 0.5s var(--ease-out-expo) 0.12s,
                         visibility 0.5s ease;
         }
 
@@ -324,7 +460,7 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transform: translateX(28px) scale(0.97);
+            transform: translateX(30px) scale(0.96);
             transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
         }
 
@@ -339,26 +475,27 @@
         .login-dept-badge {
             font-size: 11px;
             font-weight: 800;
-            letter-spacing: 1.1px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            color: var(--amber-bright);
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid rgba(245, 158, 11, 0.38);
-            padding: 5px 11px;
+            color: var(--amber-deep);
+            background: var(--amber-soft);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 5px 12px;
             border-radius: 99px;
         }
 
         .login-portal-heading {
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 800;
             line-height: 1.25;
-            color: #ffffff;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
             margin-bottom: 4px;
         }
 
         .login-portal-caption {
-            font-size: 13px;
-            color: var(--text-secondary);
+            font-size: 13.5px;
+            color: var(--text-muted);
             margin-bottom: 22px;
         }
 
@@ -369,8 +506,8 @@
         .login-group label {
             display: block;
             font-size: 11.5px;
-            font-weight: 800;
-            letter-spacing: 0.9px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
             text-transform: uppercase;
             color: var(--text-secondary);
             margin-bottom: 7px;
@@ -380,14 +517,15 @@
             display: flex;
             align-items: center;
             background: var(--bg-input);
-            border: 1px solid var(--border-crisp);
+            border: 1.5px solid var(--border-crisp);
             border-radius: var(--radius-md);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
 
         .login-input-shell:focus-within {
+            background: #ffffff;
             border-color: var(--amber-primary);
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
         }
 
         .login-input-icon {
@@ -402,9 +540,9 @@
             background: transparent;
             border: none;
             outline: none;
-            padding: 13px 14px;
+            padding: 12px 14px;
             font-size: 14px;
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         .pw-eye-btn {
@@ -417,7 +555,7 @@
             align-items: center;
         }
         .pw-eye-btn:hover {
-            color: var(--amber-bright);
+            color: var(--amber-deep);
         }
 
         .login-meta-row {
@@ -444,21 +582,24 @@
         }
 
         .btn-login-submit {
+            position: relative;
+            overflow: hidden;
             width: 100%;
             padding: 14px 20px;
             border: none;
             border-radius: var(--radius-md);
             font-size: 14.5px;
             font-weight: 800;
-            color: #0b0f17;
-            background: linear-gradient(135deg, #fde047 0%, #f59e0b 55%, #d97706 100%);
-            box-shadow: 0 10px 26px rgba(245, 158, 11, 0.35);
+            color: #ffffff;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            box-shadow: 0 10px 26px rgba(245, 158, 11, 0.34);
             cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
+            transition: transform 0.2s var(--ease-spring), filter 0.2s ease, box-shadow 0.2s ease;
         }
         .btn-login-submit:hover {
-            filter: brightness(1.07);
-            transform: translateY(-1px);
+            filter: brightness(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(234, 88, 12, 0.35);
         }
 
         @keyframes shakeAlert {
@@ -472,9 +613,9 @@
             margin-bottom: 16px;
             padding: 11px 14px;
             border-radius: 10px;
-            background: rgba(220, 38, 38, 0.2);
-            border: 1px solid rgba(248, 113, 113, 0.55);
-            color: #fecaca;
+            background: var(--toa-crimson-soft);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            color: #991b1b;
             font-size: 12.5px;
             font-weight: 600;
         }
@@ -495,13 +636,16 @@
         }
 
         /* ==========================================================================
-           3. PORTAL SHELL & HANGING LANTERN NAVIGATION SIDEBAR
+           4. BRIGHT PORTAL SHELL & ANIMATED LANTERN SIDEBAR
            ========================================================================== */
         .portal-layout {
             display: flex;
             min-height: 100vh;
             width: 100%;
-            background: var(--bg-main);
+            background:
+                radial-gradient(circle at 92% 4%, rgba(245, 158, 11, 0.08) 0%, transparent 32%),
+                radial-gradient(circle at 18% 96%, rgba(37, 99, 235, 0.05) 0%, transparent 34%),
+                var(--bg-canvas);
         }
 
         .mobile-navbar {
@@ -509,7 +653,8 @@
             position: sticky;
             top: 0;
             z-index: 90;
-            background: var(--bg-sidebar);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-crisp);
             padding: 12px 16px;
             align-items: center;
@@ -523,9 +668,9 @@
             gap: 8px;
             padding: 8px 14px;
             border-radius: 10px;
-            background: rgba(245, 158, 11, 0.16);
+            background: var(--amber-soft);
             border: 1px solid var(--border-amber);
-            color: var(--amber-bright);
+            color: var(--amber-deep);
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
@@ -536,7 +681,8 @@
             position: fixed;
             inset: 0;
             z-index: 95;
-            background: rgba(5, 7, 11, 0.82);
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(3px);
         }
         .drawer-overlay.is-open {
             display: block;
@@ -548,14 +694,15 @@
             height: 100vh;
             width: var(--sidebar-width);
             flex-shrink: 0;
-            background: var(--bg-sidebar);
+            background: var(--bg-surface);
             border-right: 1px solid var(--border-crisp);
+            box-shadow: 4px 0 24px rgba(15, 23, 42, 0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             z-index: 100;
             overflow: hidden;
-            transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.34s var(--ease-out-expo);
         }
 
         .sidebar-header {
@@ -575,15 +722,16 @@
         }
 
         .brand-name {
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: 0.2px;
+            color: var(--text-primary);
+            letter-spacing: 0.1px;
         }
 
         .brand-company {
             font-size: 11px;
-            color: var(--amber-bright);
+            font-weight: 600;
+            color: var(--toa-crimson);
             margin-top: 1px;
             white-space: nowrap;
             overflow: hidden;
@@ -596,7 +744,7 @@
             height: 32px;
             border-radius: 8px;
             border: 1px solid var(--border-crisp);
-            background: var(--bg-surface);
+            background: var(--bg-surface-soft);
             color: var(--text-secondary);
             align-items: center;
             justify-content: center;
@@ -615,17 +763,17 @@
             position: absolute;
             left: -20px;
             top: 46px;
-            width: 320px;
-            height: 290px;
+            width: 310px;
+            height: 220px;
             transform: translateY(-50%);
             background: radial-gradient(
                 circle at 54px 50%,
-                rgba(245, 158, 11, 0.24) 0%,
-                rgba(217, 119, 6, 0.09) 34%,
-                transparent 74%
+                rgba(245, 158, 11, 0.2) 0%,
+                rgba(251, 191, 36, 0.08) 38%,
+                transparent 72%
             );
             pointer-events: none;
-            transition: top 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: top 0.46s var(--ease-out-expo);
             z-index: 1;
         }
 
@@ -637,9 +785,9 @@
             width: 2px;
             background: linear-gradient(
                 180deg,
-                rgba(148, 163, 184, 0.15) 0%,
-                rgba(245, 158, 11, 0.5) 50%,
-                rgba(148, 163, 184, 0.12) 100%
+                rgba(203, 213, 225, 0.4) 0%,
+                rgba(245, 158, 11, 0.65) 50%,
+                rgba(203, 213, 225, 0.3) 100%
             );
             pointer-events: none;
             z-index: 2;
@@ -653,7 +801,8 @@
             transform-origin: 50% -18px;
             pointer-events: none;
             z-index: 10;
-            transition: top 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: drop-shadow(0 6px 12px rgba(245, 158, 11, 0.28));
+            transition: top 0.46s var(--ease-out-expo);
         }
 
         @keyframes lanternSway {
@@ -683,7 +832,7 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 7px;
             position: relative;
             z-index: 5;
         }
@@ -700,16 +849,18 @@
             border: 1px solid transparent;
             text-align: left;
             cursor: pointer;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .nav-menu-btn:hover {
-            background: rgba(245, 158, 11, 0.09);
+            background: var(--bg-hover);
+            transform: translateX(2px);
         }
 
         .nav-menu-btn.is-active {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0.05) 100%);
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.14) 0%, rgba(254, 243, 199, 0.45) 100%);
             border-color: var(--border-amber);
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.1);
         }
 
         .nav-btn-content {
@@ -724,11 +875,12 @@
             height: 18px;
             flex-shrink: 0;
             color: var(--text-muted);
-            transition: color 0.2s ease;
+            transition: color 0.2s ease, transform 0.2s ease;
         }
 
         .nav-menu-btn.is-active .nav-btn-icon {
-            color: var(--amber-bright);
+            color: var(--amber-deep);
+            transform: scale(1.08);
         }
 
         .nav-btn-texts {
@@ -746,12 +898,11 @@
         }
 
         .nav-menu-btn:hover .nav-btn-title {
-            color: #ffffff;
+            color: var(--text-primary);
         }
 
         .nav-menu-btn.is-active .nav-btn-title {
-            color: var(--amber-bright);
-            text-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+            color: var(--text-primary);
         }
 
         .nav-btn-sub {
@@ -764,14 +915,14 @@
         }
 
         .nav-active-dot {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background: var(--amber-bright);
-            box-shadow: 0 0 10px 2px rgba(245, 158, 11, 0.9);
+            background: var(--amber-primary);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
             opacity: 0;
             transform: scale(0.4);
-            transition: all 0.25s ease;
+            transition: all 0.25s var(--ease-spring);
             flex-shrink: 0;
         }
 
@@ -783,8 +934,8 @@
         .sidebar-bottom {
             margin: 12px;
             padding: 14px;
-            border-radius: 14px;
-            background: var(--bg-surface);
+            border-radius: 16px;
+            background: var(--bg-surface-soft);
             border: 1px solid var(--border-crisp);
         }
 
@@ -813,26 +964,27 @@
             gap: 8px;
             padding: 9px 14px;
             border-radius: 10px;
-            background: rgba(220, 38, 38, 0.16);
-            border: 1px solid rgba(220, 38, 38, 0.45);
-            color: #fecaca;
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #be123c;
             font-size: 12.5px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
         }
         .btn-logout-sidebar:hover {
-            background: rgba(220, 38, 38, 0.3);
+            background: var(--toa-crimson);
+            border-color: var(--toa-crimson);
             color: #ffffff;
         }
 
         /* ==========================================================================
-           4. MAIN WORKSPACE & DIRECTORY LISTS
+           5. MAIN WORKSPACE, HERO, CARDS & HIGH-READABILITY LISTS
            ========================================================================== */
         .main-content {
             flex: 1;
             min-width: 0;
-            padding: 26px 32px 64px;
+            padding: 24px 32px 68px;
         }
 
         .workspace-container {
@@ -846,9 +998,13 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-crisp);
+            padding: 12px 18px;
+            margin-bottom: 22px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-crisp);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xs);
         }
 
         .breadcrumb-trail {
@@ -856,43 +1012,71 @@
             align-items: center;
             gap: 8px;
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         .breadcrumb-trail strong {
-            color: var(--amber-bright);
-            font-weight: 700;
+            color: var(--text-primary);
+            font-weight: 800;
         }
 
         .topbar-right-cluster {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 9px;
             flex-wrap: wrap;
         }
 
         .verified-pill {
+            position: relative;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
             padding: 6px 13px;
             border-radius: 99px;
             font-size: 12px;
             font-weight: 700;
-            color: #a7f3d0;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #065f46;
+            background: var(--emerald-soft);
+            border: 1px solid rgba(5, 150, 105, 0.26);
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .verified-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .live-dot {
+            position: relative;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--emerald);
+            display: inline-block;
+        }
+
+        .live-dot::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--emerald);
+            animation: pulseRing 2s ease-out infinite;
         }
 
         /* Hero Panel */
         .hero-panel {
-            background: var(--bg-surface);
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffffff 0%, #fffdf8 100%);
             border: 1px solid var(--border-crisp);
-            border-left: 4px solid var(--amber-primary);
+            border-left: 5px solid var(--amber-primary);
             border-radius: var(--radius-lg);
-            padding: 22px 26px;
+            padding: 24px 26px;
             margin-bottom: 20px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            box-shadow: var(--shadow-sm);
         }
 
         .hero-header-row {
@@ -911,27 +1095,63 @@
             border-radius: 99px;
             font-size: 11.5px;
             font-weight: 700;
-            color: var(--amber-bright);
-            background: rgba(245, 158, 11, 0.15);
+            color: var(--amber-deep);
+            background: var(--amber-soft);
             border: 1px solid rgba(245, 158, 11, 0.35);
             margin-bottom: 10px;
         }
 
         .hero-heading {
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.2px;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
             line-height: 1.25;
         }
 
         .hero-subtext {
             font-size: 13.5px;
             color: var(--text-secondary);
-            margin-top: 5px;
+            margin-top: 6px;
             max-width: 820px;
         }
 
+        /* Quick Stat Strip */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat-mini-card {
+            background: var(--bg-surface-soft);
+            border: 1px solid var(--border-crisp);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            transition: transform 0.2s var(--ease-spring), border-color 0.2s ease;
+        }
+
+        .stat-mini-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-amber);
+        }
+
+        .stat-mini-val {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .stat-mini-lbl {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Buttons */
         .btn-row {
             display: flex;
             flex-wrap: wrap;
@@ -940,6 +1160,8 @@
         }
 
         .btn {
+            position: relative;
+            overflow: hidden;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -950,8 +1172,12 @@
             font-weight: 700;
             border: 1px solid transparent;
             cursor: pointer;
-            transition: all 0.18s ease;
+            transition: transform 0.18s var(--ease-spring), background-color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
             white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .btn-sm {
@@ -961,37 +1187,66 @@
         }
 
         .btn-primary-amber {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #0b0f17;
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28);
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            color: #ffffff;
+            box-shadow: var(--shadow-amber);
         }
         .btn-primary-amber:hover {
-            filter: brightness(1.07);
             transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(234, 88, 12, 0.3);
         }
 
         .btn-soft-amber {
-            background: rgba(245, 158, 11, 0.16);
-            border-color: rgba(245, 158, 11, 0.42);
-            color: var(--amber-bright);
+            background: var(--amber-soft);
+            border-color: rgba(245, 158, 11, 0.38);
+            color: #92400e;
         }
         .btn-soft-amber:hover {
-            background: rgba(245, 158, 11, 0.26);
+            background: #fde68a;
+            color: #78350f;
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: #ffffff;
+            box-shadow: 0 6px 18px rgba(5, 150, 105, 0.24);
+        }
+        .btn-emerald:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.04);
+        }
+
+        .btn-soft-blue {
+            background: var(--blue-soft);
+            border-color: rgba(37, 99, 235, 0.28);
+            color: #1e40af;
+        }
+        .btn-soft-blue:hover {
+            background: #bfdbfe;
+        }
+
+        .btn-danger-soft {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            color: #be123c;
+        }
+        .btn-danger-soft:hover {
+            background: #ffe4e6;
         }
 
         .btn-neutral {
-            background: var(--bg-elevated);
-            border-color: var(--border-crisp);
-            color: var(--text-primary);
+            background: var(--bg-surface);
+            border-color: var(--border-strong);
+            color: var(--text-secondary);
         }
         .btn-neutral:hover {
-            background: #27334d;
-            border-color: #3b4d73;
+            background: var(--bg-hover);
+            border-color: #94a3b8;
+            color: var(--text-primary);
         }
 
         .search-bar-box {
-            margin-top: 16px;
+            margin-top: 18px;
             padding-top: 16px;
             border-top: 1px solid var(--border-crisp);
             display: flex;
@@ -1000,40 +1255,44 @@
             align-items: center;
         }
 
-        .clean-input {
+        .clean-input, .clean-textarea {
             flex: 1;
             min-width: 240px;
             background: var(--bg-input);
-            border: 1px solid var(--border-crisp);
+            border: 1.5px solid var(--border-crisp);
             border-radius: 10px;
-            padding: 11px 14px;
+            padding: 10px 14px;
             font-size: 13.5px;
-            color: #ffffff;
+            color: var(--text-primary);
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
-        .clean-input::placeholder {
+        .clean-input::placeholder, .clean-textarea::placeholder {
             color: var(--text-muted);
         }
-        .clean-input:focus {
+        .clean-input:focus, .clean-textarea:focus {
+            background: #ffffff;
             border-color: var(--amber-primary);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16);
         }
 
         .clean-select {
             background: var(--bg-input);
-            border: 1px solid var(--border-crisp);
+            border: 1.5px solid var(--border-crisp);
             border-radius: 10px;
-            padding: 11px 14px;
+            padding: 10px 14px;
             font-size: 13.5px;
-            color: #ffffff;
+            color: var(--text-primary);
             outline: none;
             cursor: pointer;
+            transition: border-color 0.2s ease;
         }
         .clean-select:focus {
             border-color: var(--amber-primary);
+            background: #ffffff;
         }
 
-        /* Filter Tabs / Chips */
+        /* Filter Chips */
         .chip-bar {
             display: flex;
             flex-wrap: wrap;
@@ -1042,7 +1301,7 @@
         }
 
         .chip-btn {
-            padding: 8px 14px;
+            padding: 8px 15px;
             border-radius: 99px;
             background: var(--bg-surface);
             border: 1px solid var(--border-crisp);
@@ -1050,33 +1309,35 @@
             font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.18s ease;
+            box-shadow: var(--shadow-xs);
+            transition: all 0.2s var(--ease-spring);
         }
         .chip-btn:hover {
-            color: #ffffff;
+            color: var(--text-primary);
             background: var(--bg-hover);
-            border-color: #3b4d73;
+            transform: translateY(-1px);
         }
         .chip-btn.is-active {
-            background: rgba(245, 158, 11, 0.2);
-            border-color: var(--amber-primary);
-            color: var(--amber-bright);
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            border-color: transparent;
+            color: #ffffff;
             font-weight: 700;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.28);
         }
 
-        /* Structured Directory List Panel */
+        /* Directory List Panels */
         .list-panel {
             background: var(--bg-surface);
             border: 1px solid var(--border-crisp);
             border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 22px;
         }
 
         .list-panel-header {
-            padding: 14px 20px;
-            background: var(--bg-elevated);
+            padding: 15px 20px;
+            background: var(--bg-surface-soft);
             border-bottom: 1px solid var(--border-crisp);
             display: flex;
             flex-wrap: wrap;
@@ -1086,9 +1347,9 @@
         }
 
         .list-panel-header h2 {
-            font-size: 14.5px;
+            font-size: 15px;
             font-weight: 800;
-            color: #ffffff;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1096,7 +1357,7 @@
 
         .list-panel-header span.header-hint {
             font-size: 12.5px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         .directory-list {
@@ -1110,10 +1371,10 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            padding: 13px 20px;
+            padding: 14px 20px;
             border-bottom: 1px solid var(--border-crisp);
             background: var(--bg-surface);
-            transition: background-color 0.16s ease;
+            transition: background-color 0.16s ease, transform 0.18s ease;
         }
 
         .directory-row:last-child {
@@ -1121,7 +1382,7 @@
         }
 
         .directory-row:hover {
-            background: var(--bg-hover);
+            background: #f8fafc;
         }
 
         .directory-row.is-clickable {
@@ -1129,23 +1390,33 @@
         }
 
         .directory-row.is-active-preview {
-            background: rgba(245, 158, 11, 0.12);
-            border-left: 3px solid var(--amber-bright);
+            background: #fffbeb;
+            border-left: 4px solid var(--amber-primary);
         }
 
         .row-left {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 14px;
             min-width: 0;
             flex: 1;
         }
 
-        .type-badge {
-            min-width: 52px;
-            height: 32px;
-            padding: 0 8px;
+        .row-thumb {
+            width: 52px;
+            height: 40px;
             border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border-crisp);
+            flex-shrink: 0;
+            background: var(--bg-surface-soft);
+        }
+
+        .type-badge {
+            min-width: 56px;
+            height: 34px;
+            padding: 0 9px;
+            border-radius: 9px;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: 0.4px;
@@ -1157,33 +1428,39 @@
         }
 
         .type-badge.is-pdf {
-            background: rgba(220, 38, 38, 0.18);
-            border: 1px solid rgba(248, 113, 113, 0.42);
-            color: #fecaca;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
         }
 
         .type-badge.is-xlsx {
-            background: rgba(16, 185, 129, 0.16);
-            border: 1px solid rgba(52, 211, 153, 0.4);
-            color: #a7f3d0;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
         }
 
-        .type-badge.is-png {
-            background: rgba(59, 130, 246, 0.18);
-            border: 1px solid rgba(96, 165, 250, 0.42);
-            color: #bfdbfe;
+        .type-badge.is-png, .type-badge.is-foto {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
         }
 
         .type-badge.is-folder {
-            background: rgba(245, 158, 11, 0.16);
-            border: 1px solid rgba(245, 158, 11, 0.42);
-            color: var(--amber-bright);
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
         }
 
         .type-badge.is-video {
-            background: rgba(168, 85, 247, 0.18);
-            border: 1px solid rgba(192, 132, 252, 0.42);
-            color: #e9d5ff;
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            color: #6d28d9;
+        }
+
+        .type-badge.is-doc {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            color: #0369a1;
         }
 
         .row-text-group {
@@ -1194,8 +1471,8 @@
         .row-title {
             font-size: 14px;
             font-weight: 700;
-            color: #ffffff;
-            line-height: 1.38;
+            color: var(--text-primary);
+            line-height: 1.4;
             word-break: break-word;
         }
 
@@ -1206,32 +1483,113 @@
             gap: 8px;
             margin-top: 4px;
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         .row-actions {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             flex-shrink: 0;
         }
 
         .pill-tag {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             padding: 3px 9px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 700;
-            background: rgba(245, 158, 11, 0.16);
-            border: 1px solid rgba(245, 158, 11, 0.36);
-            color: var(--amber-bright);
+            background: var(--amber-soft);
+            border: 1px solid rgba(245, 158, 11, 0.34);
+            color: #92400e;
             white-space: nowrap;
         }
 
         .pill-tag.is-red {
-            background: rgba(220, 38, 38, 0.18);
-            border-color: rgba(248, 113, 113, 0.42);
-            color: #fecaca;
+            background: var(--toa-crimson-soft);
+            border-color: rgba(220, 38, 38, 0.25);
+            color: #991b1b;
+        }
+
+        .pill-tag.is-green {
+            background: var(--emerald-soft);
+            border-color: rgba(5, 150, 105, 0.25);
+            color: #065f46;
+        }
+
+        .pill-tag.is-blue {
+            background: var(--blue-soft);
+            border-color: rgba(37, 99, 235, 0.25);
+            color: #1e40af;
+        }
+
+        /* Photo Gallery Grid inside Category/Project */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+            padding: 18px 20px;
+        }
+
+        .photo-tile {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-crisp);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.22s var(--ease-spring), box-shadow 0.22s ease, border-color 0.22s ease;
+        }
+
+        .photo-tile:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--amber-primary);
+        }
+
+        .photo-tile-media {
+            position: relative;
+            height: 140px;
+            background: #f1f5f9;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-tile-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
+
+        .photo-tile:hover .photo-tile-media img {
+            transform: scale(1.05);
+        }
+
+        .photo-tile-body {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .photo-tile-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         /* Quick Preview Link / ID Bar */
@@ -1241,6 +1599,7 @@
             border: 1px solid var(--border-crisp);
             border-radius: var(--radius-lg);
             margin-bottom: 22px;
+            box-shadow: var(--shadow-xs);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -1249,14 +1608,14 @@
         }
 
         .quick-preview-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--amber-bright);
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--text-primary);
         }
 
         .quick-preview-sub {
             font-size: 12px;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
         /* Responsive Card Grids */
@@ -1276,17 +1635,18 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-crisp);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 22px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.24s var(--ease-spring), box-shadow 0.24s ease, border-color 0.2s ease;
         }
 
         .portal-card:hover {
-            background: var(--bg-hover);
             border-color: var(--amber-primary);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
         }
 
         .card-head-row {
@@ -1297,44 +1657,44 @@
         }
 
         .card-icon-badge {
-            width: 42px;
-            height: 42px;
-            border-radius: 11px;
-            background: rgba(245, 158, 11, 0.16);
-            border: 1px solid rgba(245, 158, 11, 0.36);
-            color: var(--amber-bright);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--amber-soft);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: var(--amber-deep);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 800;
             flex-shrink: 0;
         }
 
         .card-icon-badge.is-red {
-            background: rgba(220, 38, 38, 0.18);
-            border-color: rgba(248, 113, 113, 0.42);
-            color: #fecaca;
+            background: var(--toa-crimson-soft);
+            border-color: rgba(220, 38, 38, 0.25);
+            color: var(--toa-crimson);
         }
 
         .card-heading {
-            font-size: 15px;
-            font-weight: 700;
-            color: #ffffff;
+            font-size: 15.5px;
+            font-weight: 800;
+            color: var(--text-primary);
             margin-top: 14px;
             line-height: 1.35;
         }
 
         .card-copy {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-secondary);
             margin-top: 7px;
-            line-height: 1.5;
+            line-height: 1.55;
         }
 
         .card-bottom-row {
             margin-top: 18px;
-            padding-top: 13px;
+            padding-top: 14px;
             border-top: 1px solid var(--border-crisp);
             display: flex;
             align-items: center;
@@ -1349,16 +1709,16 @@
             overflow: hidden;
             border: 1px solid var(--border-crisp);
             background: var(--bg-surface);
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+            box-shadow: var(--shadow-md);
         }
 
         .viewer-panel.is-highlighted {
-            border-color: var(--amber-primary);
+            border: 2px solid var(--amber-primary);
         }
 
         .viewer-toolbar {
             padding: 14px 20px;
-            background: var(--bg-elevated);
+            background: var(--bg-surface-soft);
             border-bottom: 1px solid var(--border-crisp);
             display: flex;
             flex-wrap: wrap;
@@ -1368,12 +1728,8 @@
         }
 
         .viewer-frame-container {
-            background: #090d14;
-            width: 100%;
-        }
-
-        .viewer-frame-container.is-light-drive {
             background: #f8fafc;
+            width: 100%;
         }
 
         .viewer-iframe {
@@ -1381,6 +1737,197 @@
             height: 600px;
             border: none;
             display: block;
+            background: #ffffff;
+        }
+
+        /* ==========================================================================
+           6. MODALS (UPLOAD / TAMBAH DOKUMEN & FOTO, DRIVE SYNC SETTINGS, LIGHTBOX)
+           ========================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 650;
+            background: rgba(15, 23, 42, 0.54);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-backdrop.is-open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 640px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-crisp);
+            border-top: 4px solid var(--amber-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: popModalIn 0.28s var(--ease-out-expo) both;
+        }
+
+        .modal-card.is-wide {
+            max-width: 820px;
+        }
+
+        .modal-head {
+            padding: 18px 24px;
+            background: var(--bg-surface-soft);
+            border-bottom: 1px solid var(--border-crisp);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .modal-head h3 {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--border-crisp);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.16s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 22px 24px;
+            max-height: 76vh;
+            overflow-y: auto;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-field .clean-input,
+        .form-field .clean-select,
+        .form-field .clean-textarea {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .dropzone-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-md);
+            background: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .dropzone-box:hover, .dropzone-box.is-dragover {
+            border-color: var(--amber-primary);
+            background: #fffbeb;
+        }
+
+        .mode-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 5px;
+            background: var(--bg-surface-soft);
+            border: 1px solid var(--border-crisp);
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .mode-tab-btn {
+            padding: 9px 12px;
+            border-radius: 9px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-tab-btn.is-active {
+            background: #ffffff;
+            color: var(--text-primary);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .code-snippet-box {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11.5px;
+            line-height: 1.5;
+            overflow-x: auto;
+            max-height: 220px;
+        }
+
+        .info-callout {
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            font-size: 12.5px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .info-callout.is-amber {
+            background: #fffbeb;
+            border-color: #fde68a;
+            color: #78350f;
+        }
+
+        /* Lightbox Photo Preview */
+        .lightbox-img-wrap {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            max-height: 60vh;
+            overflow: hidden;
+        }
+
+        .lightbox-img-wrap img {
+            max-width: 100%;
+            max-height: 56vh;
+            border-radius: 8px;
+            object-fit: contain;
         }
 
         /* Toast Banner */
@@ -1388,19 +1935,20 @@
             position: fixed;
             right: 22px;
             bottom: 22px;
-            z-index: 700;
-            padding: 12px 18px;
+            z-index: 800;
+            padding: 13px 18px;
             border-radius: 12px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--amber-primary);
+            background: #0f172a;
+            border-left: 4px solid var(--amber-primary);
             color: #ffffff;
             font-size: 13px;
             font-weight: 600;
-            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
+            box-shadow: var(--shadow-lg);
             opacity: 0;
             transform: translateY(14px);
             pointer-events: none;
-            transition: opacity 0.25s ease, transform 0.25s ease;
+            transition: opacity 0.25s ease, transform 0.25s var(--ease-out-expo);
+            max-width: 380px;
         }
         .toast-banner.is-visible {
             opacity: 1;
@@ -1408,15 +1956,18 @@
         }
 
         /* ==========================================================================
-           5. RESPONSIVE BREAKPOINTS
+           7. RESPONSIVE BREAKPOINTS
            ========================================================================== */
-        @media (max-width: 1060px) {
+        @media (max-width: 1080px) {
             .cards-grid-3 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .stats-strip {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 840px) {
+        @media (max-width: 860px) {
             .lamp-stage-wrapper {
                 grid-template-columns: 1fr;
                 gap: 16px;
@@ -1459,12 +2010,12 @@
                 display: inline-flex;
             }
             .main-content {
-                padding: 20px 16px 52px;
+                padding: 18px 16px 52px;
             }
         }
 
         @media (max-width: 640px) {
-            .cards-grid-3, .cards-grid-2 {
+            .cards-grid-3, .cards-grid-2, .stats-strip {
                 grid-template-columns: 1fr;
             }
             .directory-row {
@@ -1478,17 +2029,23 @@
             .viewer-iframe {
                 height: 460px;
             }
+            .mode-tabs {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
     <!-- ==========================================================================
-         SCREEN 1: LAMP LOGIN (INITIAL #080a0f DARK ROOM + PULL-CHAIN PHYSICS)
+         SCREEN 1: LAMP LOGIN GATEWAY
          ========================================================================== -->
     <section id="lampGateway" class="lamp-gateway is-dark" aria-label="Gerbang Login Portal TOA Indonesia">
+        <div class="gateway-ambient-orb gateway-orb-1" aria-hidden="true"></div>
+        <div class="gateway-ambient-orb gateway-orb-2" aria-hidden="true"></div>
+
         <div class="lamp-stage-wrapper">
-            <!-- Left Column: Seamless Floor Lamp Silhouette -->
+            <!-- Left Column: Interactive Floor Lamp -->
             <div class="lamp-visual-col">
                 <div class="lamp-halo" aria-hidden="true"></div>
                 <div class="lamp-beam" aria-hidden="true"></div>
@@ -1498,53 +2055,49 @@
                         <linearGradient id="shadeLitGrad" x1="50%" y1="0%" x2="50%" y2="100%">
                             <stop offset="0%" stop-color="#fef08a"/>
                             <stop offset="50%" stop-color="#f59e0b"/>
-                            <stop offset="100%" stop-color="#b45309"/>
+                            <stop offset="100%" stop-color="#d97706"/>
                         </linearGradient>
                         <linearGradient id="poleSteelGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#334155"/>
-                            <stop offset="48%" stop-color="#94a3b8"/>
-                            <stop offset="100%" stop-color="#1e293b"/>
+                            <stop offset="0%" stop-color="#475569"/>
+                            <stop offset="48%" stop-color="#cbd5e1"/>
+                            <stop offset="100%" stop-color="#334155"/>
                         </linearGradient>
                         <linearGradient id="goldTrimGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stop-color="#92400e"/>
+                            <stop offset="0%" stop-color="#b45309"/>
                             <stop offset="50%" stop-color="#fbbf24"/>
-                            <stop offset="100%" stop-color="#78350f"/>
+                            <stop offset="100%" stop-color="#92400e"/>
                         </linearGradient>
                     </defs>
 
-                    <!-- Weighted Floor Base -->
-                    <ellipse cx="110" cy="364" rx="54" ry="10" fill="#111622" stroke="#2c3547" stroke-width="1.2"/>
-                    <ellipse cx="110" cy="360" rx="44" ry="7" fill="#1a2130" stroke="#3b475e" stroke-width="1"/>
+                    <ellipse cx="110" cy="364" rx="54" ry="10" fill="#334155" stroke="#475569" stroke-width="1.2"/>
+                    <ellipse cx="110" cy="360" rx="44" ry="7" fill="#475569" stroke="#64748b" stroke-width="1"/>
                     <rect x="98" y="346" width="24" height="14" rx="4" fill="url(#goldTrimGrad)"/>
 
-                    <!-- Slender Vertical Stand -->
                     <rect x="106" y="128" width="8" height="220" fill="url(#poleSteelGrad)"/>
                     <rect x="103" y="236" width="14" height="10" rx="3" fill="url(#goldTrimGrad)"/>
                     <rect x="101" y="117" width="18" height="14" rx="3" fill="url(#goldTrimGrad)"/>
 
-                    <!-- Lamp Shade Assembly -->
                     <g id="lampShadeAssembly" class="shade-assembly">
                         <ellipse class="bulb-core" cx="110" cy="115" rx="46" ry="11" fill="#fef3c7"/>
                         <path class="shade-body" d="M68 36C68 32.5 86 30 110 30C134 30 152 32.5 152 36L168 113C168 117 142 120 110 120C78 120 52 117 52 113L68 36Z" fill="url(#shadeLitGrad)" stroke="#fde047" stroke-width="1.2"/>
-                        <ellipse cx="110" cy="34" rx="42" ry="5" fill="#0f172a" opacity="0.78"/>
+                        <ellipse cx="110" cy="34" rx="42" ry="5" fill="#1e293b" opacity="0.72"/>
                     </g>
 
-                    <!-- Interactive Elastic Pull-Chain Cord & Brass Tassel -->
                     <g id="pullCordSwitch" class="pull-cord-group">
                         <rect x="118" y="112" width="48" height="135" fill="rgba(0,0,0,0)"/>
-                        <line id="pullCordLine" x1="142" y1="118" x2="142" y2="184" stroke="#cbd5e1" stroke-width="1.8" stroke-dasharray="2.5 2"/>
+                        <line id="pullCordLine" x1="142" y1="118" x2="142" y2="184" stroke="#94a3b8" stroke-width="2" stroke-dasharray="2.5 2"/>
                         <g id="pullCordHandle">
-                            <circle class="cord-pulse-ring" cx="142" cy="190" r="11" fill="none" stroke="#fbbf24" stroke-width="1.3"/>
+                            <circle class="cord-pulse-ring" cx="142" cy="190" r="11" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
                             <circle cx="142" cy="188" r="5" fill="url(#goldTrimGrad)" stroke="#fef3c7" stroke-width="1"/>
                             <path d="M138.5 192.5H145.5L144 201H140L138.5 192.5Z" fill="#fbbf24"/>
                         </g>
                     </g>
                 </svg>
 
-                <span id="lampHintCaption" class="lamp-hint-caption">Tarik tali lampu ke bawah</span>
+                <span id="lampHintCaption" class="lamp-hint-caption">Tarik tali lampu ke bawah untuk menerangi portal</span>
             </div>
 
-            <!-- Right Column: Login Card (Hidden until lamp cord is pulled) -->
+            <!-- Right Column: Bright Login Card -->
             <div id="loginPanelCard" class="login-panel-card" aria-hidden="true">
                 <div class="login-brand-header">
                     <div class="toa-logo-pill is-login">
@@ -1593,24 +2146,24 @@
                         <span>PT TOA Galva Prima Karya</span>
                     </div>
 
-                    <button type="submit" class="btn-login-submit">Sign In ke Portal</button>
+                    <button type="submit" class="btn-login-submit">Sign In ke Portal &rarr;</button>
                 </form>
 
                 <div class="login-card-foot">
                     <span>Digital Sales &amp; Technical Hub</span>
-                    <span style="color:var(--amber-bright); font-weight:700;">PT TOA Galva Prima Karya</span>
+                    <span style="color:var(--toa-crimson); font-weight:700;">PT TOA Galva Prima Karya</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ==========================================================================
-         SCREEN 2: MAIN PORTAL SHELL (HANGING LANTERN SIDEBAR + DIRECTORY)
+         SCREEN 2: BRIGHT MODERN PORTAL SHELL
          ========================================================================== -->
     <header class="mobile-navbar">
         <button type="button" id="mobileMenuOpenBtn" class="hamburger-btn" aria-label="Buka Navigasi Lentera">
             <span>&#9776;</span>
-            <span>Menu Lentera</span>
+            <span>Menu</span>
         </button>
         <div style="display:flex; align-items:center; gap:10px;">
             <div class="toa-logo-pill is-mobile">
@@ -1618,8 +2171,8 @@
                 <span class="toa-fallback-text" style="font-size:12px;">TOA</span>
             </div>
             <div style="text-align:right;">
-                <div style="font-size:12.5px; font-weight:800; color:#ffffff;">TOA INDONESIA</div>
-                <div id="mobileActiveTitle" style="font-size:11px; color:var(--amber-bright);">Dokumen TGPK</div>
+                <div style="font-size:12.5px; font-weight:800; color:var(--text-primary);">TOA INDONESIA</div>
+                <div id="mobileActiveTitle" style="font-size:11px; font-weight:600; color:var(--amber-deep);">Dokumen TGPK</div>
             </div>
         </div>
     </header>
@@ -1648,33 +2201,31 @@
                 <div id="lanternGlowField" class="lantern-glow-field" aria-hidden="true"></div>
                 <div class="lantern-vertical-rail" aria-hidden="true"></div>
 
-                <!-- Hanging Lantern Fixture -->
                 <div id="lanternFixture" class="hanging-lantern-fixture" aria-hidden="true">
                     <svg width="52" height="80" viewBox="0 0 54 84" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="27" cy="6" r="3.5" stroke="#94a3b8" stroke-width="1.8" fill="#0f172a"/>
-                        <path d="M27 9.5V15" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
-                        <path d="M21 15H33L36 20H18L21 15Z" fill="#1e293b" stroke="#475569" stroke-width="1.2"/>
-                        <path d="M13 24C13 21.2 19.2 19.5 27 19.5C34.8 19.5 41 21.2 41 24H13Z" fill="#0f172a" stroke="#64748b" stroke-width="1.3"/>
+                        <circle cx="27" cy="6" r="3.5" stroke="#64748b" stroke-width="1.8" fill="#ffffff"/>
+                        <path d="M27 9.5V15" stroke="#64748b" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M21 15H33L36 20H18L21 15Z" fill="#334155" stroke="#475569" stroke-width="1.2"/>
+                        <path d="M13 24C13 21.2 19.2 19.5 27 19.5C34.8 19.5 41 21.2 41 24H13Z" fill="#1e293b" stroke="#475569" stroke-width="1.3"/>
                         <defs>
                             <radialGradient id="lanternCoreGrad" cx="50%" cy="55%" r="50%">
-                                <stop offset="0%" stop-color="#fef3c7" stop-opacity="1"/>
-                                <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.92"/>
-                                <stop offset="100%" stop-color="#92400e" stop-opacity="0.52"/>
+                                <stop offset="0%" stop-color="#fffbeb" stop-opacity="1"/>
+                                <stop offset="50%" stop-color="#f59e0b" stop-opacity="0.95"/>
+                                <stop offset="100%" stop-color="#b45309" stop-opacity="0.72"/>
                             </radialGradient>
                         </defs>
-                        <path d="M16 24H38L35.5 58H18.5L16 24Z" fill="url(#lanternCoreGrad)" stroke="#f59e0b" stroke-width="0.9"/>
+                        <path d="M16 24H38L35.5 58H18.5L16 24Z" fill="url(#lanternCoreGrad)" stroke="#d97706" stroke-width="1"/>
                         <g class="flame-inner">
                             <path d="M27 33C27 33 32 40.5 32 45.5C32 48.5 29.8 51 27 51C24.2 51 22 48.5 22 45.5C22 40.5 27 33 27 33Z" fill="#fbbf24"/>
-                            <path d="M27 38C27 38 29.8 42.5 29.8 45.8C29.8 47.6 28.5 49 27 49C25.5 49 24.2 47.6 24.2 45.8C24.2 42.5 27 38 27 38Z" fill="#fffbeb"/>
+                            <path d="M27 38C27 38 29.8 42.5 29.8 45.8C29.8 47.6 28.5 49 27 49C25.5 49 24.2 47.6 24.2 45.8C24.2 42.5 27 38 27 38Z" fill="#ffffff"/>
                         </g>
-                        <line x1="16" y1="24" x2="18.5" y2="58" stroke="#1e293b" stroke-width="2"/>
-                        <line x1="38" y1="24" x2="35.5" y2="58" stroke="#1e293b" stroke-width="2"/>
-                        <path d="M15 58H39L36.5 63.5H17.5L15 58Z" fill="#1e293b" stroke="#475569" stroke-width="1.2"/>
-                        <path d="M21 63.5H33L30 67H24L21 63.5Z" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+                        <line x1="16" y1="24" x2="18.5" y2="58" stroke="#334155" stroke-width="2"/>
+                        <line x1="38" y1="24" x2="35.5" y2="58" stroke="#334155" stroke-width="2"/>
+                        <path d="M15 58H39L36.5 63.5H17.5L15 58Z" fill="#334155" stroke="#475569" stroke-width="1.2"/>
+                        <path d="M21 63.5H33L30 67H24L21 63.5Z" fill="#1e293b" stroke="#334155" stroke-width="1"/>
                     </svg>
                 </div>
 
-                <!-- 6 Navigation Menus -->
                 <ul class="nav-menu-list">
                     <li>
                         <button type="button" class="nav-menu-btn is-active" data-route="tgpk">
@@ -1779,7 +2330,12 @@
                         <strong id="topbarBreadcrumb">Dokumen TGPK</strong>
                     </div>
                     <div class="topbar-right-cluster">
-                        <span class="verified-pill">&#9679; Google Drive Live Connected</span>
+                        <button type="button" id="driveSyncConfigBtn" class="verified-pill" title="Atur Sinkronisasi &amp; Upload Otomatis Google Drive">
+                            <span class="live-dot"></span>
+                            <span id="driveSyncStatusText">Google Drive Connected</span>
+                            <span style="opacity:0.7;">&#9881;</span>
+                        </button>
+                        <button type="button" id="topbarAddItemBtn" class="btn btn-primary-amber btn-sm">&#43; Tambah Dokumen / Foto</button>
                         <button type="button" id="topbarLogoutBtn" class="btn btn-neutral btn-sm">&#128274; Logout</button>
                     </div>
                 </div>
@@ -1790,11 +2346,166 @@
         </main>
     </div>
 
+    <!-- ==========================================================================
+         MODAL 1: TAMBAH DOKUMEN / FOTO KE KATEGORI & SYNC GOOGLE DRIVE
+         ========================================================================== -->
+    <div id="addItemModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="addItemModalTitle">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3 id="addItemModalTitle">&#43; Tambah Dokumen / Foto ke Kategori</h3>
+                <button type="button" class="modal-close" data-close-modal="addItemModal" aria-label="Tutup">&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <div class="mode-tabs" role="tablist">
+                    <button type="button" id="addModeUploadTab" class="mode-tab-btn is-active" onclick="window.setAddModalMode('upload')">&#128228; Upload File / Foto</button>
+                    <button type="button" id="addModeLinkTab" class="mode-tab-btn" onclick="window.setAddModalMode('link')">&#128279; Tempel Link / ID Drive</button>
+                </div>
+
+                <form id="addItemForm">
+                    <div class="form-field">
+                        <label for="addTargetGroup">Target Bagian Portal</label>
+                        <select id="addTargetGroup" class="clean-select" onchange="window.refreshAddCategoryOptions()">
+                            <option value="tgpk">Dokumen TGPK (7 Kategori)</option>
+                            <option value="projects">Foto Project Highlight (Galeri Proyek)</option>
+                            <option value="ppt">Materi PPT</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field" id="addCategoryWrapper">
+                        <label for="addCategorySelect">Pilih Kategori / Folder Tujuan</label>
+                        <select id="addCategorySelect" class="clean-select"></select>
+                    </div>
+
+                    <!-- Mode Upload -->
+                    <div id="addUploadSection">
+                        <div class="info-callout is-amber" id="addUploadSyncHint"></div>
+
+                        <div class="form-field">
+                            <label>Pilih File Dokumen atau Foto (JPG, PNG, WEBP, PDF, XLSX, PPTX, MP4)</label>
+                            <div id="fileDropZone" class="dropzone-box">
+                                <input id="addFileInput" type="file" multiple accept="image/*,.pdf,.xlsx,.xls,.doc,.docx,.ppt,.pptx,.mp4" style="display:none;">
+                                <div style="font-size:26px; margin-bottom:6px;">&#128194;</div>
+                                <div style="font-weight:700; color:var(--text-primary);" id="dropZoneLabel">Klik untuk memilih atau seret file/foto ke sini</div>
+                                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Bisa pilih banyak file/foto sekaligus. Otomatis muncul di list web!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode Paste Link -->
+                    <div id="addLinkSection" style="display:none;">
+                        <div class="form-field">
+                            <label for="addDriveLinkInput">Tautan Google Drive atau File/Folder ID</label>
+                            <input id="addDriveLinkInput" type="text" class="clean-input" placeholder="https://drive.google.com/file/d/... atau ID file/folder">
+                        </div>
+                        <div class="form-field">
+                            <label for="addItemTitleInput">Nama Dokumen / Foto</label>
+                            <input id="addItemTitleInput" type="text" class="clean-input" placeholder="Contoh: Dokumentasi Instalasi Speaker Masjid.jpg">
+                        </div>
+                        <div class="form-field">
+                            <label for="addItemTypeSelect">Tipe File</label>
+                            <select id="addItemTypeSelect" class="clean-select">
+                                <option value="FOTO">FOTO (Gambar / Dokumentasi)</option>
+                                <option value="PDF">PDF (Dokumen)</option>
+                                <option value="XLSX">XLSX (Spreadsheet)</option>
+                                <option value="VIDEO">VIDEO</option>
+                                <option value="FOLDER">FOLDER</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="addModalStatusMsg" style="font-size:12.5px; color:var(--amber-deep); font-weight:600; margin-bottom:12px; display:none;"></div>
+
+                    <div class="btn-row" style="justify-content:flex-end; margin-top:18px;">
+                        <button type="button" class="btn btn-neutral" data-close-modal="addItemModal">Batal</button>
+                        <button type="button" class="btn btn-soft-amber" onclick="window.openAddFolderOnDrive()">Buka Folder Drive &#8599;</button>
+                        <button type="submit" id="addItemSubmitBtn" class="btn btn-primary-amber">&#43; Simpan &amp; Tampilkan di List</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 2: PENGATURAN SINKRONISASI GOOGLE DRIVE (APPS SCRIPT / API KEY)
+         ========================================================================== -->
+    <div id="driveSettingsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="driveSettingsTitle">
+        <div class="modal-card is-wide">
+            <div class="modal-head">
+                <h3 id="driveSettingsTitle">&#9881; Pengaturan Sync &amp; Upload Langsung Google Drive</h3>
+                <button type="button" class="modal-close" data-close-modal="driveSettingsModal" aria-label="Tutup">&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-callout">
+                    <strong>Cara agar upload &amp; file baru di Google Drive otomatis sinkron 2 arah ke list halaman web ini:</strong><br>
+                    1. Buka <a href="https://script.google.com" target="_blank" rel="noopener noreferrer" style="text-decoration:underline; font-weight:700;">script.google.com</a> &rarr; <em>New Project</em>.<br>
+                    2. Salin &amp; tempel kode <strong>Google Apps Script</strong> di bawah, lalu klik <strong>Deploy &rarr; New Deployment &rarr; Web App</strong> (Execute as: <em>Me</em>, Who has access: <em>Anyone</em>).<br>
+                    3. Tempel URL Web App tersebut ke kolom di bawah lalu klik <strong>Simpan &amp; Sync Sekarang</strong>.
+                </div>
+
+                <div class="form-field">
+                    <label for="gasUrlInput">URL Google Apps Script Web App (Upload + Sync List Otomatis)</label>
+                    <input id="gasUrlInput" type="url" class="clean-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+                </div>
+
+                <div class="form-field">
+                    <label for="driveApiKeyInput">Opsional: Google Drive API Key (Alternatif Read-Only Sync untuk folder publik)</label>
+                    <input id="driveApiKeyInput" type="text" class="clean-input" placeholder="AIzaSy...">
+                </div>
+
+                <div class="form-field">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                        <label style="margin:0;">Kode Google Apps Script (Code.gs)</label>
+                        <button type="button" class="btn btn-soft-amber btn-sm" onclick="window.copyGasTemplate()">&#128203; Salin Script Code.gs</button>
+                    </div>
+                    <pre id="gasTemplatePre" class="code-snippet-box"></pre>
+                </div>
+
+                <div class="btn-row" style="justify-content:space-between; margin-top:16px; padding-top:14px; border-top:1px solid var(--border-crisp);">
+                    <div class="btn-row">
+                        <button type="button" class="btn btn-neutral btn-sm" onclick="window.exportPortalData()">&#11015; Export Backup JSON</button>
+                        <label class="btn btn-neutral btn-sm" style="margin:0;">
+                            &#11014; Import JSON
+                            <input type="file" accept=".json" style="display:none;" onchange="window.importPortalData(this)">
+                        </label>
+                    </div>
+                    <div class="btn-row">
+                        <button type="button" class="btn btn-neutral" data-close-modal="driveSettingsModal">Tutup</button>
+                        <button type="button" class="btn btn-emerald" onclick="window.saveDriveSyncSettings()">&#10003; Simpan &amp; Sync</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         MODAL 3: PHOTO LIGHTBOX PREVIEW
+         ========================================================================== -->
+    <div id="photoLightboxModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="lightboxTitle">
+        <div class="modal-card is-wide">
+            <div class="modal-head">
+                <h3 id="lightboxTitle">Pratinjau Foto</h3>
+                <button type="button" class="modal-close" data-close-modal="photoLightboxModal" aria-label="Tutup">&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <div class="lightbox-img-wrap">
+                    <img id="lightboxImg" src="" alt="Pratinjau Foto">
+                </div>
+                <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-top:16px;">
+                    <div id="lightboxMeta" style="font-size:12.5px; color:var(--text-muted);"></div>
+                    <div class="btn-row">
+                        <a id="lightboxDriveBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber btn-sm" style="display:none;">Buka di Google Drive &#8599;</a>
+                        <button type="button" class="btn btn-neutral btn-sm" data-close-modal="photoLightboxModal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST NOTIFICATION -->
     <div id="toastBanner" class="toast-banner" role="status">Notifikasi</div>
 
     <!-- ==========================================================================
-         JAVASCRIPT DATABASE & INTERACTION ENGINE
+         JAVASCRIPT ENGINE (DATA, DRIVE SYNC, UPLOAD & UI)
          ========================================================================== -->
     <script>
     (function () {
@@ -1869,7 +2580,6 @@
             }
         ];
 
-        /* Indexed Verified Documents & Sub-folders inside TGPK */
         var TGPK_INDEXED_ITEMS = [
             /* LEGALITAS TGPK */
             { cat: "legalitas", type: "PDF", title: "COMPANY PROFILE TGPK - update 181125.pdf", id: "1MbcHGEbbk3s5Dl1u14_BxM2dvoGJMhFo" },
@@ -1941,7 +2651,6 @@
             { cat: "specs", type: "FOLDER", title: "Amplifier", id: "1kd2MQe7T9WPRZSFKT6PWFuxFJkliQ2Nh" }
         ];
 
-        /* Verified Project Highlight Folders */
         var PROJECT_HIGHLIGHTS = [
             { id: "1ZyJ_z3veLF97Ruq0yA7vN6MjnFXy7oou", name: "Masjid Istiqlal", category: "Rumah Ibadah" },
             { id: "1uNwCw3rAzCsYzukbOdYTqFH_N4rjPVte", name: "MAJT (Masjid Agung Jawa Tengah)", category: "Rumah Ibadah" },
@@ -1968,29 +2677,111 @@
             { id: "15Ux5cMMVcALqy8re8a8n3kyw1nWqfWP0", name: "Seluruh Folder Highlight", category: "Arsip Utama" }
         ];
 
+        /* Ready-to-deploy Google Apps Script for 2-way Google Drive Sync & Upload */
+        var GAS_SCRIPT_TEMPLATE = [
+            "function doGet(e) {",
+            "  var folderId = (e && e.parameter && e.parameter.folderId) ? e.parameter.folderId : '';",
+            "  if (!folderId) return jsonOut({ ok: false, error: 'Missing folderId' });",
+            "  var folder = DriveApp.getFolderById(folderId);",
+            "  var items = [];",
+            "  var subs = folder.getFolders();",
+            "  while (subs.hasNext()) {",
+            "    var sf = subs.next();",
+            "    items.push({ id: sf.getId(), title: sf.getName(), type: 'FOLDER', mimeType: 'application/vnd.google-apps.folder', url: sf.getUrl(), updatedAt: sf.getLastUpdated().toISOString() });",
+            "  }",
+            "  var files = folder.getFiles();",
+            "  while (files.hasNext()) {",
+            "    var f = files.next();",
+            "    var mime = f.getMimeType();",
+            "    items.push({ id: f.getId(), title: f.getName(), mimeType: mime, type: detectType(mime, f.getName()), url: f.getUrl(), thumbnailUrl: 'https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=w600', updatedAt: f.getLastUpdated().toISOString() });",
+            "  }",
+            "  return jsonOut({ ok: true, folderId: folderId, items: items });",
+            "}",
+            "",
+            "function doPost(e) {",
+            "  var payload = JSON.parse(e.postData.contents || '{}');",
+            "  var folder = DriveApp.getFolderById(payload.folderId);",
+            "  var bytes = Utilities.base64Decode(payload.base64Data);",
+            "  var blob = Utilities.newBlob(bytes, payload.mimeType || 'application/octet-stream', payload.fileName);",
+            "  var file = folder.createFile(blob);",
+            "  try { file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (err) {}",
+            "  return jsonOut({ ok: true, id: file.getId(), title: file.getName(), mimeType: file.getMimeType(), type: detectType(file.getMimeType(), file.getName()), url: file.getUrl(), thumbnailUrl: 'https://drive.google.com/thumbnail?id=' + file.getId() + '&sz=w600', updatedAt: new Date().toISOString() });",
+            "}",
+            "",
+            "function detectType(mime, name) {",
+            "  var m = (mime || '').toLowerCase(); var n = (name || '').toLowerCase();",
+            "  if (m.indexOf('image/') === 0 || /\\.(jpg|jpeg|png|webp|gif)$/.test(n)) return 'FOTO';",
+            "  if (m.indexOf('pdf') !== -1 || /\\.pdf$/.test(n)) return 'PDF';",
+            "  if (m.indexOf('sheet') !== -1 || m.indexOf('excel') !== -1 || /\\.(xlsx|xls|csv)$/.test(n)) return 'XLSX';",
+            "  if (m.indexOf('video/') === 0 || /\\.(mp4|mov|webm)$/.test(n)) return 'VIDEO';",
+            "  return 'DOC';",
+            "}",
+            "",
+            "function jsonOut(obj) {",
+            "  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);",
+            "}"
+        ].join("\n");
+
         /* ----------------------------------------------------------------------
-           2. APPLICATION STATE & HELPERS
+           2. PERSISTENT STORAGE (CUSTOM ITEMS + LIVE SYNCED DRIVE CACHE)
            ---------------------------------------------------------------------- */
+        var STORAGE_KEY_CUSTOM = "toa_portal_custom_items_v1";
+        var STORAGE_KEY_SYNCED = "toa_portal_synced_drive_v1";
+        var STORAGE_KEY_SETTINGS = "toa_portal_drive_settings_v1";
+
+        function loadJsonStore(key, fallback) {
+            try {
+                var raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
+        function saveJsonStore(key, val) {
+            try {
+                localStorage.setItem(key, JSON.stringify(val));
+                return true;
+            } catch (e) {
+                window.notifyToast("Penyimpanan browser penuh. Gunakan Google Apps Script untuk menyimpan file besar ke Drive.");
+                return false;
+            }
+        }
+
+        var portalStore = {
+            /* customItems: [{ uid, scope ('tgpk'|'projects'|'ppt'), catKey (category key or project folderId), id (driveId if any), title, type, dataUrl (optional local preview), source ('drive-upload'|'drive-link'|'local'), createdAt }] */
+            customItems: loadJsonStore(STORAGE_KEY_CUSTOM, []),
+            /* syncedByFolder: { [folderId]: { items: [...], syncedAt: ISO } } */
+            syncedByFolder: loadJsonStore(STORAGE_KEY_SYNCED, {}),
+            settings: loadJsonStore(STORAGE_KEY_SETTINGS, { gasUrl: "", apiKey: "" })
+        };
+
         var appState = {
             authenticated: false,
             activeRoute: "tgpk",
-            /* Dokumen TGPK State */
-            tgpkSelectedCat: null, /* null = Semua Folder (List-first of 7 folders only), string = key */
+            tgpkSelectedCat: null,
             tgpkSearchQuery: "",
             tgpkQuickPdfInput: "",
-            tgpkLivePreviewItem: null, /* { id, title, type, catName } - shown only on explicit click */
-            /* Materi PPT State */
+            tgpkLivePreviewItem: null,
             pptEmbedMode: "list",
-            /* Foto Project Highlight State */
-            selectedProjectObj: null, /* null = list of folders only; object = isolated single-project view */
+            selectedProjectObj: null,
             projectSegmentFilter: "ALL",
             projectSearchQuery: "",
             projectEmbedMode: "grid",
-            /* Menu Form State */
+            projectViewStyle: "grid", /* 'grid' or 'list' for synced/added items inside a project */
             activeInlineFormUrl: null,
-            activeInlineFormName: ""
+            activeInlineFormName: "",
+            syncingFolderId: null,
+            addModalMode: "upload",
+            pendingUploadFiles: []
         };
 
+        /* Registry for safe click handling without inline JS string escaping pitfalls */
+        var uiActionItems = {};
+
+        /* ----------------------------------------------------------------------
+           3. UTILITIES
+           ---------------------------------------------------------------------- */
         function escapeStr(str) {
             return String(str || "")
                 .replace(/&/g, "&amp;")
@@ -2001,9 +2792,11 @@
         }
 
         function getCategoryMeta(catKey) {
-            return TGPK_FOLDERS.find(function (c) {
-                return c.key === catKey;
-            }) || null;
+            return TGPK_FOLDERS.find(function (c) { return c.key === catKey; }) || null;
+        }
+
+        function getProjectById(folderId) {
+            return PROJECT_HIGHLIGHTS.find(function (p) { return p.id === folderId; }) || null;
         }
 
         function extractGoogleDriveId(rawText) {
@@ -2011,10 +2804,122 @@
             if (!clean) return "";
             var matchD = clean.match(/\/d\/([a-zA-Z0-9_-]{15,})/);
             if (matchD && matchD[1]) return matchD[1];
+            var matchF = clean.match(/\/folders\/([a-zA-Z0-9_-]{15,})/);
+            if (matchF && matchF[1]) return matchF[1];
             var matchId = clean.match(/[?&]id=([a-zA-Z0-9_-]{15,})/);
             if (matchId && matchId[1]) return matchId[1];
             if (/^[a-zA-Z0-9_-]{15,}$/.test(clean)) return clean;
             return "";
+        }
+
+        function detectTypeFromFile(mime, name) {
+            var m = String(mime || "").toLowerCase();
+            var n = String(name || "").toLowerCase();
+            if (m === "application/vnd.google-apps.folder") return "FOLDER";
+            if (m.indexOf("image/") === 0 || /\.(jpg|jpeg|png|webp|gif|bmp)$/.test(n)) return "FOTO";
+            if (m.indexOf("pdf") !== -1 || /\.pdf$/.test(n)) return "PDF";
+            if (m.indexOf("sheet") !== -1 || m.indexOf("excel") !== -1 || /\.(xlsx|xls|csv)$/.test(n)) return "XLSX";
+            if (m.indexOf("video/") === 0 || /\.(mp4|mov|webm|avi)$/.test(n)) return "VIDEO";
+            return "DOC";
+        }
+
+        function getBadgeClass(type) {
+            if (type === "XLSX") return "is-xlsx";
+            if (type === "PNG" || type === "FOTO") return "is-foto";
+            if (type === "FOLDER") return "is-folder";
+            if (type === "VIDEO") return "is-video";
+            if (type === "DOC") return "is-doc";
+            return "is-pdf";
+        }
+
+        function getDriveThumbUrl(driveId) {
+            return "https://drive.google.com/thumbnail?id=" + encodeURIComponent(driveId) + "&sz=w600";
+        }
+
+        function getMergedCategoryItems(scope, catKey, folderId) {
+            var baseItems = [];
+            if (scope === "tgpk") {
+                baseItems = TGPK_INDEXED_ITEMS.filter(function (it) {
+                    return !catKey || it.cat === catKey;
+                }).map(function (it) {
+                    return {
+                        uid: "base_" + it.id,
+                        cat: it.cat,
+                        type: it.type,
+                        title: it.title,
+                        id: it.id,
+                        source: "indexed"
+                    };
+                });
+            }
+
+            var seenIds = {};
+            baseItems.forEach(function (b) { if (b.id) seenIds[b.id] = true; });
+
+            var merged = baseItems.slice();
+
+            /* Add synced items from Google Drive for this folderId (or all folders if catKey null) */
+            var folderIdsToPull = [];
+            if (folderId) {
+                folderIdsToPull.push({ fId: folderId, cKey: catKey });
+            } else if (scope === "tgpk") {
+                TGPK_FOLDERS.forEach(function (f) {
+                    folderIdsToPull.push({ fId: f.folderId, cKey: f.key });
+                });
+            }
+
+            folderIdsToPull.forEach(function (pair) {
+                var cache = portalStore.syncedByFolder[pair.fId];
+                if (cache && Array.isArray(cache.items)) {
+                    cache.items.forEach(function (s) {
+                        if (s.id && seenIds[s.id]) return;
+                        if (s.id) seenIds[s.id] = true;
+                        merged.unshift({
+                            uid: "sync_" + (s.id || Math.random()),
+                            cat: pair.cKey,
+                            type: s.type || detectTypeFromFile(s.mimeType, s.title),
+                            title: s.title,
+                            id: s.id,
+                            thumbnailUrl: s.thumbnailUrl || (s.id ? getDriveThumbUrl(s.id) : ""),
+                            source: "drive-sync",
+                            updatedAt: s.updatedAt || ""
+                        });
+                    });
+                }
+            });
+
+            /* Add user-added items */
+            portalStore.customItems.forEach(function (c) {
+                if (c.scope !== scope) return;
+                if (catKey && c.catKey !== catKey) return;
+                if (c.id && seenIds[c.id]) return;
+                if (c.id) seenIds[c.id] = true;
+                merged.unshift({
+                    uid: c.uid,
+                    cat: c.catKey,
+                    type: c.type,
+                    title: c.title,
+                    id: c.id || "",
+                    dataUrl: c.dataUrl || "",
+                    thumbnailUrl: c.dataUrl || (c.id ? getDriveThumbUrl(c.id) : ""),
+                    source: c.source || "local",
+                    createdAt: c.createdAt || ""
+                });
+            });
+
+            return merged;
+        }
+
+        function countCustomAndSyncedForCategory(scope, catKey, folderId) {
+            var count = 0;
+            portalStore.customItems.forEach(function (c) {
+                if (c.scope === scope && c.catKey === catKey) count++;
+            });
+            var cache = portalStore.syncedByFolder[folderId];
+            if (cache && Array.isArray(cache.items)) {
+                count += cache.items.length;
+            }
+            return count;
         }
 
         window.notifyToast = function (text) {
@@ -2025,10 +2930,22 @@
             window.clearTimeout(window._toaToastTimer);
             window._toaToastTimer = window.setTimeout(function () {
                 el.classList.remove("is-visible");
-            }, 2600);
+            }, 3000);
         };
 
         window.copyTextToClipboard = function (text, label) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function () {
+                    window.notifyToast((label || "Tautan") + " berhasil disalin!");
+                }).catch(function () {
+                    fallbackCopy(text, label);
+                });
+                return;
+            }
+            fallbackCopy(text, label);
+        };
+
+        function fallbackCopy(text, label) {
             var temp = document.createElement("textarea");
             temp.value = text;
             temp.style.position = "fixed";
@@ -2042,10 +2959,127 @@
                 window.notifyToast("Gagal menyalin tautan.");
             }
             document.body.removeChild(temp);
-        };
+        }
 
         /* ----------------------------------------------------------------------
-           3. HANGING LANTERN SIDEBAR POSITIONING
+           4. GOOGLE DRIVE SYNC & UPLOAD ENGINE
+           ---------------------------------------------------------------------- */
+        function updateSyncStatusBadge() {
+            var txt = document.getElementById("driveSyncStatusText");
+            if (!txt) return;
+            if (portalStore.settings.gasUrl) {
+                txt.textContent = "Drive Auto-Sync Aktif";
+            } else if (portalStore.settings.apiKey) {
+                txt.textContent = "Drive API Sync Aktif";
+            } else {
+                txt.textContent = "Google Drive Connected";
+            }
+        }
+
+        window.syncDriveFolder = function (folderId, folderTitle) {
+            if (!folderId) return;
+            var gasUrl = (portalStore.settings.gasUrl || "").trim();
+            var apiKey = (portalStore.settings.apiKey || "").trim();
+
+            if (!gasUrl && !apiKey) {
+                window.notifyToast("Atur URL Apps Script atau API Key terlebih dahulu untuk menarik isi folder Drive otomatis.");
+                window.openDriveSettingsModal();
+                return;
+            }
+
+            appState.syncingFolderId = folderId;
+            renderWorkspace();
+
+            var reqPromise;
+            if (gasUrl) {
+                var sep = gasUrl.indexOf("?") === -1 ? "?" : "&";
+                reqPromise = fetch(gasUrl + sep + "folderId=" + encodeURIComponent(folderId))
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (!data || !data.ok) {
+                            throw new Error((data && data.error) || "Apps Script mengembalikan error.");
+                        }
+                        return data.items || [];
+                    });
+            } else {
+                var q = encodeURIComponent("'" + folderId + "' in parents and trashed = false");
+                var fields = encodeURIComponent("files(id,name,mimeType,thumbnailLink,modifiedTime)");
+                var apiUrl = "https://www.googleapis.com/drive/v3/files?q=" + q + "&fields=" + fields + "&pageSize=200&key=" + encodeURIComponent(apiKey);
+                reqPromise = fetch(apiUrl)
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (data.error) throw new Error(data.error.message || "Drive API Error");
+                        return (data.files || []).map(function (f) {
+                            return {
+                                id: f.id,
+                                title: f.name,
+                                mimeType: f.mimeType,
+                                type: detectTypeFromFile(f.mimeType, f.name),
+                                thumbnailUrl: f.thumbnailLink || getDriveThumbUrl(f.id),
+                                updatedAt: f.modifiedTime || ""
+                            };
+                        });
+                    });
+            }
+
+            reqPromise.then(function (items) {
+                portalStore.syncedByFolder[folderId] = {
+                    items: items,
+                    syncedAt: new Date().toISOString()
+                };
+                saveJsonStore(STORAGE_KEY_SYNCED, portalStore.syncedByFolder);
+                appState.syncingFolderId = null;
+                renderWorkspace();
+                window.notifyToast("Sync sukses! " + items.length + " item dari \"" + (folderTitle || "Folder Drive") + "\" langsung tampil di list.");
+            }).catch(function (err) {
+                appState.syncingFolderId = null;
+                renderWorkspace();
+                window.notifyToast("Gagal sync Drive: " + (err && err.message ? err.message : "Periksa koneksi/izin folder."));
+            });
+        };
+
+        function readFileAsBase64AndPreview(file) {
+            return new Promise(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var dataUrl = String(reader.result || "");
+                    var base64 = dataUrl.split(",")[1] || "";
+                    resolve({ dataUrl: dataUrl, base64: base64 });
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function compressImageDataUrl(dataUrl, maxDim, quality) {
+            return new Promise(function (resolve) {
+                var img = new Image();
+                img.onload = function () {
+                    var w = img.width;
+                    var h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round(h * (maxDim / w));
+                            w = maxDim;
+                        } else {
+                            w = Math.round(w * (maxDim / h));
+                            h = maxDim;
+                        }
+                    }
+                    var canvas = document.createElement("canvas");
+                    canvas.width = w;
+                    canvas.height = h;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL("image/jpeg", quality || 0.78));
+                };
+                img.onerror = function () { resolve(dataUrl); };
+                img.src = dataUrl;
+            });
+        }
+
+        /* ----------------------------------------------------------------------
+           5. HANGING LANTERN SIDEBAR POSITIONING
            ---------------------------------------------------------------------- */
         function moveLanternToButton(btnEl, withSwing) {
             var stage = document.getElementById("lanternNavStage");
@@ -2069,7 +3103,74 @@
         }
 
         /* ----------------------------------------------------------------------
-           4. VIEW RENDERERS
+           6. SHARED ROW / GALLERY RENDERER FOR DOCUMENTS & PHOTOS
+           ---------------------------------------------------------------------- */
+        function registerActionItem(itemObj) {
+            var key = "act_" + Math.random().toString(36).slice(2, 10);
+            uiActionItems[key] = itemObj;
+            return key;
+        }
+
+        function renderDirectoryRowHtml(item, idx, catLabel, isPreviewing) {
+            var isFolder = item.type === "FOLDER";
+            var isPhoto = item.type === "FOTO" || item.type === "PNG";
+            var driveUrl = item.id
+                ? (isFolder ? ("https://drive.google.com/drive/folders/" + item.id) : ("https://drive.google.com/file/d/" + item.id + "/view"))
+                : "";
+
+            var actionKey = registerActionItem({
+                id: item.id,
+                title: item.title,
+                type: item.type,
+                catName: catLabel,
+                dataUrl: item.dataUrl || "",
+                thumbnailUrl: item.thumbnailUrl || ""
+            });
+
+            var badgeClass = getBadgeClass(item.type);
+            var h = "";
+            h += '<li class="directory-row anim-stagger-item ' + (isPreviewing ? "is-active-preview" : "") + '" style="--idx:' + idx + ';">';
+            h += '  <div class="row-left">';
+            if (isPhoto && (item.dataUrl || item.id)) {
+                var thumbSrc = item.dataUrl || getDriveThumbUrl(item.id);
+                h += '    <img class="row-thumb" src="' + escapeStr(thumbSrc) + '" alt="' + escapeStr(item.title) + '" loading="lazy" onerror="this.style.display=\'none\'">';
+            }
+            h += '    <span class="type-badge ' + badgeClass + '">' + escapeStr(item.type) + '</span>';
+            h += '    <div class="row-text-group">';
+            h += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(item.title) + '</div>';
+            h += '      <div class="row-meta">';
+            h += '        <span class="pill-tag">' + escapeStr(catLabel) + '</span>';
+            if (item.source === "drive-sync") {
+                h += '      <span class="pill-tag is-green">&#10003; Sync Google Drive</span>';
+            } else if (item.source === "drive-upload") {
+                h += '      <span class="pill-tag is-green">&#9729; Uploaded ke Drive</span>';
+            } else if (item.source === "drive-link") {
+                h += '      <span class="pill-tag is-blue">&#128279; Tautan Drive</span>';
+            } else if (item.source === "local") {
+                h += '      <span class="pill-tag is-red">&#128190; Lokal Browser</span>';
+            } else {
+                h += '      <span>' + (isFolder ? "Sub-folder Kategori Google Drive" : "Dokumen Terverifikasi Google Drive") + '</span>';
+            }
+            h += '      </div>';
+            h += '    </div>';
+            h += '  </div>';
+            h += '  <div class="row-actions">';
+            if (item.id || item.dataUrl) {
+                h += '    <button type="button" class="btn btn-primary-amber btn-sm" data-preview-key="' + actionKey + '">&#128065; ' + (isPhoto ? "Lihat Foto" : "Live Preview") + '</button>';
+            }
+            if (driveUrl) {
+                h += '    <a href="' + driveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
+            }
+            if (item.source && item.source !== "indexed" && item.source !== "drive-sync") {
+                h += '    <button type="button" class="btn btn-danger-soft btn-sm" data-delete-uid="' + escapeStr(item.uid) + '" title="Hapus item tambahan">&#128465;</button>';
+            }
+            h += '  </div>';
+            h += '</li>';
+            return h;
+        }
+
+        /* ----------------------------------------------------------------------
+           7. VIEW RENDERERS
            ---------------------------------------------------------------------- */
         function buildTgpkView() {
             var catMeta = appState.tgpkSelectedCat ? getCategoryMeta(appState.tgpkSelectedCat) : null;
@@ -2080,12 +3181,16 @@
                 : (q ? 'Hasil Pencarian Dokumen TGPK: "' + appState.tgpkSearchQuery + '"' : "Dokumen TGPK — Semua Folder");
             var headerDesc = catMeta
                 ? catMeta.desc
-                : "Pilih salah satu folder kategori di bawah atau gunakan pencarian untuk menampilkan isi folder dan pratinjau dokumen PDF.";
+                : "Pilih salah satu folder kategori di bawah, tambahkan dokumen/foto langsung ke kategori, atau sinkronkan dengan Google Drive.";
             var headerDriveUrl = catMeta
                 ? ("https://drive.google.com/drive/folders/" + catMeta.folderId)
                 : OFFICIAL_LINKS.tgpkDriveUrl;
 
-            var html = "";
+            var activeFolderId = catMeta ? catMeta.folderId : OFFICIAL_LINKS.tgpkRootId;
+            var isSyncingThis = appState.syncingFolderId === activeFolderId;
+            var allMergedCount = getMergedCategoryItems("tgpk", catMeta ? catMeta.key : null, catMeta ? catMeta.folderId : null).length;
+
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <div class="hero-header-row">';
             html += '    <div>';
@@ -2103,11 +3208,23 @@
             if (catMeta || q) {
                 html += '  <button type="button" class="btn btn-neutral" onclick="window.resetTgpkFilter()">&#8592; Semua Folder</button>';
             }
-            html += '      <a href="' + headerDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Folder Drive &#8599;</a>';
+            html += '      <button type="button" class="btn btn-emerald" onclick="window.openAddItemModal(\'tgpk\', \'' + (catMeta ? catMeta.key : "legalitas") + '\')">&#43; Tambah Dokumen / Foto</button>';
+            if (catMeta) {
+                html += '  <button type="button" class="btn btn-soft-blue" onclick="window.syncDriveFolder(\'' + catMeta.folderId + '\', \'' + escapeStr(catMeta.shortName) + '\')"><span class="' + (isSyncingThis ? "is-spinning" : "") + '">&#8635;</span> ' + (isSyncingThis ? "Syncing..." : "Sync Drive") + '</button>';
+            }
+            html += '      <a href="' + headerDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Drive &#8599;</a>';
             html += '    </div>';
             html += '  </div>';
 
-            /* Real-Time Search & Folder Dropdown Filter */
+            if (!catMeta && !q) {
+                html += '  <div class="stats-strip">';
+                html += '    <div class="stat-mini-card"><div class="stat-mini-val">' + TGPK_FOLDERS.length + ' Kategori</div><div class="stat-mini-lbl">Folder Resmi TGPK</div></div>';
+                html += '    <div class="stat-mini-card"><div class="stat-mini-val">' + allMergedCount + ' Item</div><div class="stat-mini-lbl">Terindeks &amp; Tersinkron</div></div>';
+                html += '    <div class="stat-mini-card"><div class="stat-mini-val">' + PROJECT_HIGHLIGHTS.length + ' Proyek</div><div class="stat-mini-lbl">Highlight Nasional</div></div>';
+                html += '    <div class="stat-mini-card"><div class="stat-mini-val">' + (portalStore.settings.gasUrl ? "Auto-Sync" : "Siap Sync") + '</div><div class="stat-mini-lbl">Integrasi Google Drive</div></div>';
+                html += '  </div>';
+            }
+
             html += '  <div class="search-bar-box">';
             html += '    <select id="tgpkFolderSelect" class="clean-select" aria-label="Filter Folder Dokumen TGPK" onchange="window.selectTgpkCategory(this.value || null)">';
             html += '      <option value="">-- Pilih Folder Kategori (Semua Folder) --</option>';
@@ -2116,7 +3233,7 @@
                 html += '  <option value="' + f.key + '" ' + sel + '>' + escapeStr(f.name) + '</option>';
             });
             html += '    </select>';
-            html += '    <input id="tgpkSearchField" class="clean-input" type="text" value="' + escapeStr(appState.tgpkSearchQuery) + '" oninput="window.handleTgpkSearch(this.value)" placeholder="Cari dokumen terindeks (Z-TS922-AS, Z-FV244PA-AS, COMPANY PROFILE, Postel, IK Test)...">';
+            html += '    <input id="tgpkSearchField" class="clean-input" type="text" value="' + escapeStr(appState.tgpkSearchQuery) + '" oninput="window.handleTgpkSearch(this.value)" placeholder="Cari dokumen atau foto (Z-TS922-AS, COMPANY PROFILE, Postel, IK Test)...">';
             if (q) {
                 html += '  <button type="button" class="btn btn-neutral" onclick="window.handleTgpkSearch(\'\')">Reset</button>';
             }
@@ -2128,139 +3245,120 @@
             html += '  <button type="button" class="chip-btn ' + (!catMeta && !q ? "is-active" : "") + '" onclick="window.selectTgpkCategory(null)">Semua Folder (7)</button>';
             TGPK_FOLDERS.forEach(function (c) {
                 var isAct = catMeta && catMeta.key === c.key ? "is-active" : "";
-                html += '<button type="button" class="chip-btn ' + isAct + '" onclick="window.selectTgpkCategory(\'' + c.key + '\')">' + escapeStr(c.shortName) + '</button>';
+                var extraCount = countCustomAndSyncedForCategory("tgpk", c.key, c.folderId);
+                var badgeTxt = extraCount > 0 ? (" (+" + extraCount + ")") : "";
+                html += '<button type="button" class="chip-btn ' + isAct + '" onclick="window.selectTgpkCategory(\'' + c.key + '\')">' + escapeStr(c.shortName + badgeTxt) + '</button>';
             });
             html += '</div>';
 
-            /* ==================================================================
-               RULE A: WHEN "SEMUA FOLDER" IS ACTIVE AND SEARCH IS EMPTY
-               -> DISPLAY ONLY COMPACT LIST OF THE 7 MAIN FOLDERS (NO BIG CARDS, NO AUTO PREVIEW)
-               ================================================================== */
+            /* RULE A: ALL FOLDERS OVERVIEW */
             if (!catMeta && !q) {
                 html += '<section class="list-panel" aria-label="Daftar Folder Utama Dokumen TGPK">';
                 html += '  <div class="list-panel-header">';
-                html += '    <h2>&#128194; Daftar Folder Utama Dokumen TGPK (7 Folder)</h2>';
-                html += '    <span class="header-hint">Klik salah satu folder untuk menampilkan isi dokumen &amp; Live Google Drive</span>';
+                html += '    <h2>&#128194; Daftar Folder Utama Dokumen TGPK (7 Kategori)</h2>';
+                html += '    <span class="header-hint">Klik folder untuk melihat isi, atau langsung tambah dokumen/foto &amp; sync Drive di tiap kategori</span>';
                 html += '  </div>';
                 html += '  <ul class="directory-list">';
                 TGPK_FOLDERS.forEach(function (c, idx) {
                     var driveFolderLink = "https://drive.google.com/drive/folders/" + c.folderId;
-                    html += '<li class="directory-row is-clickable" onclick="window.selectTgpkCategory(\'' + c.key + '\')">';
+                    var totalInCat = getMergedCategoryItems("tgpk", c.key, c.folderId).length;
+                    var extraCount = countCustomAndSyncedForCategory("tgpk", c.key, c.folderId);
+                    var syncingCat = appState.syncingFolderId === c.folderId;
+
+                    html += '<li class="directory-row is-clickable anim-stagger-item" style="--idx:' + idx + ';" onclick="window.selectTgpkCategory(\'' + c.key + '\')">';
                     html += '  <div class="row-left">';
                     html += '    <span class="type-badge is-folder">FOLDER</span>';
                     html += '    <div class="row-text-group">';
-                    html += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(c.name) + '</div>';
+                    html += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(c.name) + ' <span class="pill-tag" style="margin-left:6px;">' + totalInCat + ' item</span>' + (extraCount > 0 ? ' <span class="pill-tag is-green">+' + extraCount + ' baru</span>' : '') + '</div>';
                     html += '      <div class="row-meta">' + escapeStr(c.desc) + '</div>';
                     html += '    </div>';
                     html += '  </div>';
-                    html += '  <div class="row-actions">';
-                    html += '    <a href="' + driveFolderLink + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
-                    html += '    <button type="button" class="btn btn-soft-amber btn-sm">Buka Folder &#8594;</button>';
+                    html += '  <div class="row-actions" onclick="event.stopPropagation()">';
+                    html += '    <button type="button" class="btn btn-emerald btn-sm" onclick="window.openAddItemModal(\'tgpk\', \'' + c.key + '\')">&#43; Tambah Dok/Foto</button>';
+                    html += '    <button type="button" class="btn btn-soft-blue btn-sm" onclick="window.syncDriveFolder(\'' + c.folderId + '\', \'' + escapeStr(c.shortName) + '\')"><span class="' + (syncingCat ? "is-spinning" : "") + '">&#8635;</span> Sync</button>';
+                    html += '    <a href="' + driveFolderLink + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
+                    html += '    <button type="button" class="btn btn-soft-amber btn-sm" onclick="window.selectTgpkCategory(\'' + c.key + '\')">Buka &#8594;</button>';
                     html += '  </div>';
                     html += '</li>';
                 });
                 html += '  </ul>';
                 html += '</section>';
-
+                html += '</div>';
                 return html;
             }
 
-            /* ==================================================================
-               RULE B: SPECIFIC FOLDER SELECTED OR SEARCH QUERY ACTIVE
-               -> a) Indexed files/sub-folders with 'Live Preview' button
-               -> b) Live Google Drive Folder List + Quick Preview Link/ID PDF input
-               -> c) On-Demand 'Live Web Preview' panel (shown ONLY when clicked)
-               ================================================================== */
-            var matchingItems = TGPK_INDEXED_ITEMS.filter(function (item) {
-                var catOk = !catMeta || item.cat === catMeta.key;
-                var searchOk = !q || item.title.toLowerCase().indexOf(q) !== -1;
-                return catOk && searchOk;
+            /* RULE B: CATEGORY OR SEARCH RESULTS */
+            var mergedItems = getMergedCategoryItems("tgpk", catMeta ? catMeta.key : null, catMeta ? catMeta.folderId : null);
+            var matchingItems = mergedItems.filter(function (item) {
+                return !q || item.title.toLowerCase().indexOf(q) !== -1;
             });
 
             var listHeading = catMeta
-                ? ('Dokumen & Sub-Folder Terindeks: ' + catMeta.name + ' (' + matchingItems.length + ' Item)')
-                : ('Hasil Pencarian Dokumen Terindeks (' + matchingItems.length + ' Item)');
+                ? ("Dokumen, Foto & Sub-Folder: " + catMeta.name + " (" + matchingItems.length + " Item)")
+                : ("Hasil Pencarian Dokumen & Foto (" + matchingItems.length + " Item)");
 
             html += '<section class="list-panel" aria-label="' + escapeStr(listHeading) + '">';
             html += '  <div class="list-panel-header">';
             html += '    <h2>&#128196; ' + escapeStr(listHeading) + '</h2>';
-            html += '    <span class="header-hint">Klik tombol <strong>Live Preview</strong> di samping dokumen untuk menampilkan pratinjau di bawah</span>';
+            html += '    <div class="btn-row">';
+            html += '      <button type="button" class="btn btn-emerald btn-sm" onclick="window.openAddItemModal(\'tgpk\', \'' + (catMeta ? catMeta.key : "legalitas") + '\')">&#43; Tambah Dokumen / Foto di Sini</button>';
+            if (catMeta) {
+                html += '    <button type="button" class="btn btn-soft-blue btn-sm" onclick="window.syncDriveFolder(\'' + catMeta.folderId + '\', \'' + escapeStr(catMeta.shortName) + '\')"><span class="' + (isSyncingThis ? "is-spinning" : "") + '">&#8635;</span> Sync List Drive</button>';
+            }
+            html += '    </div>';
             html += '  </div>';
 
             if (matchingItems.length === 0) {
-                html += '<div style="padding:26px 20px; text-align:center; color:var(--text-secondary);">';
-                html += '  Tidak ditemukan item pada daftar terindeks untuk <strong>"' + escapeStr(appState.tgpkSearchQuery) + '"</strong>. Silakan cek daftar lengkap Google Drive di bawah.';
+                html += '<div style="padding:28px 20px; text-align:center; color:var(--text-secondary);">';
+                html += '  Tidak ditemukan item untuk <strong>"' + escapeStr(appState.tgpkSearchQuery) + '"</strong>. Silakan cek daftar Google Drive atau tambah dokumen baru.';
                 html += '</div>';
             } else {
                 html += '<ul class="directory-list">';
                 matchingItems.forEach(function (item, idx) {
                     var itemCat = getCategoryMeta(item.cat);
                     var itemCatLabel = itemCat ? itemCat.shortName : item.cat;
-                    var isFolder = item.type === "FOLDER";
-                    var driveUrl = isFolder
-                        ? ("https://drive.google.com/drive/folders/" + item.id)
-                        : ("https://drive.google.com/file/d/" + item.id + "/view");
-
-                    var badgeClass = "is-pdf";
-                    if (item.type === "XLSX") badgeClass = "is-xlsx";
-                    else if (item.type === "PNG") badgeClass = "is-png";
-                    else if (isFolder) badgeClass = "is-folder";
-
-                    var isPreviewingThis = appState.tgpkLivePreviewItem && appState.tgpkLivePreviewItem.id === item.id;
-
-                    html += '<li class="directory-row ' + (isPreviewingThis ? 'is-active-preview' : '') + '">';
-                    html += '  <div class="row-left">';
-                    html += '    <span class="type-badge ' + badgeClass + '">' + escapeStr(item.type) + '</span>';
-                    html += '    <div class="row-text-group">';
-                    html += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(item.title) + '</div>';
-                    html += '      <div class="row-meta">';
-                    html += '        <span class="pill-tag">' + escapeStr(itemCatLabel) + '</span>';
-                    html += '        <span>' + (isFolder ? 'Sub-folder Kategori Google Drive' : 'Dokumen Terverifikasi Google Drive') + '</span>';
-                    html += '      </div>';
-                    html += '    </div>';
-                    html += '  </div>';
-                    html += '  <div class="row-actions">';
-                    html += '    <button type="button" class="btn btn-primary-amber btn-sm" onclick="window.openTgpkLivePreview(\'' + item.id + '\', \'' + escapeStr(item.title) + '\', \'' + escapeStr(item.type) + '\', \'' + escapeStr(itemCatLabel) + '\')">&#128065; Live Preview</button>';
-                    html += '    <a href="' + driveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
-                    html += '  </div>';
-                    html += '</li>';
+                    var isPreviewing = appState.tgpkLivePreviewItem && appState.tgpkLivePreviewItem.id && appState.tgpkLivePreviewItem.id === item.id;
+                    html += renderDirectoryRowHtml(item, idx, itemCatLabel, isPreviewing);
                 });
                 html += '</ul>';
             }
             html += '</section>';
 
-            /* b) Live Google Drive Folder List + Quick Preview Link/ID PDF */
-            var activeDriveFolderId = catMeta ? catMeta.folderId : OFFICIAL_LINKS.tgpkRootId;
+            /* Quick Preview Link / ID Bar */
             var activeDriveFolderTitle = catMeta ? catMeta.name : "Semua Folder Dokumen TGPK";
-            var activeDriveFolderUrl = "https://drive.google.com/drive/folders/" + activeDriveFolderId;
+            var activeDriveFolderUrl = "https://drive.google.com/drive/folders/" + activeFolderId;
 
             html += '<div class="quick-preview-strip">';
             html += '  <div>';
-            html += '    <div class="quick-preview-label">&#9889; Quick Preview Link / ID PDF Google Drive</div>';
-            html += '    <div class="quick-preview-sub">Tempel tautan file PDF atau ID Google Drive dari daftar di bawah untuk langsung mem-preview dokumen di halaman ini.</div>';
+            html += '    <div class="quick-preview-label">&#9889; Quick Preview Link / ID Google Drive</div>';
+            html += '    <div class="quick-preview-sub">Tempel tautan file PDF/Foto atau ID Google Drive untuk langsung mem-preview dokumen di halaman ini.</div>';
             html += '  </div>';
             html += '  <div style="display:flex; flex:1; min-width:280px; max-width:560px; gap:8px;">';
-            html += '    <input id="quickPdfLinkInput" class="clean-input" type="text" value="' + escapeStr(appState.tgpkQuickPdfInput) + '" oninput="appState.tgpkQuickPdfInput = this.value" placeholder="Tempel link https://drive.google.com/file/d/... atau ID file PDF">';
+            html += '    <input id="quickPdfLinkInput" class="clean-input" type="text" value="' + escapeStr(appState.tgpkQuickPdfInput) + '" oninput="appState.tgpkQuickPdfInput = this.value" placeholder="Tempel link https://drive.google.com/file/d/... atau ID file">';
             html += '    <button type="button" class="btn btn-primary-amber" onclick="window.triggerQuickPdfPreview()">&#128065; Live Preview</button>';
             html += '  </div>';
             html += '</div>';
 
+            /* Live Google Drive Embedded Folder */
             html += '<section class="viewer-panel" aria-label="Live Google Drive Folder List">';
             html += '  <div class="viewer-toolbar">';
             html += '    <div>';
-            html += '      <div style="font-weight:800; color:#ffffff; font-size:14px;">&#128193; Live Google Drive Folder List: <span style="color:var(--amber-bright);">' + escapeStr(activeDriveFolderTitle) + '</span></div>';
-            html += '      <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Seluruh 100% file PDF &amp; sub-folder asli di dalam folder Google Drive ditampilkan otomatis di bawah ini.</div>';
+            html += '      <div style="font-weight:800; color:var(--text-primary); font-size:14px;">&#128193; Live Google Drive Folder View: <span style="color:var(--amber-deep);">' + escapeStr(activeDriveFolderTitle) + '</span></div>';
+            html += '      <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Tampilan langsung isi folder Google Drive asli.</div>';
             html += '    </div>';
             html += '    <div class="btn-row">';
+            if (catMeta) {
+                html += '      <button type="button" class="btn btn-soft-blue btn-sm" onclick="window.syncDriveFolder(\'' + catMeta.folderId + '\', \'' + escapeStr(catMeta.shortName) + '\')">&#8635; Tarik ke List Web</button>';
+            }
             html += '      <a href="' + activeDriveFolderUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-soft-amber btn-sm">Buka Folder Asli Drive &#8599;</a>';
             html += '    </div>';
             html += '  </div>';
-            html += '  <div class="viewer-frame-container is-light-drive">';
-            html += '    <iframe class="viewer-iframe" style="height:500px;" src="https://drive.google.com/embeddedfolderview?id=' + encodeURIComponent(activeDriveFolderId) + '#list" title="Live Google Drive Folder - ' + escapeStr(activeDriveFolderTitle) + '"></iframe>';
+            html += '  <div class="viewer-frame-container">';
+            html += '    <iframe class="viewer-iframe" style="height:480px;" src="https://drive.google.com/embeddedfolderview?id=' + encodeURIComponent(activeFolderId) + '#list" title="Live Google Drive Folder - ' + escapeStr(activeDriveFolderTitle) + '"></iframe>';
             html += '  </div>';
             html += '</section>';
 
-            /* c) On-Demand Live Web Preview Panel (ONLY shown when 'Live Preview' is clicked) */
+            /* On-Demand Live Web Preview Panel */
             if (appState.tgpkLivePreviewItem) {
                 var pv = appState.tgpkLivePreviewItem;
                 var isFolderPv = pv.type === "FOLDER";
@@ -2274,54 +3372,74 @@
                 html += '<section id="tgpkLivePreviewPanel" class="viewer-panel is-highlighted" aria-label="Live Web Preview Dokumen">';
                 html += '  <div class="viewer-toolbar">';
                 html += '    <div>';
-                html += '      <div style="font-weight:800; color:#ffffff; font-size:14px;">&#128065; Live Web Preview: <span style="color:var(--amber-bright);">' + escapeStr(pv.title) + '</span></div>';
-                html += '      <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Kategori: ' + escapeStr(pv.catName) + ' &bull; Tipe: ' + escapeStr(pv.type) + '</div>';
+                html += '      <div style="font-weight:800; color:var(--text-primary); font-size:14px;">&#128065; Live Web Preview: <span style="color:var(--amber-deep);">' + escapeStr(pv.title) + '</span></div>';
+                html += '      <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Kategori: ' + escapeStr(pv.catName) + ' &bull; Tipe: ' + escapeStr(pv.type) + '</div>';
                 html += '    </div>';
                 html += '    <div class="btn-row">';
                 html += '      <a href="' + extUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber btn-sm">Buka Tab Baru &#8599;</a>';
                 html += '      <button type="button" class="btn btn-neutral btn-sm" onclick="window.closeTgpkLivePreview()">Tutup Preview &#10005;</button>';
                 html += '    </div>';
                 html += '  </div>';
-                html += '  <div class="viewer-frame-container ' + (isFolderPv ? 'is-light-drive' : '') + '">';
+                html += '  <div class="viewer-frame-container">';
                 html += '    <iframe class="viewer-iframe" style="height:640px;" src="' + embedSrc + '" title="Live Web Preview - ' + escapeStr(pv.title) + '" allow="autoplay"></iframe>';
                 html += '  </div>';
                 html += '</section>';
             }
 
+            html += '</div>';
             return html;
         }
 
         function buildPptView() {
             var embedSrc = "https://drive.google.com/embeddedfolderview?id=" + encodeURIComponent(OFFICIAL_LINKS.pptRootId) + "#" + appState.pptEmbedMode;
+            var pptItems = getMergedCategoryItems("ppt", "ppt_root", OFFICIAL_LINKS.pptRootId);
+            var isSyncing = appState.syncingFolderId === OFFICIAL_LINKS.pptRootId;
 
-            var html = "";
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <div class="hero-header-row">';
             html += '    <div>';
             html += '      <span class="hero-eyebrow">&#128202; Materi Presentasi &amp; Company Profile</span>';
             html += '      <h1 class="hero-heading">Materi PPT &amp; Video Profil TOA Indonesia</h1>';
-            html += '      <p class="hero-subtext">Direktori folder presentasi resmi PT TOA Galva Prima Karya pada Google Drive dengan pilihan tampilan List atau Grid.</p>';
+            html += '      <p class="hero-subtext">Direktori folder presentasi resmi PT TOA Galva Prima Karya pada Google Drive dengan sinkronisasi langsung ke daftar web.</p>';
             html += '    </div>';
             html += '    <div class="btn-row">';
-            html += '      <button type="button" class="btn btn-sm ' + (appState.pptEmbedMode === "list" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setPptEmbedMode(\'list\')">Tampilan List</button>';
-            html += '      <button type="button" class="btn btn-sm ' + (appState.pptEmbedMode === "grid" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setPptEmbedMode(\'grid\')">Tampilan Grid</button>';
-            html += '      <a href="' + OFFICIAL_LINKS.pptDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Folder PPT Drive &#8599;</a>';
+            html += '      <button type="button" class="btn btn-emerald" onclick="window.openAddItemModal(\'ppt\', \'ppt_root\')">&#43; Tambah Materi / Foto</button>';
+            html += '      <button type="button" class="btn btn-soft-blue" onclick="window.syncDriveFolder(\'' + OFFICIAL_LINKS.pptRootId + '\', \'Materi PPT\')"><span class="' + (isSyncing ? "is-spinning" : "") + '">&#8635;</span> Sync Drive</button>';
+            html += '      <button type="button" class="btn btn-sm ' + (appState.pptEmbedMode === "list" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setPptEmbedMode(\'list\')">List</button>';
+            html += '      <button type="button" class="btn btn-sm ' + (appState.pptEmbedMode === "grid" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setPptEmbedMode(\'grid\')">Grid</button>';
+            html += '      <a href="' + OFFICIAL_LINKS.pptDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Drive &#8599;</a>';
             html += '    </div>';
             html += '  </div>';
             html += '</div>';
 
+            if (pptItems.length > 0) {
+                html += '<section class="list-panel" aria-label="Daftar Materi PPT Tersinkron">';
+                html += '  <div class="list-panel-header">';
+                html += '    <h2>&#128202; Daftar Materi &amp; Dokumen PPT (' + pptItems.length + ' Item)</h2>';
+                html += '    <span class="header-hint">Item yang ditambahkan atau disinkronkan tampil langsung di sini</span>';
+                html += '  </div>';
+                html += '  <ul class="directory-list">';
+                pptItems.forEach(function (it, idx) {
+                    html += renderDirectoryRowHtml(it, idx, "Materi PPT", false);
+                });
+                html += '  </ul>';
+                html += '</section>';
+            }
+
             html += '<section class="viewer-panel" style="margin-top:0;" aria-label="Folder Materi PPT Google Drive">';
             html += '  <div class="viewer-toolbar">';
-            html += '    <div style="font-weight:800; color:#ffffff; font-size:14px;">&#128193; Folder Google Drive: <span style="color:var(--amber-bright);">Materi PPT TOA Indonesia</span></div>';
+            html += '    <div style="font-weight:800; color:var(--text-primary); font-size:14px;">&#128193; Folder Google Drive: <span style="color:var(--amber-deep);">Materi PPT TOA Indonesia</span></div>';
             html += '    <div class="btn-row">';
             html += '      <button type="button" class="btn btn-neutral btn-sm" onclick="window.copyTextToClipboard(\'' + OFFICIAL_LINKS.pptDriveUrl + '\', \'Link Folder PPT\')">Salin Link Folder</button>';
             html += '      <a href="' + OFFICIAL_LINKS.pptDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber btn-sm">Buka Tab Baru &#8599;</a>';
             html += '    </div>';
             html += '  </div>';
-            html += '  <div class="viewer-frame-container is-light-drive">';
+            html += '  <div class="viewer-frame-container">';
             html += '    <iframe class="viewer-iframe" style="height:600px;" src="' + embedSrc + '" title="Folder Materi PPT Google Drive"></iframe>';
             html += '  </div>';
             html += '</section>';
+            html += '</div>';
 
             return html;
         }
@@ -2329,49 +3447,112 @@
         function buildProjectsView() {
             var activeProj = appState.selectedProjectObj;
 
-            /* ==================================================================
-               ISOLATED SINGLE-PROJECT GALLERY VIEW (WHEN A PROJECT IS CLICKED)
-               -> HIDES THE PROJECT LIST COMPLETELY AND SHOWS ONLY THE CHOSEN PROJECT
-               ================================================================== */
+            /* ISOLATED SINGLE-PROJECT GALLERY VIEW */
             if (activeProj) {
                 var driveUrl = "https://drive.google.com/drive/folders/" + encodeURIComponent(activeProj.id) + "?usp=drive_link";
                 var embedUrl = "https://drive.google.com/embeddedfolderview?id=" + encodeURIComponent(activeProj.id) + "#" + appState.projectEmbedMode;
+                var projItems = getMergedCategoryItems("projects", activeProj.id, activeProj.id);
+                var isSyncing = appState.syncingFolderId === activeProj.id;
 
-                var singleHtml = "";
+                var singleHtml = '<div class="anim-view-enter">';
                 singleHtml += '<div class="hero-panel">';
                 singleHtml += '  <div class="hero-header-row">';
                 singleHtml += '    <div>';
                 singleHtml += '      <div class="btn-row" style="margin-bottom:12px;">';
-                singleHtml += '        <button type="button" class="btn btn-primary-amber" onclick="window.selectProjectItem(null)">&#8592; Kembali ke Daftar Semua Project</button>';
+                singleHtml += '        <button type="button" class="btn btn-neutral btn-sm" onclick="window.selectProjectItem(null)">&#8592; Kembali ke Daftar Project</button>';
                 singleHtml += '        <span class="pill-tag">' + escapeStr(activeProj.category) + '</span>';
                 singleHtml += '      </div>';
                 singleHtml += '      <h1 class="hero-heading">' + escapeStr(activeProj.name) + '</h1>';
-                singleHtml += '      <p class="hero-subtext">Menampilkan khusus galeri dokumentasi folder proyek <strong>' + escapeStr(activeProj.name) + '</strong> dari Google Drive.</p>';
+                singleHtml += '      <p class="hero-subtext">Tambah foto/dokumen langsung ke folder proyek <strong>' + escapeStr(activeProj.name) + '</strong> atau sinkronkan isi Google Drive agar tampil di list &amp; galeri halaman web.</p>';
                 singleHtml += '    </div>';
                 singleHtml += '    <div class="btn-row">';
-                singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectEmbedMode === "grid" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectEmbedMode(\'grid\')">Tampilan Grid</button>';
-                singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectEmbedMode === "list" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectEmbedMode(\'list\')">Tampilan List</button>';
-                singleHtml += '      <a href="' + driveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral">Buka di Google Drive &#8599;</a>';
+                singleHtml += '      <button type="button" class="btn btn-emerald" onclick="window.openAddItemModal(\'projects\', \'' + escapeStr(activeProj.id) + '\')">&#43; Tambah Foto / Dokumen</button>';
+                singleHtml += '      <button type="button" class="btn btn-soft-blue" onclick="window.syncDriveFolder(\'' + activeProj.id + '\', \'' + escapeStr(activeProj.name) + '\')"><span class="' + (isSyncing ? "is-spinning" : "") + '">&#8635;</span> ' + (isSyncing ? "Syncing..." : "Sync Drive") + '</button>';
+                singleHtml += '      <a href="' + driveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Drive &#8599;</a>';
                 singleHtml += '    </div>';
                 singleHtml += '  </div>';
                 singleHtml += '</div>';
 
+                /* Synced / Added Photos & Docs List for this Project */
+                if (projItems.length > 0) {
+                    singleHtml += '<section class="list-panel" aria-label="Foto dan Dokumen Proyek Tersinkron">';
+                    singleHtml += '  <div class="list-panel-header">';
+                    singleHtml += '    <h2>&#128247; Foto &amp; Dokumen Proyek di Halaman Web (' + projItems.length + ' Item)</h2>';
+                    singleHtml += '    <div class="btn-row">';
+                    singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectViewStyle === "grid" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectViewStyle(\'grid\')">Galeri Foto</button>';
+                    singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectViewStyle === "list" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectViewStyle(\'list\')">List Detail</button>';
+                    singleHtml += '    </div>';
+                    singleHtml += '  </div>';
+
+                    if (appState.projectViewStyle === "grid") {
+                        singleHtml += '<div class="photo-grid">';
+                        projItems.forEach(function (it, idx) {
+                            var isPhoto = it.type === "FOTO" || it.type === "PNG";
+                            var thumbSrc = it.dataUrl || (it.id ? getDriveThumbUrl(it.id) : "");
+                            var actionKey = registerActionItem({
+                                id: it.id,
+                                title: it.title,
+                                type: it.type,
+                                catName: activeProj.name,
+                                dataUrl: it.dataUrl || "",
+                                thumbnailUrl: thumbSrc
+                            });
+                            var dUrl = it.id ? ("https://drive.google.com/file/d/" + it.id + "/view") : "";
+
+                            singleHtml += '<div class="photo-tile anim-stagger-item" style="--idx:' + idx + ';">';
+                            singleHtml += '  <div class="photo-tile-media" data-preview-key="' + actionKey + '">';
+                            if (isPhoto && thumbSrc) {
+                                singleHtml += '<img src="' + escapeStr(thumbSrc) + '" alt="' + escapeStr(it.title) + '" loading="lazy">';
+                            } else {
+                                singleHtml += '<span class="type-badge ' + getBadgeClass(it.type) + '">' + escapeStr(it.type) + '</span>';
+                            }
+                            singleHtml += '  </div>';
+                            singleHtml += '  <div class="photo-tile-body">';
+                            singleHtml += '    <div class="photo-tile-title">' + escapeStr(it.title) + '</div>';
+                            singleHtml += '    <div class="btn-row" style="justify-content:space-between;">';
+                            singleHtml += '      <button type="button" class="btn btn-soft-amber btn-sm" data-preview-key="' + actionKey + '">&#128065; Buka</button>';
+                            singleHtml += '      <div class="btn-row">';
+                            if (dUrl) {
+                                singleHtml += '    <a href="' + dUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
+                            }
+                            if (it.source !== "drive-sync") {
+                                singleHtml += '    <button type="button" class="btn btn-danger-soft btn-sm" data-delete-uid="' + escapeStr(it.uid) + '">&#128465;</button>';
+                            }
+                            singleHtml += '      </div>';
+                            singleHtml += '    </div>';
+                            singleHtml += '  </div>';
+                            singleHtml += '</div>';
+                        });
+                        singleHtml += '</div>';
+                    } else {
+                        singleHtml += '<ul class="directory-list">';
+                        projItems.forEach(function (it, idx) {
+                            singleHtml += renderDirectoryRowHtml(it, idx, activeProj.name, false);
+                        });
+                        singleHtml += '</ul>';
+                    }
+                    singleHtml += '</section>';
+                }
+
+                /* Google Drive Live Embed */
                 singleHtml += '<section class="viewer-panel is-highlighted" style="margin-top:0;" aria-label="Galeri Proyek ' + escapeStr(activeProj.name) + '">';
                 singleHtml += '  <div class="viewer-toolbar">';
-                singleHtml += '    <div style="font-weight:800; color:#ffffff; font-size:14px;">&#128444; Galeri Proyek Terpilih: <span style="color:var(--amber-bright);">' + escapeStr(activeProj.name) + '</span></div>';
-                singleHtml += '    <button type="button" class="btn btn-soft-amber btn-sm" onclick="window.selectProjectItem(null)">&#8592; Kembali ke Daftar Semua Project</button>';
+                singleHtml += '    <div style="font-weight:800; color:var(--text-primary); font-size:14px;">&#128444; Live Google Drive Folder: <span style="color:var(--amber-deep);">' + escapeStr(activeProj.name) + '</span></div>';
+                singleHtml += '    <div class="btn-row">';
+                singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectEmbedMode === "grid" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectEmbedMode(\'grid\')">Grid Drive</button>';
+                singleHtml += '      <button type="button" class="btn btn-sm ' + (appState.projectEmbedMode === "list" ? "btn-soft-amber" : "btn-neutral") + '" onclick="window.setProjectEmbedMode(\'list\')">List Drive</button>';
+                singleHtml += '    </div>';
                 singleHtml += '  </div>';
-                singleHtml += '  <div class="viewer-frame-container is-light-drive">';
-                singleHtml += '    <iframe class="viewer-iframe" style="height:640px;" src="' + embedUrl + '" title="Galeri Proyek - ' + escapeStr(activeProj.name) + '"></iframe>';
+                singleHtml += '  <div class="viewer-frame-container">';
+                singleHtml += '    <iframe class="viewer-iframe" style="height:600px;" src="' + embedUrl + '" title="Galeri Proyek - ' + escapeStr(activeProj.name) + '"></iframe>';
                 singleHtml += '  </div>';
                 singleHtml += '</section>';
+                singleHtml += '</div>';
 
                 return singleHtml;
             }
 
-            /* ==================================================================
-               DEFAULT STATE ("Semua Project"): LIST-FIRST OF PROJECT FOLDERS ONLY
-               ================================================================== */
+            /* PROJECT DIRECTORY LIST */
             var segments = ["ALL", "Rumah Ibadah", "Stadion & Olahraga", "Pemerintah & Publik", "Komersial & Hospitality", "Video", "Arsip Utama"];
             var q = appState.projectSearchQuery.toLowerCase().trim();
 
@@ -2381,15 +3562,16 @@
                 return segOk && qOk;
             });
 
-            var html = "";
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <div class="hero-header-row">';
             html += '    <div>';
             html += '      <span class="hero-eyebrow">&#128247; Portofolio Proyek Nasional</span>';
             html += '      <h1 class="hero-heading">Foto Project Highlight TOA Indonesia</h1>';
-            html += '      <p class="hero-subtext">Pilih salah satu folder proyek di bawah untuk membuka galeri khusus proyek yang dipilih.</p>';
+            html += '      <p class="hero-subtext">Pilih proyek untuk membuka galeri, atau langsung tambahkan foto dokumentasi proyek &amp; sinkronkan dengan Google Drive.</p>';
             html += '    </div>';
             html += '    <div class="btn-row">';
+            html += '      <button type="button" class="btn btn-emerald" onclick="window.openAddItemModal(\'projects\', \'' + PROJECT_HIGHLIGHTS[0].id + '\')">&#43; Tambah Foto Project</button>';
             html += '      <a href="' + OFFICIAL_LINKS.projectDriveUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber">Buka Folder Induk Drive &#8599;</a>';
             html += '    </div>';
             html += '  </div>';
@@ -2413,7 +3595,7 @@
             html += '<section class="list-panel" aria-label="Daftar Folder Foto Project Highlight">';
             html += '  <div class="list-panel-header">';
             html += '    <h2>&#128193; Daftar Folder Project Highlight (' + filteredProjects.length + ' Folder)</h2>';
-            html += '    <span class="header-hint">Klik salah satu folder proyek untuk membuka galeri proyek tersebut</span>';
+            html += '    <span class="header-hint">Klik folder proyek untuk membuka galeri, atau gunakan tombol Tambah Foto &amp; Sync</span>';
             html += '  </div>';
 
             if (filteredProjects.length === 0) {
@@ -2422,24 +3604,29 @@
                 html += '<ul class="directory-list">';
                 filteredProjects.forEach(function (proj, idx) {
                     var driveLink = "https://drive.google.com/drive/folders/" + proj.id + "?usp=drive_link";
+                    var extraCount = countCustomAndSyncedForCategory("projects", proj.id, proj.id);
+                    var syncing = appState.syncingFolderId === proj.id;
 
-                    html += '<li class="directory-row is-clickable" onclick="window.selectProjectItem(\'' + escapeStr(proj.name) + '\')">';
+                    html += '<li class="directory-row is-clickable anim-stagger-item" style="--idx:' + idx + ';" onclick="window.selectProjectItemById(\'' + escapeStr(proj.id) + '\')">';
                     html += '  <div class="row-left">';
                     html += '    <span class="type-badge is-folder">FOLDER</span>';
                     html += '    <div class="row-text-group">';
-                    html += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(proj.name) + '</div>';
+                    html += '      <div class="row-title">' + (idx + 1) + '. ' + escapeStr(proj.name) + (extraCount > 0 ? ' <span class="pill-tag is-green" style="margin-left:6px;">' + extraCount + ' foto/dok</span>' : '') + '</div>';
                     html += '      <div class="row-meta"><span class="pill-tag">' + escapeStr(proj.category) + '</span></div>';
                     html += '    </div>';
                     html += '  </div>';
-                    html += '  <div class="row-actions">';
-                    html += '    <a href="' + driveLink + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
-                    html += '    <button type="button" class="btn btn-primary-amber btn-sm">Buka Galeri &#8594;</button>';
+                    html += '  <div class="row-actions" onclick="event.stopPropagation()">';
+                    html += '    <button type="button" class="btn btn-emerald btn-sm" onclick="window.openAddItemModal(\'projects\', \'' + escapeStr(proj.id) + '\')">&#43; Tambah Foto</button>';
+                    html += '    <button type="button" class="btn btn-soft-blue btn-sm" onclick="window.syncDriveFolder(\'' + proj.id + '\', \'' + escapeStr(proj.name) + '\')"><span class="' + (syncing ? "is-spinning" : "") + '">&#8635;</span> Sync</button>';
+                    html += '    <a href="' + driveLink + '" target="_blank" rel="noopener noreferrer" class="btn btn-neutral btn-sm">Drive &#8599;</a>';
+                    html += '    <button type="button" class="btn btn-primary-amber btn-sm" onclick="window.selectProjectItemById(\'' + escapeStr(proj.id) + '\')">Galeri &#8594;</button>';
                     html += '  </div>';
                     html += '</li>';
                 });
                 html += '</ul>';
             }
             html += '</section>';
+            html += '</div>';
 
             return html;
         }
@@ -2466,7 +3653,7 @@
                 }
             ];
 
-            var html = "";
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <span class="hero-eyebrow">&#128203; Menu Form Terpadu TOA Indonesia</span>';
             html += '  <h1 class="hero-heading">Pusat Formulir Digital (Sign Shop, Event &amp; Survey)</h1>';
@@ -2474,8 +3661,8 @@
             html += '</div>';
 
             html += '<div class="cards-grid-3">';
-            formsList.forEach(function (f) {
-                html += '<article class="portal-card">';
+            formsList.forEach(function (f, idx) {
+                html += '<article class="portal-card anim-stagger-item" style="--idx:' + idx + ';">';
                 html += '  <div>';
                 html += '    <div class="card-head-row">';
                 html += '      <div class="card-icon-badge">&#128221;</div>';
@@ -2498,18 +3685,19 @@
             if (appState.activeInlineFormUrl) {
                 html += '<section id="inlineFormViewer" class="viewer-panel is-highlighted" aria-label="Pengisian Form Langsung">';
                 html += '  <div class="viewer-toolbar">';
-                html += '    <strong style="color:#ffffff;">&#128221; Pengisian Form Langsung: <span style="color:var(--amber-bright);">' + escapeStr(appState.activeInlineFormName) + '</span></strong>';
+                html += '    <strong style="color:var(--text-primary);">&#128221; Pengisian Form Langsung: <span style="color:var(--amber-deep);">' + escapeStr(appState.activeInlineFormName) + '</span></strong>';
                 html += '    <div class="btn-row">';
                 html += '      <a href="' + appState.activeInlineFormUrl + '" target="_blank" rel="noopener noreferrer" class="btn btn-primary-amber btn-sm">Buka Tab Baru &#8599;</a>';
                 html += '      <button type="button" class="btn btn-neutral btn-sm" onclick="window.openInlineForm(null, \'\')">Tutup Form &#10005;</button>';
                 html += '    </div>';
                 html += '  </div>';
-                html += '  <div class="viewer-frame-container is-light-drive">';
+                html += '  <div class="viewer-frame-container">';
                 html += '    <iframe class="viewer-iframe" style="height:600px;" src="' + appState.activeInlineFormUrl + '" title="Google Form TOA Indonesia"></iframe>';
                 html += '  </div>';
                 html += '</section>';
             }
 
+            html += '</div>';
             return html;
         }
 
@@ -2541,7 +3729,7 @@
                 }
             ];
 
-            var html = "";
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <div class="hero-header-row">';
             html += '    <div>';
@@ -2557,8 +3745,8 @@
             html += '</div>';
 
             html += '<div class="cards-grid-2">';
-            quickLinks.forEach(function (item) {
-                html += '<article class="portal-card">';
+            quickLinks.forEach(function (item, idx) {
+                html += '<article class="portal-card anim-stagger-item" style="--idx:' + idx + ';">';
                 html += '  <div>';
                 html += '    <div class="card-head-row">';
                 html += '      <div class="card-icon-badge">&#127760;</div>';
@@ -2572,6 +3760,7 @@
                 html += '  </div>';
                 html += '</article>';
             });
+            html += '</div>';
             html += '</div>';
 
             return html;
@@ -2601,7 +3790,7 @@
                 }
             ];
 
-            var html = "";
+            var html = '<div class="anim-view-enter">';
             html += '<div class="hero-panel">';
             html += '  <div class="hero-header-row">';
             html += '    <div>';
@@ -2617,8 +3806,8 @@
             html += '</div>';
 
             html += '<div class="cards-grid-2">';
-            categories.forEach(function (cat) {
-                html += '<article class="portal-card">';
+            categories.forEach(function (cat, idx) {
+                html += '<article class="portal-card anim-stagger-item" style="--idx:' + idx + ';">';
                 html += '  <div>';
                 html += '    <div class="card-head-row">';
                 html += '      <div class="card-icon-badge is-red">&#9654;</div>';
@@ -2633,12 +3822,13 @@
                 html += '</article>';
             });
             html += '</div>';
+            html += '</div>';
 
             return html;
         }
 
         /* ----------------------------------------------------------------------
-           5. CONTROLLER & STATE MUTATION ACTIONS
+           8. CONTROLLER & ACTIONS
            ---------------------------------------------------------------------- */
         var ROUTE_TITLES = {
             tgpk: "Dokumen TGPK",
@@ -2652,6 +3842,7 @@
         function renderWorkspace() {
             var mount = document.getElementById("workspaceContent");
             if (!mount) return;
+            uiActionItems = {};
 
             var markup = "";
             if (appState.activeRoute === "tgpk") markup = buildTgpkView();
@@ -2686,7 +3877,6 @@
             renderWorkspace();
         };
 
-        /* Dokumen TGPK Actions */
         window.selectTgpkCategory = function (catKey) {
             appState.tgpkSelectedCat = catKey || null;
             appState.tgpkLivePreviewItem = null;
@@ -2711,13 +3901,42 @@
             }
         };
 
-        window.openTgpkLivePreview = function (id, title, type, catName) {
-            appState.tgpkLivePreviewItem = {
-                id: id,
-                title: title,
-                type: type,
-                catName: catName
-            };
+        window.openPreviewForItem = function (item) {
+            if (!item) return;
+            var isPhoto = item.type === "FOTO" || item.type === "PNG";
+            if (isPhoto) {
+                var lbImg = document.getElementById("lightboxImg");
+                var lbTitle = document.getElementById("lightboxTitle");
+                var lbMeta = document.getElementById("lightboxMeta");
+                var lbDriveBtn = document.getElementById("lightboxDriveBtn");
+
+                if (lbTitle) lbTitle.textContent = item.title;
+                if (lbMeta) lbMeta.textContent = "Kategori: " + (item.catName || "-") + " • Tipe: " + item.type;
+                if (lbImg) {
+                    lbImg.src = item.dataUrl || getDriveThumbUrl(item.id);
+                }
+                if (lbDriveBtn) {
+                    if (item.id) {
+                        lbDriveBtn.href = "https://drive.google.com/file/d/" + encodeURIComponent(item.id) + "/view";
+                        lbDriveBtn.style.display = "inline-flex";
+                    } else {
+                        lbDriveBtn.style.display = "none";
+                    }
+                }
+                document.getElementById("photoLightboxModal").classList.add("is-open");
+                return;
+            }
+
+            if (item.dataUrl && !item.id) {
+                window.open(item.dataUrl, "_blank", "noopener,noreferrer");
+                return;
+            }
+
+            appState.tgpkLivePreviewItem = item;
+            if (appState.activeRoute !== "tgpk") {
+                window.open("https://drive.google.com/file/d/" + encodeURIComponent(item.id) + "/view", "_blank", "noopener,noreferrer");
+                return;
+            }
             renderWorkspace();
             var panel = document.getElementById("tgpkLivePreviewPanel");
             if (panel) panel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2728,16 +3947,16 @@
             var raw = inputEl ? inputEl.value : appState.tgpkQuickPdfInput;
             var fileId = extractGoogleDriveId(raw);
             if (!fileId) {
-                window.notifyToast("Masukkan tautan file Google Drive (/file/d/...) atau ID file PDF yang valid.");
+                window.notifyToast("Masukkan tautan file Google Drive (/file/d/...) atau ID file yang valid.");
                 return;
             }
             var catMeta = appState.tgpkSelectedCat ? getCategoryMeta(appState.tgpkSelectedCat) : null;
-            window.openTgpkLivePreview(
-                fileId,
-                "Dokumen Google Drive (" + fileId.slice(0, 12) + "...)",
-                "PDF",
-                catMeta ? catMeta.name : "Dokumen TGPK"
-            );
+            window.openPreviewForItem({
+                id: fileId,
+                title: "Dokumen Google Drive (" + fileId.slice(0, 12) + "...)",
+                type: "PDF",
+                catName: catMeta ? catMeta.name : "Dokumen TGPK"
+            });
         };
 
         window.closeTgpkLivePreview = function () {
@@ -2745,28 +3964,34 @@
             renderWorkspace();
         };
 
-        /* Materi PPT Actions */
         window.setPptEmbedMode = function (mode) {
             appState.pptEmbedMode = mode;
             renderWorkspace();
         };
 
-        /* Foto Project Highlight Actions */
-        window.selectProjectItem = function (projectName) {
-            if (!projectName) {
+        window.selectProjectItemById = function (projectId) {
+            if (!projectId) {
                 appState.selectedProjectObj = null;
                 renderWorkspace();
                 return;
             }
-            var found = PROJECT_HIGHLIGHTS.find(function (p) {
-                return p.name === projectName;
-            });
+            var found = getProjectById(projectId);
             if (found) {
                 appState.selectedProjectObj = found;
                 appState.projectEmbedMode = "grid";
                 renderWorkspace();
                 window.scrollTo({ top: 0, behavior: "smooth" });
             }
+        };
+
+        window.selectProjectItem = function (projectName) {
+            if (!projectName) {
+                appState.selectedProjectObj = null;
+                renderWorkspace();
+                return;
+            }
+            var found = PROJECT_HIGHLIGHTS.find(function (p) { return p.name === projectName; });
+            if (found) window.selectProjectItemById(found.id);
         };
 
         window.setProjectSegment = function (seg) {
@@ -2776,6 +4001,11 @@
 
         window.setProjectEmbedMode = function (mode) {
             appState.projectEmbedMode = mode;
+            renderWorkspace();
+        };
+
+        window.setProjectViewStyle = function (style) {
+            appState.projectViewStyle = style;
             renderWorkspace();
         };
 
@@ -2789,7 +4019,6 @@
             }
         };
 
-        /* Forms Actions */
         window.openInlineForm = function (url, name) {
             appState.activeInlineFormUrl = url;
             appState.activeInlineFormName = name || "";
@@ -2801,18 +4030,197 @@
         };
 
         /* ----------------------------------------------------------------------
-           6. LAMP LOGIN PHYSICS PULL-CHAIN ANIMATION
+           9. MODALS: TAMBAH DOKUMEN/FOTO & PENGATURAN DRIVE SYNC
+           ---------------------------------------------------------------------- */
+        function getTargetFolderIdFromModal() {
+            var scope = document.getElementById("addTargetGroup").value;
+            var catVal = document.getElementById("addCategorySelect").value;
+            if (scope === "tgpk") {
+                var meta = getCategoryMeta(catVal);
+                return meta ? meta.folderId : OFFICIAL_LINKS.tgpkRootId;
+            }
+            if (scope === "projects") return catVal || OFFICIAL_LINKS.projectRootId;
+            return OFFICIAL_LINKS.pptRootId;
+        }
+
+        window.refreshAddCategoryOptions = function (preferredCat) {
+            var scope = document.getElementById("addTargetGroup").value;
+            var catSelect = document.getElementById("addCategorySelect");
+            var catWrap = document.getElementById("addCategoryWrapper");
+            if (!catSelect) return;
+
+            catSelect.innerHTML = "";
+            if (scope === "tgpk") {
+                catWrap.style.display = "block";
+                TGPK_FOLDERS.forEach(function (f) {
+                    var opt = document.createElement("option");
+                    opt.value = f.key;
+                    opt.textContent = f.name;
+                    catSelect.appendChild(opt);
+                });
+                if (preferredCat) catSelect.value = preferredCat;
+            } else if (scope === "projects") {
+                catWrap.style.display = "block";
+                PROJECT_HIGHLIGHTS.forEach(function (p) {
+                    var opt = document.createElement("option");
+                    opt.value = p.id;
+                    opt.textContent = p.name + " (" + p.category + ")";
+                    catSelect.appendChild(opt);
+                });
+                if (preferredCat) catSelect.value = preferredCat;
+            } else {
+                catWrap.style.display = "none";
+                var optPpt = document.createElement("option");
+                optPpt.value = "ppt_root";
+                optPpt.textContent = "Materi PPT TOA Indonesia";
+                catSelect.appendChild(optPpt);
+            }
+        };
+
+        window.setAddModalMode = function (mode) {
+            appState.addModalMode = mode;
+            var upTab = document.getElementById("addModeUploadTab");
+            var lnTab = document.getElementById("addModeLinkTab");
+            var upSec = document.getElementById("addUploadSection");
+            var lnSec = document.getElementById("addLinkSection");
+            if (mode === "upload") {
+                upTab.classList.add("is-active");
+                lnTab.classList.remove("is-active");
+                upSec.style.display = "block";
+                lnSec.style.display = "none";
+            } else {
+                lnTab.classList.add("is-active");
+                upTab.classList.remove("is-active");
+                lnSec.style.display = "block";
+                upSec.style.display = "none";
+            }
+        };
+
+        window.openAddItemModal = function (scope, catKey) {
+            var targetGroup = document.getElementById("addTargetGroup");
+            if (!scope) {
+                if (appState.activeRoute === "projects") {
+                    scope = "projects";
+                    catKey = appState.selectedProjectObj ? appState.selectedProjectObj.id : PROJECT_HIGHLIGHTS[0].id;
+                } else if (appState.activeRoute === "ppt") {
+                    scope = "ppt";
+                    catKey = "ppt_root";
+                } else {
+                    scope = "tgpk";
+                    catKey = appState.tgpkSelectedCat || "legalitas";
+                }
+            }
+            targetGroup.value = scope;
+            window.refreshAddCategoryOptions(catKey);
+
+            appState.pendingUploadFiles = [];
+            document.getElementById("addFileInput").value = "";
+            document.getElementById("dropZoneLabel").textContent = "Klik untuk memilih atau seret file/foto ke sini";
+            document.getElementById("addDriveLinkInput").value = "";
+            document.getElementById("addItemTitleInput").value = "";
+            document.getElementById("addModalStatusMsg").style.display = "none";
+
+            var hint = document.getElementById("addUploadSyncHint");
+            if (portalStore.settings.gasUrl) {
+                hint.innerHTML = "<strong>&#9729; Sync Google Drive Aktif:</strong> File/foto yang diupload akan langsung tersimpan ke folder Google Drive kategori ini &amp; langsung tampil di list halaman web.";
+            } else {
+                hint.innerHTML = "<strong>Mode Cepat:</strong> File/foto langsung tampil di list halaman web ini. Untuk upload otomatis ke folder Google Drive, atur <em>Apps Script URL</em> di menu <a href='#' onclick='event.preventDefault(); window.closeAllModals(); window.openDriveSettingsModal();' style='text-decoration:underline; font-weight:700;'>Pengaturan Sync Drive</a>.";
+            }
+
+            window.setAddModalMode("upload");
+            document.getElementById("addItemModal").classList.add("is-open");
+        };
+
+        window.openAddFolderOnDrive = function () {
+            var folderId = getTargetFolderIdFromModal();
+            window.open("https://drive.google.com/drive/folders/" + encodeURIComponent(folderId), "_blank", "noopener,noreferrer");
+        };
+
+        window.openDriveSettingsModal = function () {
+            document.getElementById("gasUrlInput").value = portalStore.settings.gasUrl || "";
+            document.getElementById("driveApiKeyInput").value = portalStore.settings.apiKey || "";
+            document.getElementById("gasTemplatePre").textContent = GAS_SCRIPT_TEMPLATE;
+            document.getElementById("driveSettingsModal").classList.add("is-open");
+        };
+
+        window.copyGasTemplate = function () {
+            window.copyTextToClipboard(GAS_SCRIPT_TEMPLATE, "Script Code.gs");
+        };
+
+        window.saveDriveSyncSettings = function () {
+            portalStore.settings.gasUrl = document.getElementById("gasUrlInput").value.trim();
+            portalStore.settings.apiKey = document.getElementById("driveApiKeyInput").value.trim();
+            saveJsonStore(STORAGE_KEY_SETTINGS, portalStore.settings);
+            updateSyncStatusBadge();
+            window.closeAllModals();
+            window.notifyToast("Pengaturan Sync Google Drive disimpan!");
+
+            /* Immediately trigger sync if user is inside a specific folder */
+            if (appState.activeRoute === "tgpk" && appState.tgpkSelectedCat) {
+                var meta = getCategoryMeta(appState.tgpkSelectedCat);
+                if (meta) window.syncDriveFolder(meta.folderId, meta.shortName);
+            } else if (appState.activeRoute === "projects" && appState.selectedProjectObj) {
+                window.syncDriveFolder(appState.selectedProjectObj.id, appState.selectedProjectObj.name);
+            } else if (appState.activeRoute === "ppt") {
+                window.syncDriveFolder(OFFICIAL_LINKS.pptRootId, "Materi PPT");
+            }
+        };
+
+        window.exportPortalData = function () {
+            var payload = {
+                exportedAt: new Date().toISOString(),
+                customItems: portalStore.customItems,
+                syncedByFolder: portalStore.syncedByFolder
+            };
+            var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "toa-portal-backup.json";
+            a.click();
+            URL.revokeObjectURL(url);
+            window.notifyToast("Backup JSON berhasil diunduh.");
+        };
+
+        window.importPortalData = function (inputEl) {
+            var file = inputEl.files && inputEl.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function () {
+                try {
+                    var parsed = JSON.parse(reader.result);
+                    if (Array.isArray(parsed.customItems)) {
+                        portalStore.customItems = parsed.customItems;
+                        saveJsonStore(STORAGE_KEY_CUSTOM, portalStore.customItems);
+                    }
+                    if (parsed.syncedByFolder && typeof parsed.syncedByFolder === "object") {
+                        portalStore.syncedByFolder = parsed.syncedByFolder;
+                        saveJsonStore(STORAGE_KEY_SYNCED, portalStore.syncedByFolder);
+                    }
+                    renderWorkspace();
+                    window.closeAllModals();
+                    window.notifyToast("Data portal berhasil di-import!");
+                } catch (err) {
+                    window.notifyToast("File JSON tidak valid.");
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.closeAllModals = function () {
+            Array.prototype.slice.call(document.querySelectorAll(".modal-backdrop")).forEach(function (m) {
+                m.classList.remove("is-open");
+            });
+        };
+
+        /* ----------------------------------------------------------------------
+           10. LAMP LOGIN PHYSICS PULL-CHAIN ANIMATION
            ---------------------------------------------------------------------- */
         var VALID_USER = "tgpk";
         var VALID_PASS = "tgpkok";
         var SESSION_STORAGE_KEY = "toa_portal_auth_session_v9";
         var lampLit = false;
-        var cordDragState = {
-            dragging: false,
-            startY: 0,
-            currentPull: 0,
-            animFrame: null
-        };
+        var cordDragState = { dragging: false, startY: 0, currentPull: 0, animFrame: null };
 
         function updateCordVisuals(pullOffsetPx) {
             var lineEl = document.getElementById("pullCordLine");
@@ -2820,33 +4228,21 @@
             var shadeEl = document.getElementById("lampShadeAssembly");
             var clamped = Math.max(-6, Math.min(46, pullOffsetPx));
 
-            if (lineEl) {
-                lineEl.setAttribute("y2", String(184 + clamped));
-            }
-            if (handleEl) {
-                handleEl.setAttribute("transform", "translate(0, " + clamped.toFixed(1) + ")");
-            }
-            if (shadeEl) {
-                var tiltDeg = (clamped * 0.14).toFixed(2);
-                shadeEl.style.transform = "rotate(" + tiltDeg + "deg)";
-            }
+            if (lineEl) lineEl.setAttribute("y2", String(184 + clamped));
+            if (handleEl) handleEl.setAttribute("transform", "translate(0, " + clamped.toFixed(1) + ")");
+            if (shadeEl) shadeEl.style.transform = "rotate(" + (clamped * 0.14).toFixed(2) + "deg)";
         }
 
         function springBackCord(initialDisplacement) {
-            if (cordDragState.animFrame) {
-                cancelAnimationFrame(cordDragState.animFrame);
-            }
+            if (cordDragState.animFrame) cancelAnimationFrame(cordDragState.animFrame);
             var pos = initialDisplacement;
             var vel = 0;
-            var stiffness = 0.24;
-            var damping = 0.72;
 
             function step() {
-                var force = -stiffness * pos;
-                vel = (vel + force) * damping;
+                var force = -0.24 * pos;
+                vel = (vel + force) * 0.72;
                 pos += vel;
                 updateCordVisuals(pos);
-
                 if (Math.abs(pos) < 0.2 && Math.abs(vel) < 0.2) {
                     updateCordVisuals(0);
                     cordDragState.animFrame = null;
@@ -2873,54 +4269,39 @@
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.05);
-            } catch (e) {
-                // Audio optional
-            }
+            } catch (e) {}
         }
 
         function setLampIlluminated(turnOn, animateCord) {
             var gateway = document.getElementById("lampGateway");
             var card = document.getElementById("loginPanelCard");
             var hintEl = document.getElementById("lampHintCaption");
-
             lampLit = Boolean(turnOn);
 
             if (animateCord) {
                 playSwitchClick();
                 if (cordDragState.currentPull < 12) {
                     updateCordVisuals(28);
-                    window.setTimeout(function () {
-                        springBackCord(28);
-                    }, 95);
+                    window.setTimeout(function () { springBackCord(28); }, 95);
                 } else {
                     springBackCord(cordDragState.currentPull);
                 }
             }
 
             if (gateway) {
-                if (lampLit) {
-                    gateway.classList.remove("is-dark");
-                } else {
-                    gateway.classList.add("is-dark");
-                }
+                if (lampLit) gateway.classList.remove("is-dark");
+                else gateway.classList.add("is-dark");
             }
-
-            if (card) {
-                card.setAttribute("aria-hidden", lampLit ? "false" : "true");
-            }
-
+            if (card) card.setAttribute("aria-hidden", lampLit ? "false" : "true");
             if (hintEl) {
                 hintEl.textContent = lampLit
                     ? "Tarik tali untuk mematikan lampu"
-                    : "Tarik tali lampu ke bawah";
+                    : "Tarik tali lampu ke bawah untuk menerangi portal";
             }
-
             if (lampLit) {
                 window.setTimeout(function () {
                     var uField = document.getElementById("inputUsername");
-                    if (uField && !appState.authenticated) {
-                        uField.focus();
-                    }
+                    if (uField && !appState.authenticated) uField.focus();
                 }, 420);
             }
         }
@@ -2932,10 +4313,9 @@
         function enterPortal(silent) {
             appState.authenticated = true;
             var gateway = document.getElementById("lampGateway");
-            if (gateway) {
-                gateway.classList.add("is-authenticated");
-            }
+            if (gateway) gateway.classList.add("is-authenticated");
 
+            updateSyncStatusBadge();
             renderWorkspace();
 
             window.setTimeout(function () {
@@ -2950,27 +4330,18 @@
 
         function handleLogout() {
             appState.authenticated = false;
-            try {
-                sessionStorage.removeItem(SESSION_STORAGE_KEY);
-            } catch (e) {
-                // Ignore
-            }
-
+            try { sessionStorage.removeItem(SESSION_STORAGE_KEY); } catch (e) {}
             var errAlert = document.getElementById("loginErrorMsg");
             if (errAlert) errAlert.classList.remove("visible");
 
             setLampIlluminated(false, false);
-
             var gateway = document.getElementById("lampGateway");
-            if (gateway) {
-                gateway.classList.remove("is-authenticated");
-            }
-
+            if (gateway) gateway.classList.remove("is-authenticated");
             window.notifyToast("Anda telah logout. Tarik tali lampu untuk masuk kembali.");
         }
 
         /* ----------------------------------------------------------------------
-           7. INITIALIZATION ON DOM READY
+           11. INITIALIZATION & DELEGATED EVENT LISTENERS
            ---------------------------------------------------------------------- */
         function bootstrap() {
             var shadeAssembly = document.getElementById("lampShadeAssembly");
@@ -3013,18 +4384,14 @@
                 });
             }
 
-            if (shadeAssembly) {
-                shadeAssembly.addEventListener("click", handleLampInteraction);
-            }
-            if (lampHint) {
-                lampHint.addEventListener("click", handleLampInteraction);
-            }
+            if (shadeAssembly) shadeAssembly.addEventListener("click", handleLampInteraction);
+            if (lampHint) lampHint.addEventListener("click", handleLampInteraction);
 
             if (pwToggleBtn && pwInput) {
                 pwToggleBtn.addEventListener("click", function () {
                     var hidden = pwInput.type === "password";
                     pwInput.type = hidden ? "text" : "password";
-                    pwToggleBtn.style.color = hidden ? "var(--amber-bright)" : "var(--text-muted)";
+                    pwToggleBtn.style.color = hidden ? "var(--amber-deep)" : "var(--text-muted)";
                 });
             }
 
@@ -3042,11 +4409,7 @@
                     if (uVal === VALID_USER && pVal === VALID_PASS) {
                         if (errMsg) errMsg.classList.remove("visible");
                         if (remember && remember.checked) {
-                            try {
-                                sessionStorage.setItem(SESSION_STORAGE_KEY, "1");
-                            } catch (err) {
-                                // Ignore
-                            }
+                            try { sessionStorage.setItem(SESSION_STORAGE_KEY, "1"); } catch (err) {}
                         }
                         enterPortal(false);
                     } else {
@@ -3059,16 +4422,12 @@
                 });
             }
 
-            // Sidebar Menu Events
+            /* Sidebar Menu Events */
             var navBtns = Array.prototype.slice.call(document.querySelectorAll(".nav-menu-btn"));
             navBtns.forEach(function (btn) {
-                btn.addEventListener("mouseenter", function () {
-                    moveLanternToButton(btn, false);
-                });
+                btn.addEventListener("mouseenter", function () { moveLanternToButton(btn, false); });
                 btn.addEventListener("click", function () {
-                    var route = btn.getAttribute("data-route");
-                    window.switchRoute(route, true);
-
+                    window.switchRoute(btn.getAttribute("data-route"), true);
                     var drawer = document.getElementById("sidebarDrawer");
                     var overlay = document.getElementById("drawerBackdrop");
                     if (drawer) drawer.classList.remove("is-drawer-open");
@@ -3084,7 +4443,7 @@
                 });
             }
 
-            // Mobile Drawer Controls
+            /* Mobile Drawer Controls */
             var openBtn = document.getElementById("mobileMenuOpenBtn");
             var closeBtn = document.getElementById("mobileMenuCloseBtn");
             var backdrop = document.getElementById("drawerBackdrop");
@@ -3106,25 +4465,224 @@
             if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
             if (backdrop) backdrop.addEventListener("click", closeDrawer);
 
-            // Logout Buttons
-            var sideLogout = document.getElementById("sidebarLogoutBtn");
-            var topLogout = document.getElementById("topbarLogoutBtn");
-            if (sideLogout) sideLogout.addEventListener("click", handleLogout);
-            if (topLogout) topLogout.addEventListener("click", handleLogout);
+            /* Topbar Buttons */
+            document.getElementById("sidebarLogoutBtn").addEventListener("click", handleLogout);
+            document.getElementById("topbarLogoutBtn").addEventListener("click", handleLogout);
+            document.getElementById("topbarAddItemBtn").addEventListener("click", function () { window.openAddItemModal(); });
+            document.getElementById("driveSyncConfigBtn").addEventListener("click", window.openDriveSettingsModal);
+
+            /* Delegated clicks for Preview & Delete inside workspace */
+            document.getElementById("workspaceContent").addEventListener("click", function (e) {
+                var previewBtn = e.target.closest("[data-preview-key]");
+                if (previewBtn) {
+                    var key = previewBtn.getAttribute("data-preview-key");
+                    if (uiActionItems[key]) window.openPreviewForItem(uiActionItems[key]);
+                    return;
+                }
+                var delBtn = e.target.closest("[data-delete-uid]");
+                if (delBtn) {
+                    var uid = delBtn.getAttribute("data-delete-uid");
+                    portalStore.customItems = portalStore.customItems.filter(function (c) { return c.uid !== uid; });
+                    saveJsonStore(STORAGE_KEY_CUSTOM, portalStore.customItems);
+                    renderWorkspace();
+                    window.notifyToast("Item dihapus dari daftar halaman web.");
+                }
+            });
+
+            /* Modal Close Handlers */
+            document.addEventListener("click", function (e) {
+                var closeTrigger = e.target.closest("[data-close-modal]");
+                if (closeTrigger) {
+                    var modalId = closeTrigger.getAttribute("data-close-modal");
+                    var modal = document.getElementById(modalId);
+                    if (modal) modal.classList.remove("is-open");
+                    return;
+                }
+                if (e.target.classList && e.target.classList.contains("modal-backdrop")) {
+                    e.target.classList.remove("is-open");
+                }
+            });
+
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape") window.closeAllModals();
+            });
+
+            /* Dropzone & File Input */
+            var dropZone = document.getElementById("fileDropZone");
+            var fileInput = document.getElementById("addFileInput");
+            var dropLabel = document.getElementById("dropZoneLabel");
+
+            function handleChosenFiles(fileList) {
+                appState.pendingUploadFiles = Array.prototype.slice.call(fileList || []);
+                if (appState.pendingUploadFiles.length === 1) {
+                    dropLabel.textContent = "Terpilih: " + appState.pendingUploadFiles[0].name;
+                } else if (appState.pendingUploadFiles.length > 1) {
+                    dropLabel.textContent = "Terpilih " + appState.pendingUploadFiles.length + " file/foto siap ditambahkan";
+                }
+            }
+
+            dropZone.addEventListener("click", function () { fileInput.click(); });
+            fileInput.addEventListener("change", function () { handleChosenFiles(fileInput.files); });
+            dropZone.addEventListener("dragover", function (e) { e.preventDefault(); dropZone.classList.add("is-dragover"); });
+            dropZone.addEventListener("dragleave", function () { dropZone.classList.remove("is-dragover"); });
+            dropZone.addEventListener("drop", function (e) {
+                e.preventDefault();
+                dropZone.classList.remove("is-dragover");
+                handleChosenFiles(e.dataTransfer.files);
+            });
+
+            /* Add Item Form Submission */
+            document.getElementById("addItemForm").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                var scope = document.getElementById("addTargetGroup").value;
+                var catKey = document.getElementById("addCategorySelect").value;
+                var folderId = getTargetFolderIdFromModal();
+                var statusMsg = document.getElementById("addModalStatusMsg");
+                var submitBtn = document.getElementById("addItemSubmitBtn");
+
+                if (appState.addModalMode === "link") {
+                    var rawLink = document.getElementById("addDriveLinkInput").value.trim();
+                    var title = document.getElementById("addItemTitleInput").value.trim();
+                    var type = document.getElementById("addItemTypeSelect").value;
+                    var driveId = extractGoogleDriveId(rawLink);
+
+                    if (!driveId) {
+                        window.notifyToast("Masukkan tautan atau ID Google Drive yang valid.");
+                        return;
+                    }
+                    if (!title) {
+                        title = "Dokumen Drive (" + driveId.slice(0, 10) + ")";
+                    }
+
+                    portalStore.customItems.push({
+                        uid: "cust_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+                        scope: scope,
+                        catKey: catKey,
+                        id: driveId,
+                        title: title,
+                        type: type,
+                        source: "drive-link",
+                        createdAt: new Date().toISOString()
+                    });
+                    saveJsonStore(STORAGE_KEY_CUSTOM, portalStore.customItems);
+                    window.closeAllModals();
+                    navigateToTargetCategory(scope, catKey);
+                    window.notifyToast("Ditambahkan! Langsung tampil di list halaman web.");
+                    return;
+                }
+
+                /* Upload Mode */
+                var files = appState.pendingUploadFiles;
+                if (!files || files.length === 0) {
+                    window.notifyToast("Pilih minimal 1 file dokumen atau foto terlebih dahulu.");
+                    return;
+                }
+
+                var gasUrl = (portalStore.settings.gasUrl || "").trim();
+                submitBtn.disabled = true;
+                statusMsg.style.display = "block";
+
+                var uploadedCount = 0;
+                for (var i = 0; i < files.length; i++) {
+                    var f = files[i];
+                    var fType = detectTypeFromFile(f.type, f.name);
+                    statusMsg.textContent = "Memproses (" + (i + 1) + "/" + files.length + "): " + f.name + "...";
+
+                    try {
+                        var fileData = await readFileAsBase64AndPreview(f);
+                        if (gasUrl) {
+                            /* Upload real file straight into the Google Drive category folder via Apps Script */
+                            var res = await fetch(gasUrl, {
+                                method: "POST",
+                                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                                body: JSON.stringify({
+                                    folderId: folderId,
+                                    fileName: f.name,
+                                    mimeType: f.type || "application/octet-stream",
+                                    base64Data: fileData.base64
+                                })
+                            });
+                            var json = await res.json();
+                            if (!json || !json.ok) {
+                                throw new Error((json && json.error) || "Upload ke Google Drive gagal.");
+                            }
+                            portalStore.customItems.push({
+                                uid: "drv_" + json.id,
+                                scope: scope,
+                                catKey: catKey,
+                                id: json.id,
+                                title: json.title || f.name,
+                                type: json.type || fType,
+                                source: "drive-upload",
+                                createdAt: new Date().toISOString()
+                            });
+                        } else {
+                            /* Local instant mode with compressed photo thumbnail */
+                            var storedDataUrl = "";
+                            if (fType === "FOTO") {
+                                storedDataUrl = await compressImageDataUrl(fileData.dataUrl, 1200, 0.8);
+                            } else if (f.size <= 1500000) {
+                                storedDataUrl = fileData.dataUrl;
+                            }
+                            portalStore.customItems.push({
+                                uid: "loc_" + Date.now() + "_" + i,
+                                scope: scope,
+                                catKey: catKey,
+                                id: "",
+                                title: f.name,
+                                type: fType,
+                                dataUrl: storedDataUrl,
+                                source: "local",
+                                createdAt: new Date().toISOString()
+                            });
+                        }
+                        uploadedCount++;
+                    } catch (err) {
+                        window.notifyToast("Error pada " + f.name + ": " + (err && err.message ? err.message : "Gagal memproses"));
+                    }
+                }
+
+                saveJsonStore(STORAGE_KEY_CUSTOM, portalStore.customItems);
+                submitBtn.disabled = false;
+                statusMsg.style.display = "none";
+
+                if (uploadedCount > 0) {
+                    window.closeAllModals();
+                    navigateToTargetCategory(scope, catKey);
+                    window.notifyToast(
+                        gasUrl
+                            ? (uploadedCount + " file/foto berhasil diupload ke Google Drive & tampil di list!")
+                            : (uploadedCount + " file/foto langsung ditambahkan ke list halaman web!")
+                    );
+                }
+            });
+
+            function navigateToTargetCategory(scope, catKey) {
+                if (scope === "tgpk") {
+                    appState.tgpkSelectedCat = catKey;
+                    window.switchRoute("tgpk", false);
+                } else if (scope === "projects") {
+                    appState.selectedProjectObj = getProjectById(catKey) || null;
+                    window.switchRoute("projects", false);
+                } else {
+                    window.switchRoute("ppt", false);
+                }
+            }
 
             window.addEventListener("resize", function () {
                 var activeBtn = document.querySelector(".nav-menu-btn.is-active");
                 if (activeBtn) moveLanternToButton(activeBtn, false);
             });
 
-            // Check existing session
             try {
                 if (sessionStorage.getItem(SESSION_STORAGE_KEY) === "1") {
                     enterPortal(true);
                 } else {
+                    updateSyncStatusBadge();
                     renderWorkspace();
                 }
             } catch (e) {
+                updateSyncStatusBadge();
                 renderWorkspace();
             }
         }
